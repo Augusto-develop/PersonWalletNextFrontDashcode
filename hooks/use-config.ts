@@ -1,6 +1,6 @@
 import { useAtom } from "jotai"
 import { atomWithStorage } from "jotai/utils"
-import { layoutType, sidebarType, navBarType} from "@/lib/type"
+import { layoutType, sidebarType, navBarType } from "@/lib/type"
 
 
 
@@ -33,7 +33,7 @@ export const defaultConfig: Config = {
   layout: "vertical",
   sidebar: 'classic',
   menuHidden: false,
-  showSearchBar: true,
+  showSearchBar: false,
   topHeader: 'default',
   contentWidth: 'wide',
   navbar: 'sticky',
@@ -52,6 +52,6 @@ export const defaultConfig: Config = {
 const configAtom = atomWithStorage<Config>("config", defaultConfig)
 
 export function useConfig() {
-  
+
   return useAtom(configAtom)
 }

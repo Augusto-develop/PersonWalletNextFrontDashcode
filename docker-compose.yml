@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+    personwallet-dashcode:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        environment:
+            - PORT=3000
+            - CHOKIDAR_USEPOLLING=true            
+        ports:
+            - '3100:3000'
+        volumes:
+              - C:/Develop/themeforest/Dashcode/Dashcode-starter-v1.0.0:/var/www:cached
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'

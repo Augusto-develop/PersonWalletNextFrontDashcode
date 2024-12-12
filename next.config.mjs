@@ -29,6 +29,16 @@ const nextConfig = {
       },
     ],
   },
+  reactStrictMode: true,  
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.watchOptions = {
+        poll: 1000, // Verifica mudanças a cada 1 segundo
+        aggregateTimeout: 300,
+      };
+    }
+    return config;
+  },
 };
 
 export default withNextIntl(nextConfig);
