@@ -1,0 +1,271 @@
+@font-face {
+  font-family: 'pwicons';
+  src:  url('fonts/pwicons.eot?lav6h9');
+  src:  url('fonts/pwicons.eot?lav6h9#iefix') format('embedded-opentype'),
+    url('fonts/pwicons.ttf?lav6h9') format('truetype'),
+    url('fonts/pwicons.woff?lav6h9') format('woff'),
+    url('fonts/pwicons.svg?lav6h9#pwicons') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="iconpw-"], [class*=" iconpw-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'pwicons' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.iconpw-atacadao .path1:before {
+  content: "\e906";
+  color: rgb(254, 254, 254);
+}
+.iconpw-atacadao .path2:before {
+  content: "\e907";
+  margin-left: -1em;
+  color: rgb(0, 158, 97);
+}
+.iconpw-atacadao .path3:before {
+  content: "\e908";
+  margin-left: -1em;
+  color: rgb(248, 99, 2);
+}
+.iconpw-atacadao .path4:before {
+  content: "\e909";
+  margin-left: -1em;
+  color: rgb(255, 160, 118);
+}
+.iconpw-atacadao .path5:before {
+  content: "\e90a";
+  margin-left: -1em;
+  color: rgb(255, 160, 118);
+}
+.iconpw-atacadao .path6:before {
+  content: "\e90b";
+  margin-left: -1em;
+  color: rgb(147, 45, 0);
+}
+.iconpw-atacadao .path7:before {
+  content: "\e90c";
+  margin-left: -1em;
+  color: rgb(147, 45, 0);
+}
+.iconpw-atacadao .path8:before {
+  content: "\e90d";
+  margin-left: -1em;
+  color: rgb(147, 45, 0);
+}
+.iconpw-atacadao .path9:before {
+  content: "\e90e";
+  margin-left: -1em;
+  color: rgb(147, 45, 0);
+}
+.iconpw-atacadao .path10:before {
+  content: "\e90f";
+  margin-left: -1em;
+  color: rgb(147, 45, 0);
+}
+.iconpw-atacadao .path11:before {
+  content: "\e910";
+  margin-left: -1em;
+  color: rgb(175, 61, 4);
+}
+.iconpw-atacadao .path12:before {
+  content: "\e911";
+  margin-left: -1em;
+  color: rgb(147, 45, 0);
+}
+.iconpw-atacadao .path13:before {
+  content: "\e912";
+  margin-left: -1em;
+  color: rgb(147, 45, 0);
+}
+.iconpw-atacadao .path14:before {
+  content: "\e913";
+  margin-left: -1em;
+  color: rgb(0, 158, 97);
+}
+.iconpw-ouze .path1:before {
+  content: "\e914";
+  color: rgb(51, 48, 117);
+}
+.iconpw-ouze .path2:before {
+  content: "\e915";
+  margin-left: -1em;
+  color: rgb(228, 0, 228);
+}
+.iconpw-ouze .path3:before {
+  content: "\e916";
+  margin-left: -1em;
+  color: rgb(254, 254, 254);
+}
+.iconpw-ouze .path4:before {
+  content: "\e917";
+  margin-left: -1em;
+  color: rgb(252, 1, 252);
+}
+.iconpw-brasilcard .path1:before {
+  content: "\e918";
+  color: rgb(8, 85, 140);
+}
+.iconpw-brasilcard .path2:before {
+  content: "\e919";
+  margin-left: -1em;
+  color: rgb(255, 221, 33);
+}
+.iconpw-brasilcard .path3:before {
+  content: "\e91a";
+  margin-left: -1em;
+  color: rgb(87, 185, 82);
+}
+.iconpw-novucard .path1:before {
+  content: "\e91b";
+  color: rgb(237, 254, 0);
+}
+.iconpw-novucard .path2:before {
+  content: "\e91c";
+  margin-left: -1em;
+  color: rgb(154, 154, 153);
+}
+.iconpw-novucard .path3:before {
+  content: "\e91d";
+  margin-left: -1em;
+  color: rgb(64, 64, 64);
+}
+.iconpw-novucard .path4:before {
+  content: "\e91e";
+  margin-left: -1em;
+  color: rgb(154, 0, 255);
+}
+.iconpw-novucard .path5:before {
+  content: "\e91f";
+  margin-left: -1em;
+  color: rgb(2, 179, 246);
+}
+.iconpw-novucard .path6:before {
+  content: "\e920";
+  margin-left: -1em;
+  color: rgb(102, 242, 0);
+}
+.iconpw-novucard .path7:before {
+  content: "\e921";
+  margin-left: -1em;
+  color: rgb(255, 0, 177);
+}
+.iconpw-riachuelo:before {
+  content: "\e922";
+}
+.iconpw-neon:before {
+  content: "\e923";
+  color: #00b0ea;
+}
+.iconpw-mercadopago .path1:before {
+  content: "\e901";
+  color: rgb(0, 188, 255);
+}
+.iconpw-mercadopago .path2:before {
+  content: "\e902";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.iconpw-mercadopago .path3:before {
+  content: "\e903";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.iconpw-mercadopago .path4:before {
+  content: "\e904";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.iconpw-mercadopago .path5:before {
+  content: "\e905";
+  margin-left: -1em;
+  color: rgb(10, 0, 128);
+}
+.iconpw-nubank:before {
+  content: "\e900";
+  color: #820ad1;
+}
+.iconpw-pix .path1:before {
+  content: "\e973";
+  color: rgb(147, 149, 152);
+}
+.iconpw-pix .path2:before {
+  content: "\e974";
+  margin-left: -1em;
+  color: rgb(50, 188, 173);
+}
+.iconpw-flagcard:before {
+  content: "\e961";
+}
+.iconpw-banco-caixa .path1:before {
+  content: "\e95e";
+  color: rgb(1, 109, 184);
+}
+.iconpw-banco-caixa .path2:before {
+  content: "\e95f";
+  margin-left: -1em;
+  color: rgb(254, 254, 254);
+}
+.iconpw-banco-caixa .path3:before {
+  content: "\e960";
+  margin-left: -1em;
+  color: rgb(248, 162, 61);
+}
+.iconpw-itau .path1:before {
+  content: "\e966";
+  color: rgb(247, 99, 0);
+}
+.iconpw-itau .path2:before {
+  content: "\e967";
+  margin-left: -1em;
+  color: rgb(0, 73, 144);
+}
+.iconpw-itau .path3:before {
+  content: "\e968";
+  margin-left: -1em;
+  color: rgb(255, 229, 18);
+}
+.iconpw-santander .path1:before {
+  content: "\e95d";
+  color: rgb(236, 0, 0);
+}
+.iconpw-santander .path2:before {
+  content: "\e963";
+  margin-left: -1em;
+  color: rgb(254, 254, 254);
+}
+.iconpw-bradesco .path1:before {
+  content: "\e964";
+  color: rgb(206, 28, 48);
+}
+.iconpw-bradesco .path2:before {
+  content: "\e965";
+  margin-left: -1em;
+  color: rgb(254, 254, 254);
+}
+.iconpw-banco-brasil .path1:before {
+  content: "\e96f";
+  color: rgb(255, 242, 0);
+}
+.iconpw-banco-brasil .path2:before {
+  content: "\e970";
+  margin-left: -1em;
+  color: rgb(26, 93, 173);
+}
+.iconpw-pago:before {
+  content: "\e94c";
+}
+.iconpw-transferencia:before {
+  content: "\e941";
+}
