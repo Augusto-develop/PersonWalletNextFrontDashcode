@@ -14,16 +14,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import SantanderIcon from "@/components/pwicons/santander-avatar"
-import CaixaIcon from "@/components/pwicons/caixa-avatar"
-import NubankIcon from "@/components/pwicons/nubank-avatar"
-import MercadoPagoIcon from "@/components/pwicons/mercadopago-avatar"
-import AtacadaoIcon from "@/components/pwicons/atacadao-avatar"
-import NovuIcon from "@/components/pwicons/novu-avatar"
-import OuzeIcon from "@/components/pwicons/ouze-avatar"
-import RiachueloIcon from "@/components/pwicons/riachuelo-avatar"
-import BrasilcardIcon from "@/components/pwicons/brasilcard-avatar"
-import NeonIcon from "@/components/pwicons/neon-avatar"
+import {
+  avatarComponents, IconType
+} from "@/components/pwicons/pwicons"
+
 import { cn } from "@/lib/utils"
 import React from "react"
 
@@ -41,22 +35,6 @@ export type DataProps = {
   action: React.ReactNode;
 }
 
-type IconType = 'Santander' | 'Caixa' | 'Nu' | 'MercadoPago' | 'Atacadao' | 'Novu' |
-  'Ouze' | 'Riachuelo' | 'Brasilcard' | 'Neon';
-
-const avatarComponents: Record<IconType, React.FC> = {
-  Santander: SantanderIcon,
-  Caixa: CaixaIcon,
-  Nu: NubankIcon,
-  MercadoPago: MercadoPagoIcon,
-  Atacadao: AtacadaoIcon,
-  Novu: NovuIcon,
-  Ouze: OuzeIcon,
-  Riachuelo: RiachueloIcon,
-  Brasilcard: BrasilcardIcon,
-  Neon: NeonIcon,
-};
-
 export const columns: ColumnDef<DataProps>[] = [
   {
     accessorKey: "card",
@@ -67,17 +45,20 @@ export const columns: ColumnDef<DataProps>[] = [
       return (
         <div className="font-medium text-card-foreground/80">
           <div className="flex gap-3 items-center">
-
-            <Avatar rounded="sm"
-              className="w-8 h-8"
-            >
-              {/* {card?.image ? (
+            {IconComponent ? (
+              <Avatar
+                className="rounded w-8 h-8"
+              >
+                {/* {card?.image ? (
                 <AvatarImage src={card.image} />
               ) : (
                 <AvatarFallback>AB</AvatarFallback>
               )} */}
-              <IconComponent />
-            </Avatar>
+                <IconComponent />
+              </Avatar>
+            ) : (
+              <div>Error: Icon not found</div>
+            )}
             <span className="text-sm text-default-600 whitespace-nowrap">
               {card?.name ?? "Unknown User"}
             </span>

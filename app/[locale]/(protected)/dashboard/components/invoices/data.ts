@@ -5,7 +5,7 @@ export const data: DataProps[] = [
     id: 1,
     card: {
       name: "NUBANK [ANT]",
-      avatar: "Nu",
+      avatar: "NUBANK",
       image: "/images/all-img/customer_1.png",
     },
     fechamento: "-",
@@ -18,7 +18,7 @@ export const data: DataProps[] = [
     id: 2,
     card: {
       name: "RIACHUELO [AUG]",
-      avatar: "Riachuelo",
+      avatar: "RIACHUELO",
       image: "/images/all-img/customer_1.png",
     },
     fechamento: "-",
@@ -31,7 +31,7 @@ export const data: DataProps[] = [
     id: 3,
     card: {
       name: "SANTANDER [4054]",
-      avatar: "Santander",
+      avatar: "SANTANDER",
       image: "/images/all-img/customer_1.png",
     },
     fechamento: "-",
@@ -44,7 +44,7 @@ export const data: DataProps[] = [
     id: 4,
     card: {
       name: "NOVÜ CARD",
-      avatar: "Novu",
+      avatar: "NOVUCARD",
       image: "/images/all-img/customer_1.png",
     },
     fechamento: "-",
@@ -57,7 +57,7 @@ export const data: DataProps[] = [
     id: 5,
     card: {
       name: "MERCADO PAGO",
-      avatar: "MercadoPago",
+      avatar: "MERCADOPAGO",
       image: "/images/all-img/customer_1.png",
     },
     fechamento: "-",
@@ -70,7 +70,7 @@ export const data: DataProps[] = [
     id: 6,
     card: {
       name: "BRASILCARD",
-      avatar: "Brasilcard",
+      avatar: "BRASILCARD",
       image: "/images/all-img/customer_1.png",
     },
     fechamento: "-",
@@ -83,7 +83,7 @@ export const data: DataProps[] = [
     id: 7,
     card: {
       name: "NEON [CRIS]",
-      avatar: "Neon",
+      avatar: "NEON",
       image: "/images/all-img/customer_1.png",
     },
     fechamento: "-",
@@ -96,7 +96,7 @@ export const data: DataProps[] = [
     id: 8,
     card: {
       name: "ATACADÃO",
-      avatar: "Atacadao",
+      avatar: "ATACADAO",
       image: "/images/all-img/customer_1.png",
     },
     fechamento: "-",
@@ -109,7 +109,7 @@ export const data: DataProps[] = [
     id: 9,
     card: {
       name: "SANTANDER [2824]",
-      avatar: "Santander",
+      avatar: "SANTANDER",
       image: "/images/all-img/customer_1.png",
     },
     fechamento: "-",
@@ -122,7 +122,7 @@ export const data: DataProps[] = [
     id: 10,
     card: {
       name: "RIACHUELO [CINT]",
-      avatar: "Riachuelo",
+      avatar: "RIACHUELO",
       image: "/images/all-img/customer_1.png",
     },
     fechamento: "-",
@@ -135,7 +135,7 @@ export const data: DataProps[] = [
     id: 11,
     card: {
       name: "NUBANK [CINT]",
-      avatar: "Nu",
+      avatar: "NUBANK",
       image: "/images/all-img/customer_1.png",
     },
     fechamento: "-",
@@ -148,7 +148,7 @@ export const data: DataProps[] = [
     id: 12,
     card: {
       name: "NEON [CINT]",
-      avatar: "Neon",
+      avatar: "NEON",
       image: "/images/all-img/customer_1.png",
     },
     fechamento: "-",
@@ -161,7 +161,7 @@ export const data: DataProps[] = [
     id: 13,
     card: {
       name: "NEON [AUG]",
-      avatar: "Neon",
+      avatar: "NEON",
       image: "/images/all-img/customer_1.png",
     },
     fechamento: "-",
@@ -174,7 +174,7 @@ export const data: DataProps[] = [
     id: 14,
     card: {
       name: "NUBANK [AUG]",
-      avatar: "Nu",
+      avatar: "NUBANK",
       image: "/images/all-img/customer_1.png",
     },
     fechamento: "-",
@@ -187,7 +187,7 @@ export const data: DataProps[] = [
     id: 15,
     card: {
       name: "CAIXA [ANT]",
-      avatar: "Caixa",
+      avatar: "CAIXA",
       image: "/images/all-img/customer_1.png",
     },
     fechamento: "-",
@@ -200,7 +200,7 @@ export const data: DataProps[] = [
     id: 16,
     card: {
       name: "NUBANK [CRIS]",
-      avatar: "Nu",
+      avatar: "NUBANK",
       image: "/images/all-img/customer_1.png",
     },
     fechamento: "-",
@@ -213,7 +213,7 @@ export const data: DataProps[] = [
     id: 17,
     card: {
       name: "OUZE",
-      avatar: "Ouze",
+      avatar: "OUZE",
       image: "/images/all-img/customer_1.png",
     },
     fechamento: "-",
