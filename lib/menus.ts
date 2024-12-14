@@ -59,6 +59,14 @@ export function getMenuList(pathname: string, t: any): Group[] {
           active: pathname.includes("/creditcards"),
           icon: "heroicons-outline:chat",
           submenus: [],
+        },
+        {
+          id: "carteiras",
+          href: "/carteiras",
+          label: "Carteiras",
+          active: pathname.includes("/carteiras"),
+          icon: "heroicons-outline:chat",
+          submenus: [],
         }
       ],
     },

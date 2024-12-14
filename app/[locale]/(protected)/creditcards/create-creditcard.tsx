@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { addLeadingZeros, convertToNumeric, convertFloatToMoeda, removePontuacaoValor } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -19,27 +20,62 @@ import { useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form"
 import Select, { MultiValue } from 'react-select'
 import { CleaveInput } from "@/components/ui/cleave";
+import fetchWithAuth from "@/action/login-actions";
+import { Credit, convertToCreditCard } from "@/action/creditcard-actions";
+import { CreditCard, useCreditCardContext } from "./creditcard-context";
+import CreditCardAction from "./grid/components/creditcard-action";
 
-
-
-function convertToNumeric(value) {
-  if (!value) return null;
-
-  // Remove "R$", espaços e pontos
-  let numericValue = value.replace(/R\$|\s|\./g, "");
-
-  // Substitui a vírgula decimal por um ponto
-  numericValue = numericValue.replace(",", ".");
-
-  // Converte para número de ponto flutuante
-  return parseFloat(numericValue);
+interface CreateTaskProps {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  dataCreditCard?: CreditCard | null
 }
 
-function addLeadingZeros(value, length) {
-  return value.toString().padStart(length, "0");
+interface Option {
+  value: string;
+  label: string;
 }
 
-const submitCreate = async (data) => {
+type Inputs = {
+  descricao: string;
+  vencimento: Option;
+  fechamento: Option;
+  bandeira: Option;
+  emissor: Option;
+  limite: string;
+  id?: string;
+}
+
+const dayOptions: Option[] = Array.from({ length: 31 }, (_, i) => ({
+  value: addLeadingZeros(`${i + 1}`, 2),
+  label: addLeadingZeros(`${i + 1}`, 2),
+}));
+
+const bandeiraOptions: Option[] = [
+  { value: "VISA", label: "Visa" },
+  { value: "MASTERCARD", label: "Mastercard" },
+];
+
+const emissorOptions: Option[] = [
+  { value: "ATACADAO", label: "Atacadão" },
+  { value: "BANCOBRASIL", label: "Banco do Brasil" },
+  { value: "BRADESCO", label: "Bradesco" },
+  { value: "BRASILCARD", label: "BrasilCard" },
+  { value: "CAIXA", label: "Caixa" },
+  { value: "ITAU", label: "Itau" },
+  { value: "MERCADOPAGO", label: "Mercado Pago" },
+  { value: "NEON", label: "Neon" },
+  { value: "NOVUCARD", label: "NovuCard" },
+  { value: "NUBANK", label: "Nubank" },
+  { value: "OUZE", label: "Ouze" },
+  { value: "RIACHUELO", label: "Riachuelo" },
+  { value: "SANTANDER", label: "Santander" },
+];
+
+const submitCreate = async (data: {
+  descricao: any; vencimento: any; fechamento: any; bandeira: any; emissor: any; limite: any; id?: string | null;
+}): Promise<Credit | undefined> => {
+
   // Prepara o payload
   const payload = {
     descricao: data.descricao,
@@ -52,97 +88,54 @@ const submitCreate = async (data) => {
   };
 
   try {
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1NjVkYTBhZC1lNDFiLTQ0Y2ItODJiYS0wNjc5OTdkNGI4NWUiLCJ1c2VybmFtZSI6IkF1Z3VzdG8gZGUgQ2FzdHJvIEdvbWVzIiwiaWF0IjoxNzM0MDU2OTEwLCJleHAiOjE3MzQwNjA1MTB9.IaCNYYCHpAxMJoxKqU4qjyotu_iq-Rn3rklhyYLHd0A";
 
-    const response = await fetch('http://localhost:3000/credito', {
-      method: "POST",
-      headers: {        
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-    });
+    console.log(data);
 
-    if (response.ok) {
-      const result = await response.json();
-      console.log("Sucesso:", result);
+    if (data.id !== null && data.id !== undefined) {
+      const response = await fetchWithAuth("/credito/" + data.id, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        const newCredit: Credit = await response.json();
+        console.log("Sucesso:", newCredit);
+        return newCredit;
+      } else {
+        console.error("Erro ao enviar:", response.statusText);
+        return undefined;
+      }
+
     } else {
-      console.error("Erro ao enviar:", response.statusText);
+      const response = await fetchWithAuth("/credito", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        const newCredit: Credit = await response.json();
+        console.log("Sucesso:", newCredit);
+        return newCredit;
+      } else {
+        console.error("Erro ao enviar:", response.statusText);
+        return undefined;
+      }
     }
+
   } catch (error) {
     console.error("Erro de requisição:", error);
   }
 };
 
+const CreateCreditCard = ({ open, setOpen, dataCreditCard = null }: CreateTaskProps) => {
 
-interface CreateTaskProps {
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-interface Option {
-  value: string;
-  label: string;
-  image?: string;
-}
-
-type Inputs = {
-  descricao: string;
-  vencimento: Option;
-  fechamento: Option;
-  bandeira: Option;
-  emissor: Option;
-  limite: string;
-}
-
-const options: Option[] = [
-  {
-    value: "team",
-    label: "team",
-  },
-  {
-    value: "low",
-    label: "low",
-  },
-  {
-    value: "medium",
-    label: "medium",
-  },
-  {
-    value: "high",
-    label: "high",
-  },
-  {
-    value: "update",
-    label: "update",
-  }
-];
-
-const assigneeOptions: Option[] = [
-  { value: "mahedi", label: "Mahedi Amin", image: "/images/avatar/av-1.svg" },
-  { value: "sovo", label: "Sovo Haldar", image: "/images/avatar/av-2.svg" },
-  { value: "rakibul", label: "Rakibul Islam", image: "/images/avatar/av-3.svg" },
-  { value: "pritom", label: "Pritom Miha", image: "/images/avatar/av-4.svg" },
-];
-
-const dayOptions: Option[] = Array.from({ length: 31 }, (_, i) => ({
-  value: `${i + 1}`,
-  label: `${i + 1}`,
-}));
-
-const bandeiraOptions: Option[] = [
-  { value: "VISA", label: "Visa" },
-  { value: "MASTERCARD", label: "Mastercard" },
-];
-
-const emissorOptions: Option[] = [
-  { value: "NEON", label: "Neon" },
-  { value: "RIACHUELO", label: "Riachuelo" },
-  { value: "NUBANK", label: "Nubank" },
-  { value: "SANTANDER", label: "Santander" },
-];
-
-const CreateCreditCard = ({ open, setOpen }: CreateTaskProps) => {  
+  const { creditcards, setCreditCards, editCreditCard } = useCreditCardContext();  // Access context state and setter  
 
   const {
     register,
@@ -150,10 +143,25 @@ const CreateCreditCard = ({ open, setOpen }: CreateTaskProps) => {
     control,
     formState: { errors },
   } = useForm<Inputs>()
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
-    submitCreate(data);
-    //setOpen(false)
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    //editar
+    if (dataCreditCard !== null && dataCreditCard !== undefined) {
+      data.id = dataCreditCard.id;
+      const editCredit: Credit | undefined = await submitCreate(data);
+      if (editCredit) {
+        const editCard: CreditCard = convertToCreditCard(editCredit);
+        editCreditCard(dataCreditCard.id, editCard);
+      }
+    } else {
+      data.id = undefined;
+      const newCredit: Credit | undefined = await submitCreate(data);
+      if (newCredit) {
+        const newCard: CreditCard = convertToCreditCard(newCredit);
+        setCreditCards((prevCards) => [...prevCards, newCard]);
+      }
+    }
+
+    setOpen(false)
   }
 
   return (
@@ -171,6 +179,7 @@ const CreateCreditCard = ({ open, setOpen }: CreateTaskProps) => {
               placeholder="Descrição do Cartão"
               {...register("descricao", { required: "Descrição is required." })}
               color={errors.descricao ? "destructive" : "default"}
+              defaultValue={dataCreditCard !== null ? dataCreditCard.title : ""}
             />
             {errors.descricao && <p className="text-destructive  text-sm font-medium">{errors.descricao.message}</p>}
           </div>
@@ -180,6 +189,9 @@ const CreateCreditCard = ({ open, setOpen }: CreateTaskProps) => {
               <Controller
                 name="emissor"
                 control={control}
+                defaultValue={dataCreditCard !== null ?
+                  emissorOptions.find((option) => option.value === dataCreditCard.emissor) :
+                  undefined}
                 rules={{ required: "Emissor is required." }}
                 render={({ field, fieldState }) => (
                   <>
@@ -201,6 +213,9 @@ const CreateCreditCard = ({ open, setOpen }: CreateTaskProps) => {
               <Controller
                 name="bandeira"
                 control={control}
+                defaultValue={dataCreditCard !== null ?
+                  bandeiraOptions.find((option) => option.value === dataCreditCard.bandeira) :
+                  undefined}
                 rules={{ required: "Bandeira is required." }}
                 render={({ field, fieldState }) => (
                   <>
@@ -224,6 +239,9 @@ const CreateCreditCard = ({ open, setOpen }: CreateTaskProps) => {
               <Controller
                 name="vencimento"
                 control={control}
+                defaultValue={dataCreditCard !== null ?
+                  dayOptions.find((option) => option.value === dataCreditCard.diavenc) :
+                  undefined}
                 rules={{ required: "Vencimento is required." }}
                 render={({ field, fieldState }) => (
                   <>
@@ -245,6 +263,9 @@ const CreateCreditCard = ({ open, setOpen }: CreateTaskProps) => {
               <Controller
                 name="fechamento"
                 control={control}
+                defaultValue={dataCreditCard !== null ?
+                  dayOptions.find((option) => option.value === dataCreditCard.diafech) :
+                  undefined}
                 rules={{ required: "Fechamento is required." }}
                 render={({ field, fieldState }) => (
                   <>
@@ -277,6 +298,7 @@ const CreateCreditCard = ({ open, setOpen }: CreateTaskProps) => {
                 numeralPositiveOnly: true, // Apenas valores positivos
               }}
               placeholder=""
+              value={dataCreditCard !== null ? convertFloatToMoeda(dataCreditCard.limite) : ""}
               {...register("limite", {
                 required: "Limite is required.",
                 validate: (value) => value !== "R$ " || "Por favor, insira um valor válido."
@@ -285,7 +307,7 @@ const CreateCreditCard = ({ open, setOpen }: CreateTaskProps) => {
           </div>
 
           <div className="flex justify-end">
-            <Button type="submit">Add</Button>
+            <Button type="submit">Save</Button>
           </div>
         </form>
 

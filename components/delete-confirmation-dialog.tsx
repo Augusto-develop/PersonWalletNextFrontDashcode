@@ -12,13 +12,18 @@ import {
 import { toast } from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 
-const DeleteConfirmationDialog = ({ open, onClose, onConfirm, defaultToast = true, toastMessage = "Successfully deleted",
+const DeleteConfirmationDialog = ({
+  open, onClose, onConfirm, defaultToast = true, toastMessage = "Successfully deleted",
+  title = "Excluir ?",
+  description = "Esta ação não pode ser desfeita. Isso excluirá permanentemente seus dados de nossos servidores."
 }: {
   open: boolean;
   onClose: () => void;
   onConfirm?: () => Promise<void>;
   defaultToast?: boolean;
   toastMessage?: string;
+  title?: string;
+  description?: string;
 }) => {
   const [isPending, startTransition] = useTransition();
 
@@ -41,10 +46,9 @@ const DeleteConfirmationDialog = ({ open, onClose, onConfirm, defaultToast = tru
     <AlertDialog open={open}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle> {title}</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            {description}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

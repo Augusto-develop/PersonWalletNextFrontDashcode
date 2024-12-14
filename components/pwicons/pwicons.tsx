@@ -61,6 +61,18 @@ export const MercadoPagoIcon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
             <path className="path3" />
             <path className="path4" />
             <path className="path5" />
+            <path className="path6" />
+            <path className="path7" />
+            <path className="path8" />
+            <path className="path9" />
+            <path className="path10" />
+            <path className="path11" />
+            <path className="path12" />
+            <path className="path13" />
+            <path className="path14" />
+            <path className="path15" />
+            <path className="path16" />
+            <path className="path17" />
         </div>
     );
 };
@@ -100,6 +112,8 @@ export const OuzeIcon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
 export const RiachueloIcon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
     return (
         <div className="iconpw-riachuelo" style={{ fontSize }}>
+            <path className="path1" />
+            <path className="path2" />
         </div>
     );
 };
@@ -113,8 +127,30 @@ export const SantanderIcon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
     );
 };
 
+export const VisaIcon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
+    return (
+        <div className="iconpw-visa" style={{ fontSize }}>
+            <path className="path1" />
+            <path className="path2" />
+            <path className="path3" />
+        </div>
+    );
+};
+
+export const MastercardIcon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
+    return (
+        <div className="iconpw-mastercard" style={{ fontSize }}>
+            <path className="path1" />
+            <path className="path2" />
+            <path className="path3" />
+            <path className="path4" />
+            <path className="path5" />
+        </div>
+    );
+};
+
 export type IconType = 'SANTANDER' | 'CAIXA' | 'NUBANK' | 'MERCADOPAGO' | 'ATACADAO' | 'NOVUCARD' |
-    'OUZE' | 'RIACHUELO' | 'BRASILCARD' | 'NEON';
+    'OUZE' | 'RIACHUELO' | 'BRASILCARD' | 'NEON' | 'VISA' | 'MASTERCARD';
 
 export const avatarComponents: Record<IconType, React.FC<{ fontSize?: string }>> = {
     SANTANDER: SantanderIcon,
@@ -127,4 +163,6 @@ export const avatarComponents: Record<IconType, React.FC<{ fontSize?: string }>>
     RIACHUELO: RiachueloIcon,
     BRASILCARD: BrasilcardIcon,
     NEON: NeonIcon,
+    VISA: VisaIcon,
+    MASTERCARD: MastercardIcon
 };
