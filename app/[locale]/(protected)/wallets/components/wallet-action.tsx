@@ -1,0 +1,93 @@
+'use client'
+import React, { useState } from 'react'
+import { Button } from "@/components/ui/button";
+import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
+import { MoreVertical, SquarePen, Trash2 } from "lucide-react";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Wallet, useWalletContext } from './wallet-context';
+import { deleteWallet as executeDeleteWallet } from '@/action/wallet-actions'
+import CreateWallet from './wallet-create';
+
+// Add id as a prop to the component
+interface WalletActionProps {
+    wallet: Wallet;  // The id of the credit card
+}
+
+const WalletAction: React.FC<WalletActionProps> = ({ wallet }) => {
+    const [open, setOpen] = useState<boolean>(false);
+    const { wallets, setWallets, deleteWallet } = useWalletContext(); // Access context
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false); // State for dialog visibility
+    const [selectedRowId, setSelectedRowId] = useState<string | null>(null); // Store selected card ID for deletion
+
+
+    // Handle delete button click
+    const handleDeleteClick = (id: string) => {
+        setSelectedRowId(id); // Set the selected card ID
+        setOpenDeleteDialog(true); // Open the delete confirmation dialog
+    };
+
+    // Confirm deletion and delete the selected card
+    const handleDeleteConfirm = async () => {
+        if (selectedRowId) {
+            const res = await executeDeleteWallet(selectedRowId);
+            if (res.ok) {
+                deleteWallet(selectedRowId);
+            }
+        }
+        setOpenDeleteDialog(false); // Close the dialog
+    };
+
+    // Cancel deletion
+    const handleDeleteCancel = () => {
+        setOpenDeleteDialog(false); // Close the dialog without deletion
+    };
+
+    return (
+        <>
+            <CreateWallet
+                open={open}
+                setOpen={setOpen}
+                dataWallet={wallet}
+            />
+            <DeleteConfirmationDialog
+                open={openDeleteDialog}
+                onClose={handleDeleteCancel}
+                onConfirm={handleDeleteConfirm} // Close dialog without deletion             
+            />
+
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button
+                        size="icon"
+                        className="flex-none bg-transparent ring-offset-transparent hover:bg-transparent hover:ring-0 hover:ring-transparent w-6"
+                    >
+                        <MoreVertical className="h-4 w-4 text-default-700" />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="p-0 overflow-hidden" align="end" >                   
+                    <DropdownMenuItem
+                        onClick={() => setOpen(true)}
+                        className="py-2 border-b border-default-200 text-default-600 focus:bg-default focus:text-default-foreground rounded-none cursor-pointer"
+                    >
+                        <SquarePen className="w-3.5 h-3.5 me-1" />
+                        Editar
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() => handleDeleteClick(wallet.id)}
+                        className="py-2 bg-destructive/30 focus:bg-destructive focus:text-destructive-foreground rounded-none cursor-pointer"
+                    >
+                        <Trash2 className="w-3.5 h-3.5  me-1" />
+                        Excluir
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </>
+    )
+}
+
+export default WalletAction

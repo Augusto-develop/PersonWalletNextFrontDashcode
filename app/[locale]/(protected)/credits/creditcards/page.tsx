@@ -10,7 +10,7 @@ import {
 } from "@/components/pwicons/pwicons";
 import EmptyProject from './components/empty';
 import CreditCardAction from './components/creditcard-action';
-import { CreditCard, useCreditCardContext } from '../creditcard-context';
+import { CreditCard, useCreditCardContext } from './components/creditcard-context';
 import { convertFloatToMoeda } from '@/lib/utils';
 
 const CreditCardGrid = () => {

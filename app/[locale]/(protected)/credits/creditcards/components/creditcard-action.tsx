@@ -1,7 +1,6 @@
 'use client'
 import React, { useState } from 'react'
 import { Button } from "@/components/ui/button";
-import EditProject from "../../edit-project";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import { Eye, MoreVertical, SquarePen, Trash2 } from "lucide-react";
 import {
@@ -12,22 +11,20 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { defaultCreditCards } from '../../data';
 import { Link } from '@/i18n/routing';
-import { CreditCard, useCreditCardContext } from '../../creditcard-context';
+import { CreditCard, useCreditCardContext } from './creditcard-context';
 import { deleteCreditCard as executeDeleteCreditCard } from '@/action/creditcard-actions'
-import CreateCreditCard from '../../create-creditcard';
+import CreateCreditCard from './creditcard-create';
 
 // Add id as a prop to the component
 interface CreditCardActionProps {
     creditCard: CreditCard;  // The id of the credit card
 }
 
-
 const CreditCardAction: React.FC<CreditCardActionProps> = ({ creditCard }) => {
     const [open, setOpen] = useState<boolean>(false);
     const { creditcards, setCreditCards, deleteCreditCard } = useCreditCardContext(); // Access context
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false); // State for dialog visibility
     const [selectedCardId, setSelectedCardId] = useState<string | null>(null); // Store selected card ID for deletion
-
 
     // Handle delete button click
     const handleDeleteClick = (id: string) => {

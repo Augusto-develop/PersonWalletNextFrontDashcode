@@ -17,11 +17,7 @@ import Image from "next/image";
 import { Link } from '@/i18n/routing';
 import { Button } from "@/components/ui/button";
 
-const ProfileInfo = async () => {
-
-
-
-
+const ProfileInfo = () => {
   return (
     <div className="md:block hidden">
       <DropdownMenu>
@@ -29,7 +25,7 @@ const ProfileInfo = async () => {
           <div className=" flex items-center gap-3  text-default-800 ">
 
             <Image
-              src="/images/avatar/av-1.jpg"
+              src="/images/avatar/avatar-augusto.png"
               alt="D"
               width={36}
               height={36}
@@ -37,7 +33,7 @@ const ProfileInfo = async () => {
             />
 
             <div className="text-sm font-medium  capitalize lg:block hidden  ">
-              codeShaper
+              Augusto Gomes
             </div>
             <span className="text-base  me-2.5 lg:inline-block hidden">
               <Icon icon="heroicons-outline:chevron-down"></Icon>
@@ -48,8 +44,8 @@ const ProfileInfo = async () => {
           <DropdownMenuLabel className="flex gap-2 items-center mb-1 p-3">
 
             <Image
-              src="/images/avatar/av-1.jpg"
-              alt="dashcode"
+              src="/images/avatar/avatar-augusto.png"
+              alt="Augusto Gomes"
               width={36}
               height={36}
               className="rounded-full"
@@ -63,7 +59,7 @@ const ProfileInfo = async () => {
                 href="/dashboard"
                 className="text-xs text-default-600 hover:text-primary"
               >
-                dashcode@gmail.com
+                augustogomes@gmail.com
               </Link>
             </div>
           </DropdownMenuLabel>

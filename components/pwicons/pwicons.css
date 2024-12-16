@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'pwicons';
-  src:  url('fonts/pwicons.eot?2j80rs');
-  src:  url('fonts/pwicons.eot?2j80rs#iefix') format('embedded-opentype'),
-    url('fonts/pwicons.ttf?2j80rs') format('truetype'),
-    url('fonts/pwicons.woff?2j80rs') format('woff'),
-    url('fonts/pwicons.svg?2j80rs#pwicons') format('svg');
+  src:  url('fonts/pwicons.eot?2rwmr7');
+  src:  url('fonts/pwicons.eot?2rwmr7#iefix') format('embedded-opentype'),
+    url('fonts/pwicons.ttf?2rwmr7') format('truetype'),
+    url('fonts/pwicons.woff?2rwmr7') format('woff'),
+    url('fonts/pwicons.svg?2rwmr7#pwicons') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,39 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.iconpw-pwlogoname:before {
+  content: "\e93f";
+  color: #ffc600;
+}
+.iconpw-pwlogoavatar .path1:before {
+  content: "\e92d";
+  color: rgb(255, 213, 62);
+}
+.iconpw-pwlogoavatar .path2:before {
+  content: "\e92e";
+  margin-left: -1em;
+  color: rgb(55, 52, 53);
+}
+.iconpw-pwlogoavatar .path3:before {
+  content: "\e92f";
+  margin-left: -1em;
+  color: rgb(55, 52, 53);
+}
+.iconpw-pwlogoavatar .path4:before {
+  content: "\e930";
+  margin-left: -1em;
+  color: rgb(55, 52, 53);
+}
+.iconpw-pwlogoavatar .path5:before {
+  content: "\e931";
+  margin-left: -1em;
+  color: rgb(55, 52, 53);
+}
+.iconpw-pwlogoavatar .path6:before {
+  content: "\e93e";
+  margin-left: -1em;
+  color: rgb(55, 52, 53);
+}
 .iconpw-visa .path1:before {
   content: "\e925";
   color: rgb(254, 254, 254);

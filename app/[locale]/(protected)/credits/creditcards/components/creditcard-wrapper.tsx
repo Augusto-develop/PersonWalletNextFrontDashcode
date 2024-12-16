@@ -1,11 +1,11 @@
 "use client"
 import { Button } from "@/components/ui/button";
 import { Filter, List, Plus } from "lucide-react";
-import CreateCreditCard from "./create-creditcard";
+import CreateCreditCard from "./creditcard-create";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Link, usePathname } from "@/components/navigation";
-import { getProjectNav } from "./data";
+import { getProjectNav } from "../../data";
 import React from "react";
 
 const CreditCardWrapper = ({ children }: { children: React.ReactNode }) => {

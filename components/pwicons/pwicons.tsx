@@ -149,6 +149,27 @@ export const MastercardIcon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
     );
 };
 
+export const PwLogoAvatarIcon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
+    return (
+        <div className="iconpw-pwlogoavatar" style={{ fontSize }}>
+            <path className="path1" />
+            <path className="path2" />
+            <path className="path3" />
+            <path className="path4" />
+            <path className="path5" />
+            <path className="path6" />
+        </div>
+    );
+};
+
+export const PwLogoNameIcon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
+    return (
+        <div className="iconpw-pwlogoname" style={{ fontSize }}>
+            
+        </div>
+    );
+};
+
 export type IconType = 'SANTANDER' | 'CAIXA' | 'NUBANK' | 'MERCADOPAGO' | 'ATACADAO' | 'NOVUCARD' |
     'OUZE' | 'RIACHUELO' | 'BRASILCARD' | 'NEON' | 'VISA' | 'MASTERCARD';
 

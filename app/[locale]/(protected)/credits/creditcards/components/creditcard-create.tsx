@@ -23,7 +23,7 @@ import { CleaveInput } from "@/components/ui/cleave";
 import fetchWithAuth from "@/action/login-actions";
 import { Credit, convertToCreditCard } from "@/action/creditcard-actions";
 import { CreditCard, useCreditCardContext } from "./creditcard-context";
-import CreditCardAction from "./grid/components/creditcard-action";
+import CreditCardAction from "./creditcard-action";
 
 interface CreateTaskProps {
   open: boolean;

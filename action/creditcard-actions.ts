@@ -1,7 +1,7 @@
 'use client';
 import { redirect } from "next/navigation";
 import fetchWithAuth from "./login-actions";
-import { CreditCard } from "@/app/[locale]/(protected)/creditcards/creditcard-context";
+import { CreditCard } from "@/app/[locale]/(protected)/credits/creditcards/creditcard-context";
 
 export type Credit = {
     id: string;
@@ -10,13 +10,13 @@ export type Credit = {
     diavenc: string;
     valorcredito: string;
     valorparcela: string;
-    diafech: string;    
+    diafech: string;
     emissor: string;
     bandeira: string;
 };
 
 export const getCreditCards = async (): Promise<CreditCard[]> => {
-    
+
     const res = await fetchWithAuth("/credito", {
         method: 'GET',
         headers: {
@@ -47,14 +47,14 @@ export const deleteCreditCard = async (id: string): Promise<Response> => {
     return res;
 };
 
-export function convertToCreditCard(credit: Credit): CreditCard{
+export function convertToCreditCard(credit: Credit): CreditCard {
     return {
         id: credit.id,
         title: credit.descricao,
         avatar: credit.emissor,
         diavenc: credit.diavenc,
         diafech: credit.diafech,
-        limite: credit.valorcredito,        
+        limite: credit.valorcredito,
         emissor: credit.emissor,
         bandeira: credit.bandeira,
         progress: 90,

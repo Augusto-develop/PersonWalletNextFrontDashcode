@@ -14,6 +14,7 @@ import {
 import { Link } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
 import { useConfig } from '@/hooks/use-config';
+import { PwLogoAvatarIcon } from '@/components/pwicons/pwicons';
 
 interface IconNavProps {
     menuList: Group[]
@@ -27,7 +28,8 @@ const IconNav = ({ menuList }: IconNavProps) => {
     return (
         <div className=' h-full bg-sidebar  border-r border-default-200 dark:border-secondary border-dashed w-[72px]'>
             <div className="text-center py-5">
-                <DashCodeLogo className="  text-default-900 h-8 w-8 [&>path:nth-child(3)]:text-background [&>path:nth-child(2)]:text-background mx-auto" />
+                {/* <DashCodeLogo className="  text-default-900 h-8 w-8 [&>path:nth-child(3)]:text-background [&>path:nth-child(2)]:text-background mx-auto" /> */}
+                <PwLogoAvatarIcon />                        
             </div>
             <ScrollArea className="[&>div>div[style]]:!block h-full">
                 <nav className="mt-8 h-full w-full ">

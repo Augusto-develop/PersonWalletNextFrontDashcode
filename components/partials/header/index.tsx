@@ -13,7 +13,7 @@ import LocalSwitcher from './locale-switcher'
 import HeaderLogo from "./header-logo"
 
 
-const DashCodeHeader = async () => {
+const DashCodeHeader = () => {
 
 
     return (
@@ -25,10 +25,10 @@ const DashCodeHeader = async () => {
                     <HeaderSearch />
                 </div>
                 <div className="nav-tools flex items-center  md:gap-4 gap-3">
-                    <LocalSwitcher />
+                    {/* <LocalSwitcher /> */}
                     <ThemeSwitcher />
-                    <Cart />
-                    <Messages />
+                    {/* <Cart /> */}
+                    {/* <Messages /> */}
                     <Notifications />
                     <ProfileInfo />
                     <SheetMenu />

@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { Icon } from "@/components/ui/icon";
 
 
-const DashCodeFooter = async () => {
+const DashCodeFooter = () => {
 
     return (
         <FooterContent>

@@ -16,7 +16,7 @@ import { Icon } from "@/components/ui/icon";
 import { useConfig } from "@/hooks/use-config";
 const HeaderSearch = () => {
     const [config] = useConfig();
-    console.log(config.layout);
+
     if (config.layout === 'horizontal' || config.showSearchBar === false) return null
     return (
         <Dialog>

@@ -31,23 +31,24 @@ export const defaultConfig: Config = {
   theme: "zinc",
   skin: 'default',
   layout: "vertical",
-  sidebar: 'classic',
+  sidebar: 'two-column',
+  // sidebar: 'classic',
   menuHidden: false,
   showSearchBar: false,
   topHeader: 'default',
   contentWidth: 'wide',
   navbar: 'sticky',
-  footer: 'default',
+  footer: 'hidden',
   isRtl: false,
   showSwitcher: true,
   subMenu: false,
   hasSubMenu: false,
   sidebarTheme: 'light',
-  headerTheme: 'light',
+  // headerTheme: 'light',
+  headerTheme: 'transparent',
   sidebarBgImage: undefined,
   radius: 0.5,
 }
-
 
 const configAtom = atomWithStorage<Config>("config", defaultConfig)
 

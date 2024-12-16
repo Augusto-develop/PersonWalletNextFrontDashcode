@@ -1,7 +1,7 @@
 import { Metadata } from "next";
-import CreditCardWrapper from "./creditcard-wrapper";
+import CreditCardWrapper from "./components/creditcard-wrapper";
 import React from "react";
-import { CreditCardProvider } from './creditcard-context'; // Import the context provider
+import { CreditCardProvider } from './components/creditcard-context'; // Import the context provider
 export const metadata: Metadata = {
   title: 'Cartão de Crédito',
   description: 'Cartão de Crédito Page'

@@ -4,6 +4,7 @@ import { Link } from '@/components/navigation'
 import DashCodeLogo from "@/components/dascode-logo"
 import { useConfig } from '@/hooks/use-config'
 import { useMediaQuery } from '@/hooks/use-media-query'
+import { PwLogoAvatarIcon, PwLogoNameIcon } from '@/components/pwicons/pwicons'
 
 const HeaderLogo = () => {
     const [config] = useConfig();
@@ -13,18 +14,22 @@ const HeaderLogo = () => {
     return (
         config.layout === 'horizontal' ? (
             <Link href="/dashboard/analytics" className="flex gap-2 items-center    ">
-                <DashCodeLogo className="  text-default-900 h-8 w-8 [&>path:nth-child(3)]:text-background [&>path:nth-child(2)]:text-background" />
-                <h1 className="text-xl font-semibold text-default-900 lg:block hidden ">
-                    PersonWallet
-                </h1>
+                {/* <DashCodeLogo className="  text-default-900 h-8 w-8 [&>path:nth-child(3)]:text-background [&>path:nth-child(2)]:text-background" /> */}
+                <PwLogoAvatarIcon />
+                {/* <h1 className="text-xl font-semibold text-default-900 lg:block hidden ">
+                    PersonWallet5
+                </h1> */}
+                <PwLogoNameIcon fontSize="24px" />
             </Link>
         ) :
             !isDesktop && (
                 <Link href="/dashboard/analytics" className="flex gap-2 items-center    ">
-                    <DashCodeLogo className="  text-default-900 h-8 w-8 [&>path:nth-child(3)]:text-background [&>path:nth-child(2)]:text-background" />
-                    <h1 className="text-xl font-semibold text-default-900 lg:block hidden ">
-                        PersonWallet
-                    </h1>
+                    {/* <DashCodeLogo className="  text-default-900 h-8 w-8 [&>path:nth-child(3)]:text-background [&>path:nth-child(2)]:text-background" /> */}
+                    <PwLogoAvatarIcon />
+                    {/* <h1 className="text-xl font-semibold text-default-900 lg:block hidden ">
+                        PersonWallet5
+                    </h1> */ }
+                    <PwLogoNameIcon fontSize="24px" />
                 </Link>
             )
     )
