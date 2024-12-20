@@ -97,6 +97,14 @@ export function getMenuList(pathname: string, t: any): Group[] {
           active: pathname.includes("/categories"),
           icon: "mdi:category",
           submenus: [],
+        },
+        {
+          id: "expenses",
+          href: "/expenses",
+          label: "Expenses",
+          active: pathname.includes("/expenses"),
+          icon: "mdi:receipt-text",
+          submenus: [],
         }
       ],
     },

@@ -8,6 +8,7 @@ services:
             - PORT=3000
             - CHOKIDAR_USEPOLLING=true            
         ports:
+            - "80:80"
             - '3100:3000'
         volumes:
               - C:/Develop/themeforest/Dashcode/Dashcode-starter-v1.0.0:/var/www:cached

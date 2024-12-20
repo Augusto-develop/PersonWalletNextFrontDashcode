@@ -82,7 +82,7 @@ export const deleteWallet = async (id: string): Promise<Response> => {
 
 export function convertDtoToWallet(walletDto: WalletDto): Wallet {
     return {
-        id: walletDto.id,
+        id: walletDto.id ?? '',
         description: walletDto.descricao,
         active: walletDto.ativo
     };

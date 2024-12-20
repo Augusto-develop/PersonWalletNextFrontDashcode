@@ -8,9 +8,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import React from "react";
-import { useForm, SubmitHandler, Controller } from "react-hook-form"
+import { useForm, SubmitHandler } from "react-hook-form"
 import { CategoryDto, convertDtoToCategory, createCategory, editCategory } from "@/action/category-actions";
 import { Category, useCategoryContext } from "./category-context";
 

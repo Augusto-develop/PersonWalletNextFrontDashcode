@@ -2,15 +2,13 @@
 import React, { useState } from 'react'
 import { Button } from "@/components/ui/button";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import { Eye, MoreVertical, SquarePen, Trash2 } from "lucide-react";
+import { MoreVertical, SquarePen, Trash2 } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { defaultCreditCards } from '../../data';
-import { Link } from '@/i18n/routing';
 import { CreditCard, useCreditCardContext } from './creditcard-context';
 import { deleteCreditCard as executeDeleteCreditCard } from '@/action/creditcard-actions'
 import CreateCreditCard from './creditcard-create';

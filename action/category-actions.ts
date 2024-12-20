@@ -7,6 +7,11 @@ export type CategoryDto = {
     descricao: string;
 };
 
+export type CategoryOption = {
+    label: string;
+    value: string;
+};
+
 export const getCategories = async (): Promise<Category[]> => {
 
     const res = await fetchWithAuth("/categoria", {
@@ -79,7 +84,19 @@ export const deleteCategory = async (id: string): Promise<Response> => {
 
 export function convertDtoToCategory(categoryDto: CategoryDto): Category {
     return {
-        id: categoryDto.id,
+        id: categoryDto.id ?? '',
         description: categoryDto.descricao
     };
+}
+
+export const createOptionsCategories = async (): Promise<CategoryOption[]> => {
+
+    const categories: Category[] = await getCategories();
+
+    const categoriaOptions: CategoryOption[] = categories.map((item) => ({
+        label: item.description,
+        value: item.id
+    })) as CategoryOption[];
+
+    return categoriaOptions;
 }

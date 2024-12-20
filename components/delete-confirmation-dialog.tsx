@@ -55,7 +55,11 @@ const DeleteConfirmationDialog = ({
           <AlertDialogCancel onClick={onClose}>Cancel</AlertDialogCancel>
           <AlertDialogAction
             className={isPending ? "pointer-events-none" : ""}
-            onClick={() => startTransition(handleConfirm)}
+            onClick={() =>
+              startTransition(() => {
+                handleConfirm(); // Não retorna a promise diretamente
+              })
+            }
           >
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {isPending ? "Deleting.." : "Continue"}

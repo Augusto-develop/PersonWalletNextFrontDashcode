@@ -2,16 +2,18 @@
 import React, { useState } from 'react'
 import { Button } from "@/components/ui/button";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import { MoreVertical, SquarePen, Trash2 } from "lucide-react";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { Eye, MoreVertical, SquarePen, Trash2 } from "lucide-react";
 import { Wallet, useWalletContext } from './wallet-context';
-import { deleteWallet as executeDeleteWallet } from '@/action/wallet-actions'
+import { deleteWallet as executeDeleteWallet } from '@/action/wallet-actions';
 import CreateWallet from './wallet-create';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+
 
 // Add id as a prop to the component
 interface WalletActionProps {
@@ -59,33 +61,44 @@ const WalletAction: React.FC<WalletActionProps> = ({ wallet }) => {
                 onClose={handleDeleteCancel}
                 onConfirm={handleDeleteConfirm} // Close dialog without deletion             
             />
-
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button
-                        size="icon"
-                        className="flex-none bg-transparent ring-offset-transparent hover:bg-transparent hover:ring-0 hover:ring-transparent w-6"
-                    >
-                        <MoreVertical className="h-4 w-4 text-default-700" />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="p-0 overflow-hidden" align="end" >                   
-                    <DropdownMenuItem
-                        onClick={() => setOpen(true)}
-                        className="py-2 border-b border-default-200 text-default-600 focus:bg-default focus:text-default-foreground rounded-none cursor-pointer"
-                    >
-                        <SquarePen className="w-3.5 h-3.5 me-1" />
-                        Editar
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                        onClick={() => handleDeleteClick(wallet.id)}
-                        className="py-2 bg-destructive/30 focus:bg-destructive focus:text-destructive-foreground rounded-none cursor-pointer"
-                    >
-                        <Trash2 className="w-3.5 h-3.5  me-1" />
-                        Excluir
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+            <div className="flex items-center gap-2">
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="w-7 h-7 ring-offset-transparent border-default-200 dark:border-default-300  text-default-400"
+                                color="secondary"
+                                onClick={() => setOpen(true)}
+                            >
+                                <SquarePen className="w-3 h-3" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">
+                            <p>Editar</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="w-7 h-7 ring-offset-transparent border-default-200 dark:border-default-300  text-default-400"
+                                color="secondary"
+                                onClick={() => handleDeleteClick(wallet.id)}
+                            >
+                                <Trash2 className="w-4 h-4" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="bg-destructive text-destructive-foreground">
+                            <p>Excluir</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            </div>
         </>
     )
 }

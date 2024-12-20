@@ -1,17 +1,15 @@
 "use client"
 import { Button } from "@/components/ui/button";
-import { Filter, List, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import CreateCreditCard from "./creditcard-create";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
-import { Link, usePathname } from "@/components/navigation";
-import { getProjectNav } from "../../data";
+import { usePathname } from "@/components/navigation";
 import React from "react";
 
 const CreditCardWrapper = ({ children }: { children: React.ReactNode }) => {
     const [open, setOpen] = useState<boolean>(false);
     const pathname = usePathname();
-    const menus = getProjectNav(pathname)
+    // const menus = getProjectNav(pathname)
 
     return (
         <div>
@@ -24,7 +22,7 @@ const CreditCardWrapper = ({ children }: { children: React.ReactNode }) => {
                     Credit Cards
                 </h4>
                 <div className="flex items-center gap-4 flex-wrap">
-                    {menus?.map(({ label, href, active }, index) => (
+                    {/* {menus?.map(({ label, href, active }, index) => (
                         <Button
                             key={index}
                             asChild
@@ -39,7 +37,7 @@ const CreditCardWrapper = ({ children }: { children: React.ReactNode }) => {
                             </Link>
 
                         </Button>
-                    ))}
+                    ))} */}
 
 
                     {/* <Button className="flex-none bg-card text-default-600 hover:ring-0 hover:ring-transparent hover:bg-default hover:text-default-foreground" >

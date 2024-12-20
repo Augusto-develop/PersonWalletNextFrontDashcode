@@ -1,7 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { addLeadingZeros, convertToNumeric, convertFloatToMoeda, removePontuacaoValor } from "@/lib/utils";
+import { addLeadingZeros, convertToNumeric, convertFloatToMoeda } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -10,20 +9,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Textarea } from "@/components/ui/textarea";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-import Image from "next/image";
 import React from "react";
-import { useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form"
-import Select, { MultiValue } from 'react-select'
+import Select from 'react-select'
 import { CleaveInput } from "@/components/ui/cleave";
 import fetchWithAuth from "@/action/login-actions";
 import { Credit, convertToCreditCard } from "@/action/creditcard-actions";
 import { CreditCard, useCreditCardContext } from "./creditcard-context";
-import CreditCardAction from "./creditcard-action";
 
 interface CreateTaskProps {
   open: boolean;

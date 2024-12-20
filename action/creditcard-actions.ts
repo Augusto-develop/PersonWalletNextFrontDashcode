@@ -1,7 +1,7 @@
 'use client';
 import { redirect } from "next/navigation";
 import fetchWithAuth from "./login-actions";
-import { CreditCard } from "@/app/[locale]/(protected)/credits/creditcards/creditcard-context";
+import { CreditCard } from "@/app/[locale]/(protected)/credits/creditcards/components/creditcard-context";
 
 export type Credit = {
     id: string;
@@ -13,6 +13,12 @@ export type Credit = {
     diafech: string;
     emissor: string;
     bandeira: string;
+};
+
+export type CreditCardOption = {
+    label: string;
+    value: string;
+    avatar: string;
 };
 
 export const getCreditCards = async (): Promise<CreditCard[]> => {
@@ -59,4 +65,17 @@ export function convertToCreditCard(credit: Credit): CreditCard {
         bandeira: credit.bandeira,
         progress: 90,
     };
+}
+
+export const createOptionsCreditCards = async (): Promise<CreditCardOption[]> => {
+
+    const creditcards: CreditCard[] = await getCreditCards();
+
+    const categoriaOptions: CreditCardOption[] = creditcards.map((item) => ({
+        label: item.title,
+        value: item.id,
+        avatar: item.avatar,
+    })) as CreditCardOption[];
+
+    return categoriaOptions;
 }

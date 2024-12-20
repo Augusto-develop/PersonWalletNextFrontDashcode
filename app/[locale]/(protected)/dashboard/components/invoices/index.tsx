@@ -3,6 +3,7 @@
 import * as React from "react"
 import {
   ColumnFiltersState,
+  PaginationState,
   SortingState,
   VisibilityState,
   flexRender,

@@ -3,19 +3,19 @@ import React, { useState } from 'react'
 import { Button } from "@/components/ui/button";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import { MoreVertical, SquarePen, Trash2 } from "lucide-react";
-import { Category, useCategoryContext } from './category-context';
-import { deleteCategory as executeDeleteCategory } from '@/action/category-actions'
-import CreateCategory from './category-create';
+import { Expense, useExpenseContext } from './expense-context';
+import { deleteExpense as executeDeleteExpense } from '@/action/expense-actions'
+import CreateExpense from './expense-create';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@radix-ui/react-tooltip';
 
 // Add id as a prop to the component
-interface CategoryActionProps {
-    category: Category;  // The id of the credit card
+interface ExpenseActionProps {
+    expense: Expense;  // The id of the credit card
 }
 
-const CategoryAction: React.FC<CategoryActionProps> = ({ category }) => {
+const ExpenseAction: React.FC<ExpenseActionProps> = ({ expense }) => {
     const [open, setOpen] = useState<boolean>(false);
-    const { categories, setCategories, deleteCategory } = useCategoryContext(); // Access context
+    const { expenses, setExpenses, deleteExpense } = useExpenseContext(); // Access context
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false); // State for dialog visibility
     const [selectedRowId, setSelectedRowId] = useState<string | null>(null); // Store selected card ID for deletion
 
@@ -29,9 +29,9 @@ const CategoryAction: React.FC<CategoryActionProps> = ({ category }) => {
     // Confirm deletion and delete the selected card
     const handleDeleteConfirm = async () => {
         if (selectedRowId) {
-            const res = await executeDeleteCategory(selectedRowId);
+            const res = await executeDeleteExpense(selectedRowId);
             if (res.ok) {
-                deleteCategory(selectedRowId);
+                deleteExpense(selectedRowId);
             }
         }
         setOpenDeleteDialog(false); // Close the dialog
@@ -44,16 +44,16 @@ const CategoryAction: React.FC<CategoryActionProps> = ({ category }) => {
 
     return (
         <>
-            <CreateCategory
+            <CreateExpense
                 open={open}
                 setOpen={setOpen}
-                dataCategory={category}
+                dataExpense={expense}
             />
             <DeleteConfirmationDialog
                 open={openDeleteDialog}
                 onClose={handleDeleteCancel}
                 onConfirm={handleDeleteConfirm} // Close dialog without deletion             
-            />
+            /> 
             <div className="flex items-center gap-2">
                 <TooltipProvider>
                     <Tooltip>
@@ -81,7 +81,7 @@ const CategoryAction: React.FC<CategoryActionProps> = ({ category }) => {
                                 size="icon"
                                 className="w-7 h-7 ring-offset-transparent border-default-200 dark:border-default-300  text-default-400"
                                 color="secondary"
-                                onClick={() => handleDeleteClick(category.id)}
+                                onClick={() => handleDeleteClick(expense.id)}
                             >
                                 <Trash2 className="w-4 h-4" />
                             </Button>
@@ -91,9 +91,9 @@ const CategoryAction: React.FC<CategoryActionProps> = ({ category }) => {
                         </TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
-            </div>            
+            </div>   
         </>
     )
 }
 
-export default CategoryAction
+export default ExpenseAction

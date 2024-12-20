@@ -94,7 +94,7 @@
 
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    
+
 
     --card: 215 27.9% 16.9%;
     --card-foreground: 210 40% 98%;
@@ -163,18 +163,22 @@
 .dashcode-app-codeVmapInfo path .svg-map__location[aria-checked="true"] {
   @apply fill-info;
 }
+
 .dashcode-app-codeVmapWarning path {
   @apply fill-warning;
 }
-.dashcode-app-codeVmapWarning path  .svg-map__location[aria-checked="true"] {
-    @apply fill-warning;
+
+.dashcode-app-codeVmapWarning path .svg-map__location[aria-checked="true"] {
+  @apply fill-warning;
 }
+
 .dashcode-app-codeVmapSuccess path {
   @apply fill-success;
 
 }
-.dashcode-app-codeVmapSuccess path .svg-map__location[aria-checked="true"]  {
-    @apply fill-success;
+
+.dashcode-app-codeVmapSuccess path .svg-map__location[aria-checked="true"] {
+  @apply fill-success;
 }
 
 
@@ -244,6 +248,7 @@
   -webkit-mask: linear-gradient(black, black 18%, transparent 100%);
   mask: linear-gradient(black, black 18%, transparent 100%);
 }
+
 .has-sticky-footer::after {
   position: absolute;
   z-index: -10;
@@ -445,84 +450,135 @@
   @apply bg-success border-none text-primary-foreground text-center px-2 font-medium text-sm;
 }
 
-.dashcode-app-calendar .dark  {
+.dashcode-app-calendar .dark {
   @apply bg-card-foreground border-none text-primary-foreground px-2 font-medium text-sm;
 }
 
 
 /* react select */
 
- .dashcode-app .react-select .react-select.is-invalid .select__control {
-  border-color: none !important;
-}
-
+/* Estilo para o control (input) */
 .dashcode-app .react-select .select__control {
   @apply bg-background min-h-8 border border-default-200 focus:border-default;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  color: white;
+  /* Cor do texto dentro do input */
+  font-size: 14px;
+  /* Tamanho da fonte para o texto dentro do input */
 }
 
+/* Estilo para o valor único selecionado dentro do input */
 .dashcode-app .react-select .select__single-value {
-  @apply text-sm font-medium text-default-800;
+  color: white;
+  /* Cor branca para o texto dentro do campo de entrada */
+  font-size: 14px;
+  /* Tamanho da fonte para o texto do valor selecionado */
 }
 
-.dashcode-app .react-select .select__menu {
-  @apply bg-background;
-}
-
+/* Para garantir que o placeholder também tenha a cor certa dentro do input */
 .dashcode-app .react-select .select__placeholder {
   @apply text-default-500;
+  color: white;
+  /* Cor branca para o texto do placeholder */
+  font-size: 14px;
+  /* Tamanho da fonte para o placeholder */
 }
 
+/* Estilo para as opções dentro do menu */
 .dashcode-app .react-select .select__menu .select__option {
-  @apply  hover:bg-default/10;
+  font-size: 14px;
+  /* Tamanho da fonte para as opções do menu */
+  color: var(--foreground);
+  /* Cor padrão do texto da opção */
+  background-color: transparent;
+  /* Sem fundo por padrão */
+  transition: background-color 0.3s ease;
+  /* Transição suave para mudança de cor */
 }
 
+/* Efeito de clareamento ao passar o mouse sobre a opção, sem modificar a cor do texto */
+.dashcode-app .react-select .select__menu .select__option:hover {
+  background-color: rgba(255, 213, 62, 0.1);
+  /* Clareia 10% o fundo */
+  color: var(--foreground);
+  /* Mantém a cor do texto padrão */
+}
+
+/* Estilo para a opção selecionada */
 .dashcode-app .react-select .select__menu .select__option.select__option--is-selected {
-  @apply bg-default dark:bg-default-200;
+  background-color: #FFD53E;
+  /* Cor de fundo da opção selecionada */
+  color: black;
+  /* Cor do texto da opção selecionada */
+  font-size: 14px;
+  /* Tamanho da fonte para a opção selecionada */
 }
 
+/* Estilo para o menu */
+.dashcode-app .react-select .select__menu {
+  @apply bg-background;
+  border-color: hsl(var(--border));
+  /* Alterado para usar hsl(var(--border)) */
+}
+
+/* Estilo para a borda do input */
 .dashcode-app .react-select.is-invalid .select__control {
-  border-color: none !important;
+  border-color: hsl(var(--border)) !important;
+  /* Alterado para usar hsl(var(--border)) */
 }
 
+/* Estilo para input com erro */
 .dashcode-app .react-select .has-error .select__control {
   @apply border-destructive;
+  border-color: hsl(var(--border));
+  /* Alterado para usar hsl(var(--border)) */
 }
 
+/* Estilo para o texto dentro do input */
 .dashcode-app .react-select .react-select__control .select__input {
   @apply text-default-500;
 }
 
+/* Estilo para o estado de desabilitado */
 .dashcode-app .react-select .react-select__control.select__control--is-disabled {
   @apply cursor-not-allowed;
 }
 
+/* Estilo para a linha de separação do indicador */
 .dashcode-app .react-select .react-select__control .select__indicator-separator {
   @apply bg-default-50 text-default-800 placeholder:text-opacity-60;
 }
 
+/* Estilo para o indicador do select */
 .dashcode-app .react-select .react-select__control .select__indicator svg {
   @apply cursor-pointer text-default-600;
 }
 
+/* Estilo para o indicador do select quando há erro */
 .dashcode-app .react-select .has-error .react-select__control .select__indicator svg {
   @apply text-destructive;
 }
 
+/* Estilo para os itens selecionados em múltiplas opções */
 .dashcode-app .react-select .select__multi-value__label {
-  @apply text-xs bg-default  text-default-foreground rounded-none ltr:rounded-l rtl:rounded-r;
+  @apply text-xs bg-default text-default-foreground rounded-none ltr:rounded-l rtl:rounded-r;
 }
 
+/* Estilo para o botão de remoção de itens selecionados */
 .dashcode-app .react-select .select__multi-value__remove {
   @apply bg-default rounded-none ltr:rounded-r rtl:rounded-l;
 }
 
+/* Estilo para o ícone de remoção de múltiplos itens */
 .dashcode-app .react-select .select__multi-value__remove svg {
   @apply fill-default-foreground;
 }
 
+/* Estilo para o indicador de carregamento (para RTL) */
 html[dir=rtl] .react-select .select__loading-indicator {
   flex-direction: row-reverse;
-} 
+}
+
 
 /* quil editor */
 .ql-container {
@@ -540,4 +596,11 @@ html[dir=rtl] .react-select .select__loading-indicator {
   width: 100%;
 }
 
+.dialog-title {
+  color: #FFD53E;
+}
 
+.input-text-filter {
+  height: 38px !important;
+  border-color: hsl(var(--default-200) / var(--tw-border-opacity, 1)) !important;
+}
