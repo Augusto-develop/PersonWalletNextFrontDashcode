@@ -17,7 +17,7 @@ import { getExpenses } from "@/action/expense-actions";
 
 const ExpenseWrapper = ({ children }: { children: React.ReactNode }) => {
     const [open, setOpen] = useState<boolean>(false);
-    const [creditCardOptions, setCreditCardptions] = useState<CreditCardOption[]>([]);   
+    const [creditCardOptions, setCreditCardptions] = useState<CreditCardOption[]>([]);
     const { setExpenses, setFilter } = useExpenseContext();
 
     useEffect(() => {
@@ -36,7 +36,7 @@ const ExpenseWrapper = ({ children }: { children: React.ReactNode }) => {
     const onSubmit: SubmitHandler<InputsFilter> = async (data) => {
         const dataFilter: InputsFilter = data;
         const fetchedExpenses = await getExpenses(dataFilter.creditcard, dataFilter.mes, dataFilter.ano);
-        setExpenses(fetchedExpenses);        
+        setExpenses(fetchedExpenses);
         setFilter(dataFilter);
     }
 
@@ -75,7 +75,8 @@ const ExpenseWrapper = ({ children }: { children: React.ReactNode }) => {
                                         classNamePrefix="select"
                                         options={creditCardOptions}
                                         placeholder="Credit Card"
-                                        getOptionLabel={(option) => {  // Personaliza o label de cada opção
+                                        getOptionLabel={(option) => option.label} // Retorna apenas o label para o filtro
+                                        formatOptionLabel={(option) => {  // Customiza a renderização da opção
                                             const IconComponent = avatarComponents[option.avatar as IconType]; // Assumindo que "avatar" é um campo nas opções
 
                                             return (

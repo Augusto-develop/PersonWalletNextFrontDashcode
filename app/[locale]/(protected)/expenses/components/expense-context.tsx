@@ -15,6 +15,9 @@ export type Expense = {
   lancamento: string;
   valor: string;
   fixa: boolean;
+  isCreateParcelas: boolean;
+  isDeleteParcelas: boolean;
+  isDelete: boolean;
 };
 
 export type InputsFilter = {

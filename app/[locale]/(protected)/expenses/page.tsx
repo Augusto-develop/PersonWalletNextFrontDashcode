@@ -85,7 +85,7 @@ const ListTable = () => {
                 return (
                     <div className="flex items-center gap-3">
                         <div className="font-medium text-sm leading-4 whitespace-nowrap">
-                            {convertFloatToMoeda(row.getValue("valor"), true)}
+                            {convertFloatToMoeda(row.getValue("valor"))}
                         </div>
                     </div>
                 )

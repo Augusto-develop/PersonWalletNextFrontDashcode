@@ -4,29 +4,28 @@ import { Button } from "@/components/ui/button";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import { MoreVertical, SquarePen, Trash2 } from "lucide-react";
 import { Expense, useExpenseContext } from './expense-context';
-import { deleteExpense as executeDeleteExpense } from '@/action/expense-actions'
+import { deleteExpense as executeDeleteExpense, deleteParcelasExpense, createParcelasExpense, ExpenseDto, convertDtoToExpense } from '@/action/expense-actions'
 import CreateExpense from './expense-create';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@radix-ui/react-tooltip';
+import { pwButtonIconTable, pwButtonTextTable } from '@/lib/pw-components-styles';
 
-// Add id as a prop to the component
 interface ExpenseActionProps {
-    expense: Expense;  // The id of the credit card
+    expense: Expense;
 }
 
 const ExpenseAction: React.FC<ExpenseActionProps> = ({ expense }) => {
     const [open, setOpen] = useState<boolean>(false);
-    const { expenses, setExpenses, deleteExpense } = useExpenseContext(); // Access context
-    const [openDeleteDialog, setOpenDeleteDialog] = useState(false); // State for dialog visibility
-    const [selectedRowId, setSelectedRowId] = useState<string | null>(null); // Store selected card ID for deletion
+    const { editExpense, deleteExpense } = useExpenseContext();
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+    const [openParcelasDialog, setOpenParcelasDialog] = useState(false);
+    const [actionType, setActionType] = useState<"create" | "delete" | null>(null); // Track type of action
+    const [selectedRowId, setSelectedRowId] = useState<string | null>(null);
 
-
-    // Handle delete button click
     const handleDeleteClick = (id: string) => {
-        setSelectedRowId(id); // Set the selected card ID
-        setOpenDeleteDialog(true); // Open the delete confirmation dialog
+        setSelectedRowId(id);
+        setOpenDeleteDialog(true);
     };
 
-    // Confirm deletion and delete the selected card
     const handleDeleteConfirm = async () => {
         if (selectedRowId) {
             const res = await executeDeleteExpense(selectedRowId);
@@ -34,12 +33,52 @@ const ExpenseAction: React.FC<ExpenseActionProps> = ({ expense }) => {
                 deleteExpense(selectedRowId);
             }
         }
-        setOpenDeleteDialog(false); // Close the dialog
+        setOpenDeleteDialog(false);
     };
 
-    // Cancel deletion
     const handleDeleteCancel = () => {
-        setOpenDeleteDialog(false); // Close the dialog without deletion
+        setOpenDeleteDialog(false);
+    };
+
+
+
+
+
+
+    const handleParcelasClick = (id: string, type: "create" | "delete") => {
+        setSelectedRowId(id);
+        setActionType(type);
+        setOpenParcelasDialog(true);
+    };
+
+    const handleParcelasConfirm = async () => {
+        if (selectedRowId && actionType) {
+            try {
+
+                let expenseDto: ExpenseDto | undefined;
+
+                if (actionType === "create") {
+                    expenseDto = await createParcelasExpense(selectedRowId);
+
+                } else if (actionType === "delete") {
+
+                    expenseDto = await deleteParcelasExpense(selectedRowId);
+                }
+
+                if (expenseDto) {
+                    const row: Expense = convertDtoToExpense(expenseDto);
+                    editExpense(row.id, row);
+                }
+
+            } catch (error) {
+                console.error(`Erro ao processar parcelas (${actionType}) para o ID ${selectedRowId}:`, error);
+            }
+        }
+        setOpenParcelasDialog(false);
+    };
+
+    const handleParcelasCancel = () => {
+        setOpenParcelasDialog(false);
     };
 
     return (
@@ -52,17 +91,26 @@ const ExpenseAction: React.FC<ExpenseActionProps> = ({ expense }) => {
             <DeleteConfirmationDialog
                 open={openDeleteDialog}
                 onClose={handleDeleteCancel}
-                onConfirm={handleDeleteConfirm} // Close dialog without deletion             
-            /> 
-            <div className="flex items-center gap-2">
+                onConfirm={handleDeleteConfirm}
+            />
+            <DeleteConfirmationDialog
+                open={openParcelasDialog}
+                onClose={handleParcelasCancel}
+                onConfirm={handleParcelasConfirm}
+                description={actionType === "create" ?
+                    "Tem certeza de que deseja criar parcelas para este item?" :
+                    "Tem certeza de que deseja excluir as parcelas deste item?"
+                }
+            />
+            <div className="flex items-center gap-4">
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="w-7 h-7 ring-offset-transparent border-default-200 dark:border-default-300  text-default-400"
-                                color="secondary"
+                                className={pwButtonIconTable}
+                                color="primary"
                                 onClick={() => setOpen(true)}
                             >
                                 <SquarePen className="w-3 h-3" />
@@ -73,27 +121,69 @@ const ExpenseAction: React.FC<ExpenseActionProps> = ({ expense }) => {
                         </TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                className="w-7 h-7 ring-offset-transparent border-default-200 dark:border-default-300  text-default-400"
-                                color="secondary"
-                                onClick={() => handleDeleteClick(expense.id)}
-                            >
-                                <Trash2 className="w-4 h-4" />
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent side="top" className="bg-destructive text-destructive-foreground">
-                            <p>Excluir</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
-            </div>   
+                {expense.isDelete && (
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    className={pwButtonIconTable}
+                                    color="destructive"
+                                    onClick={() => handleDeleteClick(expense.id)}
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="bg-destructive text-destructive-foreground">
+                                <p>Excluir</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                )}
+                {expense.isCreateParcelas && (
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className={pwButtonTextTable}
+                                    color="primary"
+                                    onClick={() => handleParcelasClick(expense.id, "create")}
+                                >
+                                    Criar Parcelas
+                                </Button>
+                            </TooltipTrigger>
+                            {/* <TooltipContent side="top" className="bg-primary text-primary-foreground">
+                                <p>Criar Parcelas</p>
+                            </TooltipContent> */}
+                        </Tooltip>
+                    </TooltipProvider>
+                )}
+                {expense.isDeleteParcelas && (
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className={pwButtonTextTable}
+                                    color="destructive"
+                                    onClick={() => handleParcelasClick(expense.id, "delete")}
+                                >
+                                    Excluir Parcelas
+                                </Button>
+                            </TooltipTrigger>
+                            {/* <TooltipContent side="top" className="bg-destructive text-destructive-foreground">
+                                <p>Excluir Parcelas</p>
+                            </TooltipContent> */}
+                        </Tooltip>
+                    </TooltipProvider>
+                )}
+            </div>
         </>
     )
 }
 
-export default ExpenseAction
+export default ExpenseAction;

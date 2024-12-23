@@ -149,6 +149,34 @@ export const MastercardIcon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
     );
 };
 
+export const BradescodIcon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
+    return (
+        <div className="iconpw-bradesco" style={{ fontSize }}>
+            <path className="path1" />
+            <path className="path2" />
+        </div>
+    );
+};
+
+export const ItauIcon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
+    return (
+        <div className="iconpw-itau" style={{ fontSize }}>
+            <path className="path1" />
+            <path className="path2" />
+            <path className="path3" />
+        </div>
+    );
+};
+
+export const BancoBrasilIcon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
+    return (
+        <div className="iconpw-banco-brasil" style={{ fontSize }}>
+            <path className="path1" />
+            <path className="path2" />
+        </div>
+    );
+};
+
 export const PwLogoAvatarIcon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
     return (
         <div className="iconpw-pwlogoavatar" style={{ fontSize }}>
@@ -165,13 +193,27 @@ export const PwLogoAvatarIcon: React.FC<IconProps> = ({ fontSize = '32px' }) => 
 export const PwLogoNameIcon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
     return (
         <div className="iconpw-pwlogoname" style={{ fontSize }}>
-            
+
         </div>
     );
 };
 
-export type IconType = 'SANTANDER' | 'CAIXA' | 'NUBANK' | 'MERCADOPAGO' | 'ATACADAO' | 'NOVUCARD' |
-    'OUZE' | 'RIACHUELO' | 'BRASILCARD' | 'NEON' | 'VISA' | 'MASTERCARD';
+export type IconType =
+    | 'SANTANDER'
+    | 'CAIXA'
+    | 'NUBANK'
+    | 'MERCADOPAGO'
+    | 'ATACADAO'
+    | 'NOVUCARD'
+    | 'OUZE'
+    | 'RIACHUELO'
+    | 'BRASILCARD'
+    | 'NEON'
+    | 'VISA'
+    | 'MASTERCARD'
+    | 'BRADESCO'
+    | 'ITAU'
+    | 'BANCOBRASIL';
 
 export const avatarComponents: Record<IconType, React.FC<{ fontSize?: string }>> = {
     SANTANDER: SantanderIcon,
@@ -185,5 +227,8 @@ export const avatarComponents: Record<IconType, React.FC<{ fontSize?: string }>>
     BRASILCARD: BrasilcardIcon,
     NEON: NeonIcon,
     VISA: VisaIcon,
-    MASTERCARD: MastercardIcon
+    MASTERCARD: MastercardIcon,
+    BRADESCO: BradescodIcon,
+    ITAU: ItauIcon,
+    BANCOBRASIL: BancoBrasilIcon,
 };

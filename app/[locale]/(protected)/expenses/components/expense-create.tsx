@@ -71,7 +71,8 @@ const submitCreate = async (data: Inputs
     qtdeparc: parcela.part2,
     lancamento: new Date(convertToAmericanDate(data.datacompra)).toISOString(),
     valor: valor?.toString() || "0",
-    fixa: false
+    fixa: false,
+    generateparc: false,   
   };
 
   try {

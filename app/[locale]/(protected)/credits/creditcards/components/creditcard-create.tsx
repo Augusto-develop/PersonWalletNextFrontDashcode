@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { addLeadingZeros, convertToNumeric, convertFloatToMoeda } from "@/lib/utils";
+import { Option, bandeiraOptions, dayOptions, emissorOptions } from "@/lib/options-select";
 import {
   Dialog,
   DialogContent,
@@ -14,18 +15,14 @@ import { useForm, SubmitHandler, Controller } from "react-hook-form"
 import Select from 'react-select'
 import { CleaveInput } from "@/components/ui/cleave";
 import fetchWithAuth from "@/action/login-actions";
-import { Credit, convertToCreditCard } from "@/action/creditcard-actions";
+import { convertToCreditCard, createCreditCard, editCreditCard } from "@/action/creditcard-actions";
 import { CreditCard, useCreditCardContext } from "./creditcard-context";
+import { CreditCardDto } from "@/action/types.schema.dto";
 
 interface CreateTaskProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   dataCreditCard?: CreditCard | null
-}
-
-interface Option {
-  value: string;
-  label: string;
 }
 
 type Inputs = {
@@ -38,88 +35,26 @@ type Inputs = {
   id?: string;
 }
 
-const dayOptions: Option[] = Array.from({ length: 31 }, (_, i) => ({
-  value: addLeadingZeros(`${i + 1}`, 2),
-  label: addLeadingZeros(`${i + 1}`, 2),
-}));
-
-const bandeiraOptions: Option[] = [
-  { value: "VISA", label: "Visa" },
-  { value: "MASTERCARD", label: "Mastercard" },
-];
-
-const emissorOptions: Option[] = [
-  { value: "ATACADAO", label: "Atacadão" },
-  { value: "BANCOBRASIL", label: "Banco do Brasil" },
-  { value: "BRADESCO", label: "Bradesco" },
-  { value: "BRASILCARD", label: "BrasilCard" },
-  { value: "CAIXA", label: "Caixa" },
-  { value: "ITAU", label: "Itau" },
-  { value: "MERCADOPAGO", label: "Mercado Pago" },
-  { value: "NEON", label: "Neon" },
-  { value: "NOVUCARD", label: "NovuCard" },
-  { value: "NUBANK", label: "Nubank" },
-  { value: "OUZE", label: "Ouze" },
-  { value: "RIACHUELO", label: "Riachuelo" },
-  { value: "SANTANDER", label: "Santander" },
-];
-
 const submitCreate = async (data: {
   descricao: any; vencimento: any; fechamento: any; bandeira: any; emissor: any; limite: any; id?: string | null;
-}): Promise<Credit | undefined> => {
+}): Promise<CreditCardDto | undefined> => {
 
   // Prepara o payload
-  const payload = {
+  const payload: CreditCardDto = {
+    id: data.id ?? "",
     descricao: data.descricao,
-    valorcredito: convertToNumeric(data.limite),
+    valorcredito: convertToNumeric(data.limite) || 0,
     type: "CARTAO",
     emissor: data.emissor.value,
     bandeira: data.bandeira.value,
     diavenc: addLeadingZeros(data.vencimento.value, 2),
-    diafech: addLeadingZeros(data.fechamento.value, 2),
-  };
+    diafech: addLeadingZeros(data.fechamento.value, 2)
+  }; 
 
   try {
-
-    console.log(data);
-
-    if (data.id !== null && data.id !== undefined) {
-      const response = await fetchWithAuth("/credito/" + data.id, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (response.ok) {
-        const newCredit: Credit = await response.json();
-        console.log("Sucesso:", newCredit);
-        return newCredit;
-      } else {
-        console.error("Erro ao enviar:", response.statusText);
-        return undefined;
-      }
-
-    } else {
-      const response = await fetchWithAuth("/credito", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (response.ok) {
-        const newCredit: Credit = await response.json();
-        console.log("Sucesso:", newCredit);
-        return newCredit;
-      } else {
-        console.error("Erro ao enviar:", response.statusText);
-        return undefined;
-      }
-    }
-
+    return payload.id?.trim() !== "" ?
+      editCreditCard(payload) :
+      createCreditCard(payload);
   } catch (error) {
     console.error("Erro de requisição:", error);
   }
@@ -139,14 +74,14 @@ const CreateCreditCard = ({ open, setOpen, dataCreditCard = null }: CreateTaskPr
     //editar
     if (dataCreditCard !== null && dataCreditCard !== undefined) {
       data.id = dataCreditCard.id;
-      const editCredit: Credit | undefined = await submitCreate(data);
+      const editCredit: CreditCardDto | undefined = await submitCreate(data);
       if (editCredit) {
         const editCard: CreditCard = convertToCreditCard(editCredit);
         editCreditCard(dataCreditCard.id, editCard);
       }
     } else {
       data.id = undefined;
-      const newCredit: Credit | undefined = await submitCreate(data);
+      const newCredit: CreditCardDto | undefined = await submitCreate(data);
       if (newCredit) {
         const newCard: CreditCard = convertToCreditCard(newCredit);
         setCreditCards((prevCards) => [...prevCards, newCard]);

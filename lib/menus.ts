@@ -54,10 +54,9 @@ export function getMenuList(pathname: string, t: any): Group[] {
       menus: [
         {
           id: "credits",
-          href: "/credits/creditcards",
+          href: "/credits",
           label: "Credits",
-          active: pathname.includes("/credits/creditcards"),
-          icon: "mdi:bank",
+          active: ['/credits', '/credits/creditcards', '/credits/financings', '/credits/lendings'].some(path => pathname.includes(path)),          icon: "mdi:bank",
           submenus: [
             {
               href: "/credits/creditcards",
@@ -67,16 +66,16 @@ export function getMenuList(pathname: string, t: any): Group[] {
               children: [],
             },
             {
-              href: "/dashboard/dash-ecom",
-              label: "Financing",
-              active: pathname === "/dashboard/dash-ecom",
+              href: "/credits/financings",
+              label: "Financings",
+              active: pathname === "/credits/financings",
               icon: "mdi:bank-transfer-out",
               children: [],
             },
             {
-              href: "/dashboard/dash-ecom",
+              href: "/credits/lendings",
               label: "Lending",
-              active: pathname === "/dashboard/dash-ecom",
+              active: pathname === "/credits/lendings",
               icon: "mdi:cash-multiple",
               children: [],
             },

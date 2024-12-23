@@ -14,6 +14,8 @@ export type ExpenseDto = {
     lancamento: string;
     valor: string;
     fixa: boolean;
+    generateparc: boolean;
+    parentId?: string;
 };
 
 export const getExpenses = async (
@@ -100,7 +102,51 @@ export const deleteExpense = async (id: string): Promise<Response> => {
     return res;
 };
 
+export const createParcelasExpense = async (id: String): Promise<ExpenseDto | undefined> => {
+
+    const res = await fetchWithAuth("/despesa/parcelas", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id: id
+        }),
+    });
+
+    if (res.ok) {
+        const newExpenseDto: ExpenseDto = await res.json();
+        return newExpenseDto;
+    }
+
+    // console.error("Erro ao enviar:", response.statusText)
+    return undefined;
+};
+
+export const deleteParcelasExpense = async (id: string): Promise<ExpenseDto | undefined> => {
+    const res = await fetchWithAuth(`/despesa/parcelas/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (res.ok) {
+        const newExpenseDto: ExpenseDto = await res.json();
+        return newExpenseDto;
+    }
+
+    // console.error("Erro ao enviar:", response.statusText)
+    return undefined;
+};
+
 export function convertDtoToExpense(expenseDto: ExpenseDto): Expense {
+
+    const isParcela: boolean = (expenseDto.qtdeparc > 0 && expenseDto.numparc < expenseDto.qtdeparc);
+    const isParent: boolean = expenseDto.parentId != null && expenseDto.parentId !== "";
+    const isParcelaGerada: boolean = expenseDto.generateparc;
+    const isCreateParcelas: boolean = isParcela && isParcelaGerada === false && isParent === false;
+
     return {
         id: expenseDto.id ?? '',
         description: expenseDto.descricao,
@@ -114,5 +160,8 @@ export function convertDtoToExpense(expenseDto: ExpenseDto): Expense {
         lancamento: expenseDto.lancamento,
         valor: expenseDto.valor.toString(),
         fixa: expenseDto.fixa,
+        isCreateParcelas: isCreateParcelas,
+        isDeleteParcelas: isParcelaGerada,
+        isDelete: !isParent && !isParcelaGerada
     };
 }

@@ -604,3 +604,7 @@ html[dir=rtl] .react-select .select__loading-indicator {
   height: 38px !important;
   border-color: hsl(var(--default-200) / var(--tw-border-opacity, 1)) !important;
 }
+
+.dark\:color-icon-pw:is(.dark *), .dark\:color-icon-pw:is(.dark *) svg {
+  color: rgba(255, 213, 62, 0.5);
+}

@@ -2,18 +2,7 @@
 import { redirect } from "next/navigation";
 import fetchWithAuth from "./login-actions";
 import { CreditCard } from "@/app/[locale]/(protected)/credits/creditcards/components/creditcard-context";
-
-export type Credit = {
-    id: string;
-    descricao: string;
-    type: string;
-    diavenc: string;
-    valorcredito: string;
-    valorparcela: string;
-    diafech: string;
-    emissor: string;
-    bandeira: string;
-};
+import {CreditCardDto} from "./types.schema.dto";
 
 export type CreditCardOption = {
     label: string;
@@ -23,7 +12,10 @@ export type CreditCardOption = {
 
 export const getCreditCards = async (): Promise<CreditCard[]> => {
 
-    const res = await fetchWithAuth("/credito", {
+    const queryParams = new URLSearchParams();
+    queryParams.append('type', 'CARTAO')
+
+    const res = await fetchWithAuth(`/credito?${queryParams.toString()}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -33,13 +25,53 @@ export const getCreditCards = async (): Promise<CreditCard[]> => {
     let newData: CreditCard[] = [];
 
     if (res.ok) {
-        const data: Credit[] = await res.json();
+        const data: CreditCardDto[] = await res.json();
 
         newData = data.map((item) => (convertToCreditCard(item)));
     } else {
         console.error('Erro ao buscar os dados');
     }
     return newData;
+};
+
+export const createCreditCard = async (payload: CreditCardDto): Promise<CreditCardDto | undefined> => {
+    
+    delete payload.id;
+
+    const res = await fetchWithAuth("/credito", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload),
+    });
+
+    if (res.ok) {
+        const newCredit: CreditCardDto= await res.json();        
+        return newCredit;
+    } 
+
+    // console.error("Erro ao enviar:", response.statusText)
+    return undefined;
+};
+
+export const editCreditCard = async (payload: CreditCardDto): Promise<CreditCardDto | undefined> => {
+    
+    const res = await fetchWithAuth("/credito/" + payload.id, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload),
+      });
+
+    if (res.ok) {
+        const newCredit: CreditCardDto = await res.json();        
+        return newCredit;
+    } 
+
+    // console.error("Erro ao enviar:", response.statusText)
+    return undefined;
 };
 
 export const deleteCreditCard = async (id: string): Promise<Response> => {
@@ -53,17 +85,17 @@ export const deleteCreditCard = async (id: string): Promise<Response> => {
     return res;
 };
 
-export function convertToCreditCard(credit: Credit): CreditCard {
+export function convertToCreditCard(credit: CreditCardDto): CreditCard {
     return {
-        id: credit.id,
+        id: credit.id ?? '',
         title: credit.descricao,
         avatar: credit.emissor,
         diavenc: credit.diavenc,
         diafech: credit.diafech,
-        limite: credit.valorcredito,
+        limite: credit.valorcredito?.toString(),
         emissor: credit.emissor,
         bandeira: credit.bandeira,
-        progress: 90,
+        progress: 10,
     };
 }
 
@@ -71,11 +103,11 @@ export const createOptionsCreditCards = async (): Promise<CreditCardOption[]> =>
 
     const creditcards: CreditCard[] = await getCreditCards();
 
-    const categoriaOptions: CreditCardOption[] = creditcards.map((item) => ({
+    const creditcardOptions: CreditCardOption[] = creditcards.map((item) => ({
         label: item.title,
         value: item.id,
         avatar: item.avatar,
     })) as CreditCardOption[];
 
-    return categoriaOptions;
+    return creditcardOptions;
 }
