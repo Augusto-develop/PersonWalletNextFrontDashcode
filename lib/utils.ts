@@ -18,7 +18,7 @@ export const hexToRGB = (hex: any, alpha?: number): any => {
 };
 
 export function convertToNumeric(value: string) {
-  if (!value) return null;
+  if (!value) return 0;
 
   // Remove "R$", espaços e pontos
   let numericValue = value.replace(/R\$|\s|\./g, "");
@@ -27,7 +27,7 @@ export function convertToNumeric(value: string) {
   numericValue = numericValue.replace(",", ".");
 
   // Converte para número de ponto flutuante
-  return parseFloat(numericValue);
+  return parseFloat(numericValue).toFixed(2);
 }
 
 export function addLeadingZeros(value: string | number, length: number) {
@@ -49,10 +49,10 @@ export function removePontuacaoValor(valor: any) {
 
 export function convertDatetimeToDate(isoDate: string): string {
   const date = new Date(isoDate); // Converte a string ISO para um objeto Date
-  const day = String(date.getDate()).padStart(2, '0'); // Obtém o dia com 2 dígitos
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Obtém o mês com 2 dígitos (0-indexado)
-  const year = date.getFullYear(); // Obtém o ano
-  
+  const day = String(date.getUTCDate()).padStart(2, '0'); // Obtém o dia em UTC
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Obtém o mês em UTC (0-indexado)
+  const year = date.getUTCFullYear(); // Obtém o ano em UTC
+
   return `${day}/${month}/${year}`; // Retorna no formato dd/mm/yyyy
 }
 

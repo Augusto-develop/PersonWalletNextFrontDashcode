@@ -1,4 +1,5 @@
 'use client';
+import { addLeadingZeros, convertDatetimeToDate } from "@/lib/utils";
 import fetchWithAuth from "./login-actions";
 import { Expense } from "@/app/[locale]/(protected)/expenses/components/expense-context";
 
@@ -12,7 +13,7 @@ export type ExpenseDto = {
     numparc: number;
     qtdeparc: number;
     lancamento: string;
-    valor: string;
+    valor: number | string;
     fixa: boolean;
     generateparc: boolean;
     parentId?: string;
@@ -25,7 +26,14 @@ export const getExpenses = async (
 ): Promise<Expense[]> => {
     // Monta a URL com os parâmetros opcionais
     const queryParams = new URLSearchParams();
-    if (creditId) queryParams.append('creditId', creditId);
+    if (creditId) {
+        const validValues = ["FINANCIAMENTO", "EMPRESTIMO", "DESPESAFIXA"];
+        if (validValues.includes(creditId)) {
+            queryParams.append('type', creditId);
+        } else {
+            queryParams.append('creditId', creditId);
+        }
+    }
     if (mesfat) queryParams.append('mesfat', mesfat);
     if (anofat) queryParams.append('anofat', anofat);
 
@@ -72,7 +80,26 @@ export const createExpense = async (payload: ExpenseDto): Promise<ExpenseDto | u
     return undefined;
 };
 
-export const editExpense = async (payload: ExpenseDto): Promise<ExpenseDto | undefined> => {
+export const createExpenseRecurring = async (payload: { mesfat: string, anofat: string }): Promise<Expense[] | undefined> => {
+
+    const res = await fetchWithAuth("/despesa/fixas", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload),
+    });
+
+    if (res.ok) {
+        const newExpenseDto: ExpenseDto[] = await res.json();
+        return newExpenseDto.map((item) => convertDtoToExpense(item));        
+    }
+
+    // console.error("Erro ao enviar:", response.statusText)
+    return undefined;
+};
+
+export const editExpense = async (payload: { id: string | undefined, valor: string | number }): Promise<ExpenseDto | undefined> => {
 
     const res = await fetchWithAuth("/despesa/" + payload.id, {
         method: 'PATCH',
@@ -156,12 +183,14 @@ export function convertDtoToExpense(expenseDto: ExpenseDto): Expense {
         mesfat: expenseDto.mesfat,
         numparcela: expenseDto.numparc.toString(),
         qtdeparcela: expenseDto.qtdeparc.toString(),
-        viewparcela: expenseDto.numparc + ' / ' + expenseDto.qtdeparc,
-        lancamento: expenseDto.lancamento,
+        viewparcela: addLeadingZeros(expenseDto.numparc, 2) + ' / ' +
+            addLeadingZeros(expenseDto.qtdeparc, 2),
+        lancamento: convertDatetimeToDate(expenseDto.lancamento),
         valor: expenseDto.valor.toString(),
         fixa: expenseDto.fixa,
         isCreateParcelas: isCreateParcelas,
         isDeleteParcelas: isParcelaGerada,
-        isDelete: !isParent && !isParcelaGerada
+        isDelete: !isParent && !isParcelaGerada,
+        isParent: isParent
     };
 }

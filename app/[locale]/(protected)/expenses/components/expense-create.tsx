@@ -16,7 +16,7 @@ import { Expense, useExpenseContext } from "./expense-context";
 import { CategoryOption, createOptionsCategories } from "@/action/category-actions";
 import Select, { MultiValue } from 'react-select'
 import { CleaveInput } from "@/components/ui/cleave";
-import { convertFloatToMoeda, convertToNumeric, getCurrentDate, convertToAmericanDate } from "@/lib/utils";
+import { convertFloatToMoeda, convertToNumeric, getCurrentDate, convertToAmericanDate, convertDatetimeToDate } from "@/lib/utils";
 import Image from "next/image";
 import { format } from "date-fns";
 
@@ -54,12 +54,8 @@ const submitCreate = async (data: Inputs
 
 ): Promise<ExpenseDto | undefined> => {
 
-  console.log(convertToNumeric(data.valor));
-
-  const parcela = separateParcela(data.parcela);
-  const valor = convertToNumeric(data.valor);
-
-  //Prepara o payload
+  const parcela = separateParcela(data.parcela);   
+  
   const payload: ExpenseDto = {
     id: data.id ?? "",
     creditId: data.creditId,
@@ -70,14 +66,14 @@ const submitCreate = async (data: Inputs
     numparc: parcela.part1,
     qtdeparc: parcela.part2,
     lancamento: new Date(convertToAmericanDate(data.datacompra)).toISOString(),
-    valor: valor?.toString() || "0",
+    valor: convertToNumeric(data.valor),
     fixa: false,
-    generateparc: false,   
+    generateparc: false,
   };
 
   try {
     return payload.id?.trim() !== "" ?
-      editExpense(payload) :
+      editExpense({ id: payload?.id, valor: payload.valor }) :
       createExpense(payload);
   } catch (error) {
     console.error("Erro de requisição:", error);
@@ -89,6 +85,8 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
 
   const { expenses, setExpenses, editExpense, filter } = useExpenseContext();
   const [categoriaOptions, setCategoriaOptions] = useState<CategoryOption[]>([]);
+
+  const isEditParent: boolean = dataExpense?.isParent || false;
 
   useEffect(() => {
     const fetchCategoryOptions = async () => {
@@ -131,50 +129,50 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
         <DialogHeader>
           <DialogTitle>Create Expense</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4"> 
+          {isEditParent && (
+            <div className="space-y-1">
+              <Label htmlFor="categoria">Categoria</Label>
+              <Input
+                id="categoria"
+                size="md"
+                placeholder="Categoria"
+                color={"secondary"}
+                defaultValue={dataExpense !== null ?
+                  categoriaOptions.find((option) => option.value === dataExpense.categoriaId)?.label : undefined}
+                readOnly
+              />
+            </div>
+          )}
 
-          <div className="space-y-1">
-            <Label htmlFor="description">Descrição</Label>
-            <Input
-              id="description"
-              size="md"
-              placeholder="Description Expense"
-              {...register("description", { required: "Descrição is required." })}
-              color={errors.description ? "destructive" : "secondary"}
-              defaultValue={dataExpense?.description || ""}
-            />
-            {errors.description &&
-              <p className="text-destructive  text-sm font-medium">{errors.description.message}</p>}
-          </div>
+          {isEditParent === false && (
+            <div className="space-y-1">
+              <Label htmlFor="categoria">Categoria</Label>
+              <Controller
+                name="categoria"
+                control={control}
+                rules={{ required: "Categoria is required." }}
+                render={({ field, fieldState }) => (
+                  <>
+                    <Select
+                      {...field}
+                      className="react-select"
+                      classNamePrefix="select"
+                      options={categoriaOptions}
+                      value={categoriaOptions.find(option => option.value === field.value)}  // Passa apenas o objeto selecionado
+                      onChange={(selected) => {
+                        field.onChange(selected ? selected.value : undefined); // Passa apenas o value (id)
+                      }}
+                    />
+                    {fieldState.error && (
+                      <p className="text-red-500 text-sm">{fieldState.error.message}</p>
+                    )}
+                  </>
+                )}
+              />
+            </div>
+          )}
 
-          <div className="space-y-1">
-            <Label htmlFor="categoria">Categoria</Label>
-            <Controller
-              name="categoria"
-              control={control}
-              defaultValue={dataExpense !== null ?
-                categoriaOptions.find((option) => option.value === dataExpense.categoriaId)?.value :
-                undefined}
-              rules={{ required: "Categoria is required." }}
-              render={({ field, fieldState }) => (
-                <>
-                  <Select
-                    {...field}
-                    className="react-select"
-                    classNamePrefix="select"
-                    options={categoriaOptions}
-                    value={categoriaOptions.find(option => option.value === field.value)}  // Passa apenas o objeto selecionado
-                    onChange={(selected) => {
-                      field.onChange(selected ? selected.value : undefined); // Passa apenas o value (id)
-                    }}
-                  />
-                  {fieldState.error && (
-                    <p className="text-red-500 text-sm">{fieldState.error.message}</p>
-                  )}
-                </>
-              )}
-            />
-          </div>
           <div className="space-y-1">
             <Label htmlFor="datacompra">Data da Compra</Label>
             <Controller
@@ -189,6 +187,47 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
                     id="date"
                     options={{ date: true, datePattern: ["d", "m", "Y"] }}
                     placeholder="MM/DD/YYYY"
+                    readOnly={isEditParent}
+                  />
+                  {fieldState.error && (
+                    <p className="text-red-500 text-sm">{fieldState.error.message}</p>
+                  )}
+                </>
+              )}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="description">Descrição</Label>
+            <Input
+              id="description"
+              size="md"
+              placeholder=""
+              {...register("description", { required: "Descrição is required." })}
+              color={errors.description ? "destructive" : "secondary"}
+              defaultValue={dataExpense?.description || ""}
+              readOnly={isEditParent}
+            />
+            {errors.description &&
+              <p className="text-destructive  text-sm font-medium">{errors.description.message}</p>}
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="parcela">Parcela</Label>
+            <Controller
+              name="parcela"
+              control={control}
+              defaultValue={dataExpense?.viewparcela || "01/ 01"}
+              rules={{ required: "Parcela is required." }}
+              render={({ field, fieldState }) => (
+                <>
+                  <CleaveInput
+                    {...field}
+                    options={{
+                      delimiter: ' / ',  // Delimitador entre o número da parcela e o total
+                      blocks: [2, 2],   // Define 1 dígito para o número da parcela e 1 para o total de parcelas
+                      numericOnly: true, // Permite apenas números
+                    }}
+                    placeholder="01 / 01"
+                    readOnly={isEditParent}
                   />
                   {fieldState.error && (
                     <p className="text-red-500 text-sm">{fieldState.error.message}</p>
@@ -199,43 +238,35 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
           </div>
           <div className="space-y-1">
             <Label htmlFor="valor">Valor</Label>
-            <CleaveInput
-              id="valor"
-              options={{
-                numeral: true,
-                numeralThousandsGroupStyle: "thousand",
-                numeralDecimalMark: ",",
-                delimiter: ".",
-                prefix: "R$ ",
-                numeralDecimalScale: 2,
-                numeralIntegerScale: 15, // Máximo de dígitos antes do decimal
-                numeralPositiveOnly: true, // Apenas valores positivos
-              }}
-              placeholder=""
-              value={dataExpense !== null ? convertFloatToMoeda(dataExpense.valor) : ""}
-              {...register("valor", {
-                required: "Valor is required.",
-                validate: (value) => value !== "R$ " || "Por favor, insira um valor válido."
-              })}
-            />
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="parcela">Parcela</Label>
             <Controller
-              name="parcela"
+              name="valor"
               control={control}
-              defaultValue={dataExpense?.numparcela || "001/ 001"}
-              rules={{ required: "Parcela is required." }}
+              defaultValue={dataExpense ? convertFloatToMoeda(dataExpense.valor) : ""} // Valor inicial
+              rules={{
+                required: "Valor é obrigatório.",
+                validate: (value) =>
+                  value !== "" && value !== "R$ " || "Por favor, insira um valor válido.",
+              }}
               render={({ field, fieldState }) => (
                 <>
                   <CleaveInput
-                    {...field}
+                    id="valor"
                     options={{
-                      delimiter: ' / ',  // Delimitador entre o número da parcela e o total
-                      blocks: [3, 3],   // Define 1 dígito para o número da parcela e 1 para o total de parcelas
-                      numericOnly: true, // Permite apenas números
+                      numeral: true,
+                      numeralThousandsGroupStyle: "thousand",
+                      numeralDecimalMark: ",",
+                      delimiter: ".",
+                      prefix: "R$ ",
+                      numeralDecimalScale: 2,
+                      numeralIntegerScale: 15, // Máximo de dígitos antes do decimal
+                      numeralPositiveOnly: true, // Apenas valores positivos
                     }}
-                    placeholder="001 / 001"
+                    placeholder="Digite o valor"
+                    value={field.value} // Controlado pelo React Hook Form
+                    onChange={(e) => {
+                      const formattedValue = e.target.value;
+                      field.onChange(formattedValue);
+                    }}
                   />
                   {fieldState.error && (
                     <p className="text-red-500 text-sm">{fieldState.error.message}</p>
@@ -243,7 +274,7 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
                 </>
               )}
             />
-          </div>
+          </div>          
           {/* <div className="flex items-center gap-3">
             <Label htmlFor="active">Ativo</Label>
             <Controller

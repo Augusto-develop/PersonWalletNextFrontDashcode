@@ -43,7 +43,7 @@ const submitCreate = async (data: {
   const payload: CreditCardDto = {
     id: data.id ?? "",
     descricao: data.descricao,
-    valorcredito: convertToNumeric(data.limite) || 0,
+    valorcredito: convertToNumeric(data.limite),
     type: "CARTAO",
     emissor: data.emissor.value,
     bandeira: data.bandeira.value,

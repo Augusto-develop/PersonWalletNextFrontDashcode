@@ -8,12 +8,9 @@ import {
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
-    getPaginationRowModel,
     getSortedRowModel,
     useReactTable
 } from "@tanstack/react-table"
-import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import {
     Table,
     TableBody,
@@ -22,15 +19,12 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input";
-import { Financing, useFinancingContext, Descricao } from "./components/financing-context";
-import { Badge } from "@/components/ui/badge";
-import { cn, convertFloatToMoeda } from "@/lib/utils";
+import { Card, CardContent } from "@/components/ui/card"
+import { Recurring, useRecurringContext } from "./components/recurring-context";
+import { convertFloatToMoeda } from "@/lib/utils";
 import { useEffect } from "react";
-import { getFinancings } from "@/action/financing-actions";
-import FinancingAction from "./components/financing-action";
-import { IconType, avatarComponents } from "@/components/pwicons/pwicons";
+import { getRecurrings } from "@/action/recurring-actions";
+import RecurringAction from "./components/recurring-action";
 import { Avatar } from "@/components/ui/avatar";
 
 const ListTable = () => {
@@ -41,40 +35,27 @@ const ListTable = () => {
     const [columnVisibility, setColumnVisibility] =
         React.useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = React.useState({})
-    const { financings, setFinancings, deleteFinancing } = useFinancingContext();
+    const { recurrings, setRecurrings, deleteRecurring } = useRecurringContext();
 
     useEffect(() => {
-        const fetchFinancings = async () => {
-            const data: Financing[] = await getFinancings();
-            setFinancings(data);
+        const fetchRecurrings = async () => {
+            const data: Recurring[] = await getRecurrings();
+            setRecurrings(data);
         };
 
-        fetchFinancings();
+        fetchRecurrings();
     }, []);
 
-    const columns: ColumnDef<Financing>[] = [
+    const columns: ColumnDef<Recurring>[] = [
         {
             accessorKey: "descricao",
             header: "Descrição",
             cell: ({ row }) => {
-                const descricao = row.getValue("descricao") as Descricao;
-                const texto = descricao?.text ?? "";
-                const avatar = descricao?.avatar ?? "";
-                const IconComponent = avatarComponents[avatar as IconType];
                 return (
                     <div className="font-medium text-card-foreground/80">
                         <div className="flex gap-3 items-center">
-                            {IconComponent ? (
-                                <Avatar
-                                    className="rounded w-8 h-8"
-                                >
-                                    <IconComponent />
-                                </Avatar>
-                            ) : (
-                                <div>Error: Icon not found</div>
-                            )}
                             <div className="font-medium text-sm leading-4 whitespace-nowrap">
-                                {texto}
+                                {row.getValue("descricao")}
                             </div>
                         </div>
                     </div>
@@ -102,7 +83,7 @@ const ListTable = () => {
                     </div>
                 )
             }
-        },        
+        },
         {
             id: "actions",
             accessorKey: "action",
@@ -110,14 +91,14 @@ const ListTable = () => {
             enableHiding: false,
             cell: ({ row }) => {
                 return (
-                    <FinancingAction financing={row.original} />
+                    <RecurringAction recurring={row.original} />
                 )
             }
         }
     ]
 
     const table = useReactTable({
-        data: financings,
+        data: recurrings,
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
@@ -151,9 +132,6 @@ const ListTable = () => {
     return (
         <>
             <Card>
-                {/* <CardHeader>
-                    <CardTitle>Financing List</CardTitle>
-                </CardHeader> */}
                 <CardContent className="p-0">
                     <Table>
                         <TableHeader className="px-3 bg-default-100">

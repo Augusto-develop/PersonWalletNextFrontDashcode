@@ -20,7 +20,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Card, CardContent } from "@/components/ui/card"
-import { Lending, useLendingContext, Parcela, Descricao } from "./components/lending-context";
+import { Lending, useLendingContext, Descricao } from "./components/lending-context";
 import { convertFloatToMoeda } from "@/lib/utils";
 import { useEffect } from "react";
 import { getLendings } from "@/action/lending-actions";
@@ -97,22 +97,7 @@ const ListTable = () => {
                     </div>
                 )
             }
-        },
-        {
-            accessorKey: "parcela",
-            header: "Parcela",
-            cell: ({ row }) => {
-                const parcela = row.getValue("parcela") as Parcela;
-                const qtdeParcela = parcela?.qtde ?? 0;
-                const valorParcela = convertFloatToMoeda(parcela?.valor ?? 0);
-
-                return (
-                    <div className="font-medium text-sm leading-4 whitespace-nowrap">
-                        {qtdeParcela}x {valorParcela}
-                    </div>
-                )
-            }
-        },
+        },        
         {
             id: "actions",
             accessorKey: "action",

@@ -1,14 +1,14 @@
 'use client';
 import { redirect } from "next/navigation";
 import fetchWithAuth from "./login-actions";
-import { Lending } from "@/app/[locale]/(protected)/credits/lendings/components/lending-context";
-import {LendingDto} from "./types.schema.dto";
+import { Recurring } from "@/app/[locale]/(protected)/credits/recurrings/components/recurring-context";
+import { RecurringDto } from "./types.schema.dto";
 import { CreditOption } from "@/app/[locale]/(protected)/credits/credit-select-group";
 
-export const getLendings = async (): Promise<Lending[]> => {
+export const getRecurrings = async (): Promise<Recurring[]> => {
 
     const queryParams = new URLSearchParams();
-    queryParams.append('type', 'EMPRESTIMO')
+    queryParams.append('type', 'DESPESAFIXA')
 
     const res = await fetchWithAuth(`/credito?${queryParams.toString()}`, {
         method: 'GET',
@@ -17,19 +17,19 @@ export const getLendings = async (): Promise<Lending[]> => {
         }
     });
 
-    let newData: Lending[] = [];
+    let newData: Recurring[] = [];
 
     if (res.ok) {
-        const data: LendingDto[] = await res.json();
+        const data: RecurringDto[] = await res.json();
 
-        newData = data.map((item) => (convertToLending(item)));
+        newData = data.map((item) => (convertToRecurring(item)));
     } else {
         console.error('Erro ao buscar os dados');
     }
     return newData;
 };
 
-export const createLending = async (payload: LendingDto): Promise<LendingDto | undefined> => {
+export const createRecurring = async (payload: RecurringDto): Promise<RecurringDto | undefined> => {
 
     delete payload.id;
 
@@ -42,7 +42,7 @@ export const createLending = async (payload: LendingDto): Promise<LendingDto | u
     });
 
     if (res.ok) {
-        const newCredit: LendingDto = await res.json();
+        const newCredit: RecurringDto = await res.json();
         return newCredit;
     }
 
@@ -50,7 +50,7 @@ export const createLending = async (payload: LendingDto): Promise<LendingDto | u
     return undefined;
 };
 
-export const editLending = async (payload: LendingDto): Promise<LendingDto | undefined> => {
+export const editRecurring = async (payload: RecurringDto): Promise<RecurringDto | undefined> => {
 
     const res = await fetchWithAuth("/credito/" + payload.id, {
         method: 'PATCH',
@@ -61,7 +61,7 @@ export const editLending = async (payload: LendingDto): Promise<LendingDto | und
     });
 
     if (res.ok) {
-        const newCredit: LendingDto = await res.json();
+        const newCredit: RecurringDto = await res.json();
         return newCredit;
     }
 
@@ -69,7 +69,7 @@ export const editLending = async (payload: LendingDto): Promise<LendingDto | und
     return undefined;
 };
 
-export const deleteLending = async (id: string): Promise<Response> => {
+export const deleteRecurring = async (id: string): Promise<Response> => {
     const res = await fetchWithAuth(`/credito/${id}`, {
         method: 'DELETE',
         headers: {
@@ -80,29 +80,27 @@ export const deleteLending = async (id: string): Promise<Response> => {
     return res;
 };
 
-export function convertToLending(credit: LendingDto): Lending {
+export function convertToRecurring(credit: RecurringDto): Recurring {
     return {
         id: credit.id ?? '',
-        descricao: {
-            text: credit.descricao,
-            avatar: credit.emissor,
-        },       
+        descricao: credit.descricao,
         diavenc: credit.diavenc,
-        valorcredito: credit.valorcredito?.toString()        
+        valorcredito: credit.valorcredito?.toString(),
+
     }
 }
 
-export interface LendingOption extends CreditOption {};
+export interface RecurringOption extends CreditOption { };
 
-export const createOptionsLending = async (): Promise<LendingOption[]> => {
+export const createOptionsRecurring = async (): Promise<RecurringOption[]> => {
 
-    const lendings: Lending[] = await getLendings();
+    const recurrings: Recurring[] = await getRecurrings();
 
-    const lendingOptions: LendingOption[] = lendings.map((item) => ({
-        label: item.descricao.text,
+    const recurringOptions: RecurringOption[] = recurrings.map((item) => ({
+        label: item.descricao,
         value: item.id,
-        avatar: item.descricao.avatar,
-    })) as LendingOption[];
+        avatar: ""
+    })) as RecurringOption[];
 
-    return lendingOptions;
+    return recurringOptions;
 }

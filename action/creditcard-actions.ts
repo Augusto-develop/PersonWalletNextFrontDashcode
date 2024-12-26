@@ -2,13 +2,10 @@
 import { redirect } from "next/navigation";
 import fetchWithAuth from "./login-actions";
 import { CreditCard } from "@/app/[locale]/(protected)/credits/creditcards/components/creditcard-context";
-import {CreditCardDto} from "./types.schema.dto";
-
-export type CreditCardOption = {
-    label: string;
-    value: string;
-    avatar: string;
-};
+import { createOptionsFinancing, FinancingOption } from "./financing-actions";
+import { createOptionsLending, LendingOption } from "./lending-actions";
+import { CreditCardDto } from "./types.schema.dto";
+import { CreditOption } from "@/app/[locale]/(protected)/credits/credit-select-group";
 
 export const getCreditCards = async (): Promise<CreditCard[]> => {
 
@@ -35,7 +32,7 @@ export const getCreditCards = async (): Promise<CreditCard[]> => {
 };
 
 export const createCreditCard = async (payload: CreditCardDto): Promise<CreditCardDto | undefined> => {
-    
+
     delete payload.id;
 
     const res = await fetchWithAuth("/credito", {
@@ -47,28 +44,28 @@ export const createCreditCard = async (payload: CreditCardDto): Promise<CreditCa
     });
 
     if (res.ok) {
-        const newCredit: CreditCardDto= await res.json();        
+        const newCredit: CreditCardDto = await res.json();
         return newCredit;
-    } 
+    }
 
     // console.error("Erro ao enviar:", response.statusText)
     return undefined;
 };
 
 export const editCreditCard = async (payload: CreditCardDto): Promise<CreditCardDto | undefined> => {
-    
+
     const res = await fetchWithAuth("/credito/" + payload.id, {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json'
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(payload),
-      });
+    });
 
     if (res.ok) {
-        const newCredit: CreditCardDto = await res.json();        
+        const newCredit: CreditCardDto = await res.json();
         return newCredit;
-    } 
+    }
 
     // console.error("Erro ao enviar:", response.statusText)
     return undefined;
@@ -98,6 +95,8 @@ export function convertToCreditCard(credit: CreditCardDto): CreditCard {
         progress: 10,
     };
 }
+
+export interface CreditCardOption extends CreditOption {};
 
 export const createOptionsCreditCards = async (): Promise<CreditCardOption[]> => {
 

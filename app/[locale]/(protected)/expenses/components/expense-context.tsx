@@ -18,12 +18,15 @@ export type Expense = {
   isCreateParcelas: boolean;
   isDeleteParcelas: boolean;
   isDelete: boolean;
+  isParent: boolean;
 };
 
 export type InputsFilter = {
   creditcard: string;
   mes: string;
   ano: string;
+  isSubmit: boolean;
+  isRecurring: boolean;
 }
 
 interface ExpenseContextType {
@@ -51,14 +54,19 @@ interface ExpenseProviderProps {
 
 export const ExpenseProvider = ({ children }: ExpenseProviderProps) => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [filter, setFilter] = useState<InputsFilter>({ creditcard: '', mes: '', ano: '' });
+  const [filter, setFilter] = useState<InputsFilter>({
+    creditcard: '',
+    mes: '',
+    ano: '',
+    isSubmit: false,
+    isRecurring: false
+  });
 
   // Delete a credit card by its ID
   const deleteExpense = (id: string) => {
     setExpenses((prevExpenses) => prevExpenses.filter((expense) => expense.id !== id));
   };
 
-  // Edit a credit card's details by its ID
   const editExpense = (id: string, updatedData: Partial<Expense>) => {
     setExpenses((prevExpenses) =>
       prevExpenses.map((expense) =>

@@ -5,28 +5,31 @@ import CreateExpense from "./expense-create";
 import React, { useEffect, useState } from "react";
 import Select from 'react-select'
 import { useForm, SubmitHandler, Controller } from "react-hook-form"
-import { CreditCardOption, createOptionsCreditCards } from "@/action/creditcard-actions";
 import {
     avatarComponents, IconType
 } from "@/components/pwicons/pwicons";
 import { Avatar } from "@/components/ui/avatar";
 import { CleaveInput } from "@/components/ui/cleave";
 import { getCurrentMonth, getCurrentYear, months } from "@/lib/utils";
-import { InputsFilter, useExpenseContext } from "./expense-context";
-import { getExpenses } from "@/action/expense-actions";
+import { InputsFilter, useExpenseContext, Expense } from "./expense-context";
+import { getExpenses, createExpenseRecurring } from "@/action/expense-actions";
+import { Loader2 } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
+import { GroupedCreditOption, createOptionsGroupCredit } from "@/app/[locale]/(protected)/credits/credit-select-group";
 
 const ExpenseWrapper = ({ children }: { children: React.ReactNode }) => {
     const [open, setOpen] = useState<boolean>(false);
-    const [creditCardOptions, setCreditCardptions] = useState<CreditCardOption[]>([]);
-    const { setExpenses, setFilter } = useExpenseContext();
+    const [groupCreditOptions, setGroupCreditOtions] = useState<GroupedCreditOption[]>([]);
+    const { expenses, setExpenses, filter, setFilter } = useExpenseContext();
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
-        const fetchCreditCardOptions = async () => {
-            const options: CreditCardOption[] = await createOptionsCreditCards();
-            setCreditCardptions(options);
+        const fetchCreditGroupOptions = async () => {
+            const options: GroupedCreditOption[] = await createOptionsGroupCredit();
+            setGroupCreditOtions(options);
         };
 
-        fetchCreditCardOptions();
+        fetchCreditGroupOptions();
     }, []);
 
     const {
@@ -34,11 +37,32 @@ const ExpenseWrapper = ({ children }: { children: React.ReactNode }) => {
         control,
     } = useForm<InputsFilter>()
     const onSubmit: SubmitHandler<InputsFilter> = async (data) => {
+        setIsSubmitting(true);
+        data.isSubmit = true;
         const dataFilter: InputsFilter = data;
+
+        const validValues = ["DESPESAFIXA"];
+        dataFilter.isRecurring = validValues.includes(dataFilter.creditcard);
+
         const fetchedExpenses = await getExpenses(dataFilter.creditcard, dataFilter.mes, dataFilter.ano);
         setExpenses(fetchedExpenses);
         setFilter(dataFilter);
+        setIsSubmitting(false);
     }
+
+    const createDespesasFixas = async () => {
+        const dataFilter: InputsFilter = filter;
+        const expensesFixas: Expense[] | undefined = await createExpenseRecurring({
+            mesfat: dataFilter.mes,
+            anofat: dataFilter.ano
+        });
+
+        if (expensesFixas) {
+            const newListExpenses: Expense[] = [...expenses, ...expensesFixas];
+            setExpenses(newListExpenses);
+        }
+
+    };
 
     return (
         <div>
@@ -52,13 +76,26 @@ const ExpenseWrapper = ({ children }: { children: React.ReactNode }) => {
                         Expenses
                     </h4>
                     <div className="space-y-1 ml-auto">
-                        <Button
-                            className="flex-none"
-                            onClick={() => setOpen(true)}
-                        >
-                            <Plus className="w-4 h-3 me-1" />
-                            <span>Add</span>
-                        </Button>
+                        {filter.isRecurring ? (
+                            <Button
+                                className="flex-none"
+                                onClick={() => createDespesasFixas()}
+                                disabled={filter.isSubmit === false}
+                            >
+                                <Plus className="w-4 h-3 me-1" />
+                                <span>Mount Recurring</span>
+                            </Button>
+                        ) : (
+                            <Button
+                                className="flex-none"
+                                onClick={() => setOpen(true)}
+                                disabled={filter.isSubmit === false}
+                            >
+                                <Plus className="w-4 h-3 me-1" />
+                                <span>Add</span>
+                            </Button>
+                        )
+                        }
                     </div>
                 </div>
                 <div className="flex w-full items-center gap-4 mb-6">
@@ -69,7 +106,7 @@ const ExpenseWrapper = ({ children }: { children: React.ReactNode }) => {
                             rules={{ required: "Credit Card is required." }}
                             render={({ field, fieldState }) => (
                                 <>
-                                    <Select
+                                    {/* <Select
                                         {...field}
                                         className="react-select min-w-64"
                                         classNamePrefix="select"
@@ -86,13 +123,44 @@ const ExpenseWrapper = ({ children }: { children: React.ReactNode }) => {
                                                             <IconComponent fontSize="20px" />
                                                         </Avatar>
                                                     ) : (
-                                                        <div>Error: Icon not found</div>
+                                                        // <div>Error: Icon not found</div>
+                                                        <Icon icon={option.avatar} className='w-5 h-5 text-default-500 dark:text-secondary-foreground mr-2' />
                                                     )}
                                                     <span className="text-sm font-medium">{option.label}</span>
                                                 </div>
                                             );
                                         }}
                                         value={creditCardOptions.find(option => option.value === field.value)}  // Passa apenas o objeto selecionado
+                                        onChange={(selected) => {
+                                            field.onChange(selected ? selected.value : undefined); // Passa apenas o value (id)
+                                        }}
+                                    /> */}
+                                    <Select
+                                        {...field}
+                                        className="react-select min-w-64"
+                                        classNamePrefix="select"
+                                        options={groupCreditOptions} // Passa as opções agrupadas
+                                        placeholder="Select Option"
+                                        getOptionLabel={(option) => option.label} // Retorna apenas o label para o filtro
+                                        formatOptionLabel={(option) => {  // Customiza a renderização da opção
+                                            const IconComponent = avatarComponents[option.avatar as IconType]; // Assumindo que "avatar" é um campo nas opções
+
+                                            return (
+                                                <div className="flex items-center">
+                                                    {IconComponent ? (
+                                                        <Avatar className="flex-none h-5 w-5 rounded mr-2">
+                                                            <IconComponent fontSize="20px" />
+                                                        </Avatar>
+                                                    ) : (
+                                                        <Icon icon={option.avatar} className='w-5 h-5 text-default-500 dark:text-secondary-foreground mr-2' />
+                                                    )}
+                                                    <span className="text-sm font-medium">{option.label}</span>
+                                                </div>
+                                            );
+                                        }}
+                                        value={groupCreditOptions
+                                            .flatMap(group => group.options)  // Achata as opções para procurar o valor
+                                            .find(option => option.value === field.value)}  // Passa apenas o objeto selecionado
                                         onChange={(selected) => {
                                             field.onChange(selected ? selected.value : undefined); // Passa apenas o value (id)
                                         }}
@@ -154,10 +222,27 @@ const ExpenseWrapper = ({ children }: { children: React.ReactNode }) => {
                         />
                     </div>
                     <div className="space-y-1">
-                        <Button size="md" color="secondary" variant="soft" type="submit">
-                            <Filter className="w-4 h-4 me-2" />
-                            Filtrar
-                        </Button>
+                        {isSubmitting ? (
+                            <Button
+                                size="md"
+                                color="secondary"
+                                variant="soft"
+                                disabled // Desativa o botão durante o estado de envio
+                            >
+                                <Loader2 className="me-2 h-4 w-4 animate-spin" />
+                                Filtrar
+                            </Button>
+                        ) : (
+                            <Button
+                                size="md"
+                                color="secondary"
+                                variant="soft"
+                                type="submit"
+                            >
+                                <Filter className="w-4 h-4 me-2" />
+                                Filtrar
+                            </Button>
+                        )}
                     </div>
                 </div>
             </form>

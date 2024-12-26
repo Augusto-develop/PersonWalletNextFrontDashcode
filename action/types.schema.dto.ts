@@ -4,20 +4,24 @@ export interface CreditDto {
     descricao: string;
     type: string;
     diavenc: string;
-    valorcredito: number;
-    emissor: string;
+    valorcredito: number | string;    
 };
 
-export interface CreditCardDto extends CreditDto {        
+export interface CreditCardDto extends CreditDto {  
+    emissor: string;      
     diafech: string;    
     bandeira: string;
 };
 
+export interface RecurringDto extends CreditDto {        
+    
+};
+
 export interface FinancingDto extends CreditDto {  
-    valorparcela: number;
-    qtdeparcela: number;   
+    emissor: string;    
 };
 
 export interface LendingDto extends FinancingDto {    
     
 };
+

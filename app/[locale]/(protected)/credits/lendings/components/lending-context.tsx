@@ -2,11 +2,6 @@
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-export type Parcela = {
-  qtde: string;
-  valor: string;
-}
-
 export type Descricao = {
   text: string;
   avatar: string;
@@ -16,8 +11,7 @@ export type Lending = {
   id: string;
   descricao: Descricao; 
   diavenc: string;
-  valorcredito: string;
-  parcela: Parcela;
+  valorcredito: string;  
 };
 
 interface LendingContextType {

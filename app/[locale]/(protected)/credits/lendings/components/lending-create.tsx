@@ -30,9 +30,7 @@ type Inputs = {
   descricao: string;
   credor: Option;
   vencimento: Option;
-  valorcredito: string;
-  valorparcela: string;
-  qtdeparcela: string;
+  valorcredito: string;  
 }
 
 const submitCreate = async (data: Inputs): Promise<LendingDto | undefined> => {
@@ -41,10 +39,8 @@ const submitCreate = async (data: Inputs): Promise<LendingDto | undefined> => {
     id: data.id ?? "",
     descricao: data.descricao,
     diavenc: addLeadingZeros(data.vencimento.value, 2),
-    valorcredito: convertToNumeric(data.valorcredito) || 0,
-    valorparcela: convertToNumeric(data.valorparcela) || 0,
-    type: "EMPRESTIMO",
-    qtdeparcela: parseInt(data.qtdeparcela),
+    valorcredito: convertToNumeric(data.valorcredito),    
+    type: "EMPRESTIMO",   
     emissor: data.credor.value
   };
 
@@ -159,13 +155,13 @@ const CreateLending = ({ open, setOpen, dataLending = null }: CreateTaskProps) =
             </div>
           </div>
           <div className="space-y-1">
-            <Label htmlFor="valorcredito">Valor do Financiamento</Label>
+            <Label htmlFor="valorcredito">Valor</Label>
             <Controller
               name="valorcredito"
               control={control}
               defaultValue={dataLending ? convertFloatToMoeda(dataLending.valorcredito) : ""} // Valor inicial
               rules={{
-                required: "Valor do Financimento é obrigatório.",
+                required: "Valor é obrigatório.",
                 validate: (value) =>
                   value !== "" && value !== "R$ " || "Por favor, insira um valor válido.",
               }}
@@ -186,8 +182,8 @@ const CreateLending = ({ open, setOpen, dataLending = null }: CreateTaskProps) =
                     placeholder="Digite o valor"
                     value={field.value} // Controlado pelo React Hook Form
                     onChange={(e) => {
-                      const rawValue = (e.target as any).rawValue; // Type assertion para acessar rawValue
-                      field.onChange(rawValue);
+                      const formattedValue = e.target.value;
+                      field.onChange(formattedValue);
                     }}
                   />
                   {fieldState.error && (
@@ -196,71 +192,7 @@ const CreateLending = ({ open, setOpen, dataLending = null }: CreateTaskProps) =
                 </>
               )}
             />
-          </div>
-          <div className="grid lg:grid-cols-2 grid-cols-1 gap-5">
-            <div className="space-y-1">
-              <Label htmlFor="qtdeparcela">Qtde de Parcela</Label>
-              <Controller
-                name="qtdeparcela"
-                control={control}
-                defaultValue={dataLending?.parcela.qtde || ""}
-                rules={{ required: "Qtde de Parcela is required." }}
-                render={({ field, fieldState }) => (
-                  <>
-                    <CleaveInput
-                      {...field}
-                      options={{
-                        numericOnly: true,
-                      }}
-                      placeholder=""
-                    />
-                    {fieldState.error && (
-                      <p className="text-red-500 text-sm">{fieldState.error.message}</p>
-                    )}
-                  </>
-                )}
-              />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="valorparcela">Valor da Parcela</Label>
-              <Controller
-                name="valorparcela"
-                control={control}
-                defaultValue={dataLending ? convertFloatToMoeda(dataLending.parcela.valor) : ""} // Valor inicial
-                rules={{
-                  required: "Valor da Parcela é obrigatória.",
-                  validate: (value) =>
-                    value !== "" && value !== "R$ " || "Por favor, insira um valor válido.",
-                }}
-                render={({ field, fieldState }) => (
-                  <>
-                    <CleaveInput
-                      id="valorparcela"
-                      options={{
-                        numeral: true,
-                        numeralThousandsGroupStyle: "thousand",
-                        numeralDecimalMark: ",",
-                        delimiter: ".",
-                        prefix: "R$ ",
-                        numeralDecimalScale: 2,
-                        numeralIntegerScale: 15, // Máximo de dígitos antes do decimal
-                        numeralPositiveOnly: true, // Apenas valores positivos
-                      }}
-                      placeholder="Digite o valor"
-                      value={field.value} // Controlado pelo React Hook Form
-                      onChange={(e) => {
-                        const rawValue = (e.target as any).rawValue; // Type assertion para acessar rawValue
-                        field.onChange(rawValue);
-                      }}
-                    />
-                    {fieldState.error && (
-                      <p className="text-red-500 text-sm">{fieldState.error.message}</p>
-                    )}
-                  </>
-                )}
-              />
-            </div>
-          </div>
+          </div>          
           <div className="flex justify-end">
             <Button type="submit">Save</Button>
           </div>

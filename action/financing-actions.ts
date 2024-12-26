@@ -2,13 +2,8 @@
 import { redirect } from "next/navigation";
 import fetchWithAuth from "./login-actions";
 import { Financing } from "@/app/[locale]/(protected)/credits/financings/components/financing-context";
-import {FinancingDto} from "./types.schema.dto";
-
-export type FinancingOption = {
-    label: string;
-    value: string;
-    avatar: string;
-};
+import { FinancingDto } from "./types.schema.dto";
+import { CreditOption } from "@/app/[locale]/(protected)/credits/credit-select-group";
 
 export const getFinancings = async (): Promise<Financing[]> => {
 
@@ -91,15 +86,13 @@ export function convertToFinancing(credit: FinancingDto): Financing {
         descricao: {
             text: credit.descricao,
             avatar: credit.emissor,
-        },       
+        },
         diavenc: credit.diavenc,
         valorcredito: credit.valorcredito?.toString(),
-        parcela: {
-            valor: credit.valorparcela?.toString(),
-            qtde: credit.qtdeparcela?.toString(),
-        }
     }
 }
+
+export interface FinancingOption extends CreditOption {};
 
 export const createOptionsFinancing = async (): Promise<FinancingOption[]> => {
 
