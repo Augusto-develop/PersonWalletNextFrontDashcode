@@ -20,10 +20,11 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Card, CardContent } from "@/components/ui/card"
-import { Expense, useExpenseContext } from "./components/expense-context";
-import { convertFloatToMoeda, convertDatetimeToDate } from "@/lib/utils";
+import { useExpenseContext } from "./components/expense-context";
+import { convertFloatToMoeda } from "@/lib/utils";
 import ExpenseAction from "./components/expense-action";
-import { CategoryOption, createOptionsCategories } from "@/action/category-actions";
+import { createOptionsCategories } from "@/action/category-actions";
+import { Expense, CategoryOption } from "@/lib/model/types";
 
 const ListTable = () => {
     const [sorting, setSorting] = React.useState<SortingState>([])

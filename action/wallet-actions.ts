@@ -1,12 +1,7 @@
 'use client';
 import fetchWithAuth from "./login-actions";
-import { Wallet } from "@/app/[locale]/(protected)/wallets/components/wallet-context";
-
-export type WalletDto = {
-    id?: string;
-    descricao: string;
-    ativo: boolean;
-};
+import { WalletDto } from "@/action/types.schema.dto";
+import {Wallet, WalletOption } from "@/lib/model/types";
 
 export const getWallets = async (): Promise<Wallet[]> => {
 
@@ -83,7 +78,23 @@ export const deleteWallet = async (id: string): Promise<Response> => {
 export function convertDtoToWallet(walletDto: WalletDto): Wallet {
     return {
         id: walletDto.id ?? '',
-        description: walletDto.descricao,
+        descricao: {
+            text: walletDto.descricao,
+            avatar: walletDto.emissor,
+        },        
         active: walletDto.ativo
     };
+}
+
+export const createOptionsWallets = async (): Promise<WalletOption[]> => {
+
+    const wallets: Wallet[] = await getWallets();
+
+    const walletOptions: WalletOption[] = wallets.map((item) => ({
+        label: item.descricao.text,
+        value: item.id,
+        avatar: item.descricao.avatar,
+    })) as WalletOption[];
+
+    return walletOptions;
 }

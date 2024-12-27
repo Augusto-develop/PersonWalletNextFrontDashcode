@@ -8,12 +8,9 @@ import {
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
-    getPaginationRowModel,
     getSortedRowModel,
     useReactTable
 } from "@tanstack/react-table"
-import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import {
     Table,
     TableBody,
@@ -22,14 +19,16 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input";
-import { Wallet, useWalletContext } from "./components/wallet-context";
+import { Card, CardContent } from "@/components/ui/card"
+import { useWalletContext } from "./components/wallet-context";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 import { getWallets } from "@/action/wallet-actions";
 import WalletAction from "./components/wallet-action";
+import { avatarComponents } from "@/components/pwicons/pwicons";
+import { Avatar } from "@/components/ui/avatar";
+import { Wallet, IconAvatar, IconType } from "@/lib/model/types";
 
 const ListTable = () => {
     const [sorting, setSorting] = React.useState<SortingState>([])
@@ -50,19 +49,30 @@ const ListTable = () => {
         fetchWallets();
     }, []);
 
-    const columns: ColumnDef<Wallet>[] = [
+    const columns: ColumnDef<Wallet>[] = [        
         {
-            accessorKey: "description",
+            accessorKey: "descricao",
             header: "Descrição",
             cell: ({ row }) => {
+                const descricao = row.getValue("descricao") as IconAvatar;
+                const texto = descricao?.text ?? "";
+                const avatar = descricao?.avatar ?? "";
+                const IconComponent = avatarComponents[avatar as IconType];
                 return (
-                    <div className="flex items-center gap-3">
-                        {/* <Avatar className="w-10 h-10 shadow-none border-none bg-transparent hover:bg-transparent">
-                            <AvatarImage src={row.original.projectLogo} />
-                            <AvatarFallback> DC</AvatarFallback>
-                        </Avatar> */}
-                        <div className="font-medium text-sm leading-4 whitespace-nowrap">
-                            {row.getValue("description")}
+                    <div className="font-medium text-card-foreground/80">
+                        <div className="flex gap-3 items-center">
+                            {IconComponent ? (
+                                <Avatar
+                                    className="rounded w-8 h-8"
+                                >
+                                    <IconComponent />
+                                </Avatar>
+                            ) : (
+                                <div>Error: Icon not found</div>
+                            )}
+                            <div className="font-medium text-sm leading-4 whitespace-nowrap">
+                                {texto}
+                            </div>
                         </div>
                     </div>
                 )

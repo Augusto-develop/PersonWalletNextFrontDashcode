@@ -1,37 +1,11 @@
 'use client';
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-
-export type Expense = {
-  id: string;
-  description: string;
-  creditId: string;
-  categoriaId: string;
-  anofat: string;
-  mesfat: string;
-  numparcela: string;
-  qtdeparcela: string;
-  viewparcela: string;
-  lancamento: string;
-  valor: string;
-  fixa: boolean;
-  isCreateParcelas: boolean;
-  isDeleteParcelas: boolean;
-  isDelete: boolean;
-  isParent: boolean;
-};
-
-export type InputsFilter = {
-  creditcard: string;
-  mes: string;
-  ano: string;
-  isSubmit: boolean;
-  isRecurring: boolean;
-}
+import { Expense, InputsFilterExpense } from "@/lib/model/types";
 
 interface ExpenseContextType {
-  filter: InputsFilter;
-  setFilter: React.Dispatch<React.SetStateAction<InputsFilter>>;
+  filter: InputsFilterExpense;
+  setFilter: React.Dispatch<React.SetStateAction<InputsFilterExpense>>;
   expenses: Expense[];
   setExpenses: React.Dispatch<React.SetStateAction<Expense[]>>;
   deleteExpense: (id: string) => void;
@@ -54,12 +28,13 @@ interface ExpenseProviderProps {
 
 export const ExpenseProvider = ({ children }: ExpenseProviderProps) => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [filter, setFilter] = useState<InputsFilter>({
+  const [filter, setFilter] = useState<InputsFilterExpense>({
     creditcard: '',
     mes: '',
     ano: '',
     isSubmit: false,
-    isRecurring: false
+    isRecurring: false,
+    isCashPayment: false,
   });
 
   // Delete a credit card by its ID

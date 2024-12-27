@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { addLeadingZeros, convertToNumeric, convertFloatToMoeda } from "@/lib/utils";
-import { Option, bandeiraOptions, dayOptions, emissorOptions } from "@/lib/options-select";
+import { bandeiraOptions, dayOptions, emissorOptions } from "@/lib/options-select";
 import {
   Dialog,
   DialogContent,
@@ -16,8 +16,10 @@ import Select from 'react-select'
 import { CleaveInput } from "@/components/ui/cleave";
 import fetchWithAuth from "@/action/login-actions";
 import { convertToCreditCard, createCreditCard, editCreditCard } from "@/action/creditcard-actions";
-import { CreditCard, useCreditCardContext } from "./creditcard-context";
+import { useCreditCardContext } from "./creditcard-context";
 import { CreditCardDto } from "@/action/types.schema.dto";
+import { CreditCard, Option } from "@/lib/model/types";
+import { TypeCredit } from "@/lib/model/enums";
 
 interface CreateTaskProps {
   open: boolean;
@@ -44,12 +46,12 @@ const submitCreate = async (data: {
     id: data.id ?? "",
     descricao: data.descricao,
     valorcredito: convertToNumeric(data.limite),
-    type: "CARTAO",
+    type: TypeCredit.CARTAO,
     emissor: data.emissor.value,
     bandeira: data.bandeira.value,
     diavenc: addLeadingZeros(data.vencimento.value, 2),
     diafech: addLeadingZeros(data.fechamento.value, 2)
-  }; 
+  };
 
   try {
     return payload.id?.trim() !== "" ?

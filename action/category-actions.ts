@@ -1,16 +1,7 @@
 'use client';
-import { Category } from "@/app/[locale]/(protected)/categories/components/category-context";
 import fetchWithAuth from "./login-actions";
-
-export type CategoryDto = {
-    id?: string;
-    descricao: string;
-};
-
-export type CategoryOption = {
-    label: string;
-    value: string;
-};
+import { CategoryDto } from "./types.schema.dto";
+import { Category, CategoryOption } from "@/lib/model/types";
 
 export const getCategories = async (): Promise<Category[]> => {
 

@@ -24,12 +24,13 @@ import {
 } from "@/components/ui/table"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input";
-import { Category, useCategoryContext } from "./components/category-context";
+import { useCategoryContext } from "./components/category-context";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 import { getCategories } from "@/action/category-actions";
 import CategoryAction from "./components/category-action";
+import { Category } from "@/lib/model/types";
 
 const ListTable = () => {
     const [sorting, setSorting] = React.useState<SortingState>([])

@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { addLeadingZeros, convertToNumeric, convertFloatToMoeda } from "@/lib/utils";
-import { Option, dayOptions, emissorOptions } from "@/lib/options-select";
+import { dayOptions, emissorOptions } from "@/lib/options-select";
 import {
   Dialog,
   DialogContent,
@@ -16,8 +16,10 @@ import Select from 'react-select'
 import { CleaveInput } from "@/components/ui/cleave";
 import fetchWithAuth from "@/action/login-actions";
 import { convertToFinancing, createFinancing, editFinancing } from "@/action/financing-actions";
-import { Financing, useFinancingContext } from "./financing-context";
+import { useFinancingContext } from "./financing-context";
 import { FinancingDto } from "@/action/types.schema.dto";
+import { Financing, Option } from "@/lib/model/types";
+import { TypeCredit } from "@/lib/model/enums";
 
 interface CreateTaskProps {
   open: boolean;
@@ -40,7 +42,7 @@ const submitCreate = async (data: Inputs): Promise<FinancingDto | undefined> => 
     descricao: data.descricao,
     diavenc: addLeadingZeros(data.vencimento.value, 2),
     valorcredito: convertToNumeric(data.valorcredito),
-    type: "FINANCIAMENTO",
+    type: TypeCredit.FINANCIAMENTO,
     emissor: data.credor.value
   };
 
@@ -98,7 +100,7 @@ const CreateFinancing = ({ open, setOpen, dataFinancing = null }: CreateTaskProp
               id="descricao"
               {...register("descricao", { required: "Descrição is required." })}
               color={errors.descricao ? "destructive" : "secondary"}
-              defaultValue={dataFinancing !== null ? dataFinancing.descricao.text : ""}
+              defaultValue={dataFinancing?.descricao.text || ""}
             />
             {errors.descricao && <p className="text-destructive  text-sm font-medium">{errors.descricao.message}</p>}
           </div>

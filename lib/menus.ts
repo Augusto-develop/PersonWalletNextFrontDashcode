@@ -76,7 +76,7 @@ export function getMenuList(pathname: string, t: any): Group[] {
               href: "/credits/lendings",
               label: "Lending",
               active: pathname === "/credits/lendings",
-              icon: "mdi:cash-multiple",
+              icon: "mdi:account-cash-outline",
               children: [],
             },
             {
@@ -84,6 +84,13 @@ export function getMenuList(pathname: string, t: any): Group[] {
               label: "Recurring",
               active: pathname === "/credits/recurrings",
               icon: "mdi:graph-pie",
+              children: [],
+            },
+            {
+              href: "/credits/cashpayments",
+              label: "Cash Payments",
+              active: pathname === "/credits/cashpayments",
+              icon: "mdi:cash-multiple",
               children: [],
             },
           ],

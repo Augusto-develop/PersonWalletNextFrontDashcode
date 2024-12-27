@@ -3,15 +3,17 @@ import React, { useState } from 'react'
 import { Button } from "@/components/ui/button";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import { Eye, MoreVertical, SquarePen, Trash2 } from "lucide-react";
-import { Financing, useFinancingContext } from './financing-context';
+import { useFinancingContext } from './financing-context';
 import { deleteFinancing as executeDeleteFinancing } from '@/action/financing-actions';
 import CreateFinancing from './financing-create';
+import { Financing } from "@/lib/model/types";
 import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { pwButtonIconTable } from '@/lib/pw-components-styles';
 
 
 
@@ -68,7 +70,7 @@ const FinancingAction: React.FC<FinancingActionProps> = ({ financing }) => {
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="w-7 h-7 ring-offset-transparent border-default-200 dark:border-default-300  text-default-400"
+                                className={pwButtonIconTable}
                                 color="secondary"
                                 onClick={() => setOpen(true)}
                             >
@@ -86,7 +88,7 @@ const FinancingAction: React.FC<FinancingActionProps> = ({ financing }) => {
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="w-7 h-7 ring-offset-transparent border-default-200 dark:border-default-300  text-default-400"
+                                className={pwButtonIconTable}
                                 color="secondary"
                                 onClick={() => handleDeleteClick(financing.id)}
                             >

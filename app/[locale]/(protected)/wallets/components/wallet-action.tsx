@@ -2,8 +2,8 @@
 import React, { useState } from 'react'
 import { Button } from "@/components/ui/button";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import { Eye, MoreVertical, SquarePen, Trash2 } from "lucide-react";
-import { Wallet, useWalletContext } from './wallet-context';
+import { SquarePen, Trash2 } from "lucide-react";
+import { useWalletContext } from './wallet-context';
 import { deleteWallet as executeDeleteWallet } from '@/action/wallet-actions';
 import CreateWallet from './wallet-create';
 import {
@@ -12,8 +12,8 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-
+import { Wallet } from "@/lib/model/types";
+import { pwButtonIconTable } from '@/lib/pw-components-styles';
 
 // Add id as a prop to the component
 interface WalletActionProps {
@@ -68,7 +68,7 @@ const WalletAction: React.FC<WalletActionProps> = ({ wallet }) => {
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="w-7 h-7 ring-offset-transparent border-default-200 dark:border-default-300  text-default-400"
+                                className={pwButtonIconTable}
                                 color="secondary"
                                 onClick={() => setOpen(true)}
                             >
@@ -86,7 +86,7 @@ const WalletAction: React.FC<WalletActionProps> = ({ wallet }) => {
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="w-7 h-7 ring-offset-transparent border-default-200 dark:border-default-300  text-default-400"
+                                className={pwButtonIconTable}
                                 color="secondary"
                                 onClick={() => handleDeleteClick(wallet.id)}
                             >

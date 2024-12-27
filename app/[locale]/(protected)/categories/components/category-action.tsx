@@ -3,10 +3,12 @@ import React, { useState } from 'react'
 import { Button } from "@/components/ui/button";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import { MoreVertical, SquarePen, Trash2 } from "lucide-react";
-import { Category, useCategoryContext } from './category-context';
+import { useCategoryContext } from './category-context';
 import { deleteCategory as executeDeleteCategory } from '@/action/category-actions'
 import CreateCategory from './category-create';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@radix-ui/react-tooltip';
+import { Category } from "@/lib/model/types";
+import { pwButtonIconTable } from '@/lib/pw-components-styles';
 
 // Add id as a prop to the component
 interface CategoryActionProps {
@@ -61,7 +63,7 @@ const CategoryAction: React.FC<CategoryActionProps> = ({ category }) => {
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="w-7 h-7 ring-offset-transparent border-default-200 dark:border-default-300  text-default-400"
+                                className={pwButtonIconTable}
                                 color="secondary"
                                 onClick={() => setOpen(true)}
                             >
@@ -79,7 +81,7 @@ const CategoryAction: React.FC<CategoryActionProps> = ({ category }) => {
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="w-7 h-7 ring-offset-transparent border-default-200 dark:border-default-300  text-default-400"
+                                className={pwButtonIconTable}
                                 color="secondary"
                                 onClick={() => handleDeleteClick(category.id)}
                             >

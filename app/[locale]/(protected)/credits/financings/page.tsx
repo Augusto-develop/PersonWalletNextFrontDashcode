@@ -24,14 +24,15 @@ import {
 } from "@/components/ui/table"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input";
-import { Financing, useFinancingContext, Descricao } from "./components/financing-context";
+import { useFinancingContext } from "./components/financing-context";
 import { Badge } from "@/components/ui/badge";
 import { cn, convertFloatToMoeda } from "@/lib/utils";
 import { useEffect } from "react";
 import { getFinancings } from "@/action/financing-actions";
 import FinancingAction from "./components/financing-action";
-import { IconType, avatarComponents } from "@/components/pwicons/pwicons";
+import { avatarComponents } from "@/components/pwicons/pwicons";
 import { Avatar } from "@/components/ui/avatar";
+import { Financing, IconType, IconAvatar } from "@/lib/model/types";
 
 const ListTable = () => {
     const [sorting, setSorting] = React.useState<SortingState>([])
@@ -57,9 +58,9 @@ const ListTable = () => {
             accessorKey: "descricao",
             header: "Descrição",
             cell: ({ row }) => {
-                const descricao = row.getValue("descricao") as Descricao;
-                const texto = descricao?.text ?? "";
-                const avatar = descricao?.avatar ?? "";
+                const iconAvatar = row.getValue("descricao") as IconAvatar;
+                const texto = iconAvatar?.text ?? "";
+                const avatar = iconAvatar?.avatar ?? "";
                 const IconComponent = avatarComponents[avatar as IconType];
                 return (
                     <div className="font-medium text-card-foreground/80">

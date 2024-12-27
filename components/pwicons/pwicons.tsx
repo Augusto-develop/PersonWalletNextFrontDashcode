@@ -1,5 +1,7 @@
 import React from 'react';
 import './pwicons.css';
+import { Emissor, Bandeira } from "@/lib/model/enums";
+import { IconType } from "@/lib/model/types";
 
 interface IconProps {
     fontSize?: string; // Propriedade opcional para definir o tamanho da fonte
@@ -198,37 +200,46 @@ export const PwLogoNameIcon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
     );
 };
 
-export type IconType =
-    | 'SANTANDER'
-    | 'CAIXA'
-    | 'NUBANK'
-    | 'MERCADOPAGO'
-    | 'ATACADAO'
-    | 'NOVUCARD'
-    | 'OUZE'
-    | 'RIACHUELO'
-    | 'BRASILCARD'
-    | 'NEON'
-    | 'VISA'
-    | 'MASTERCARD'
-    | 'BRADESCO'
-    | 'ITAU'
-    | 'BANCOBRASIL';
+export const C6Icon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
+    return (
+        <div className="iconpw-c6" style={{ fontSize }}>
+            <path className="path1" />
+            <path className="path2" />
+            <path className="path3" />
+            <path className="path4" />
+            <path className="path5" />
+            <path className="path6" />
+            <path className="path7" />            
+        </div>
+    );
+};
+
+export const MidwayIcon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
+    return (
+        <div className="iconpw-midway" style={{ fontSize }}>
+            <path className="path1" />
+            <path className="path2" />
+            <path className="path3" />                      
+        </div>
+    );
+};
 
 export const avatarComponents: Record<IconType, React.FC<{ fontSize?: string }>> = {
-    SANTANDER: SantanderIcon,
-    CAIXA: CaixaIcon,
-    NUBANK: NubankIcon,
-    MERCADOPAGO: MercadoPagoIcon,
-    ATACADAO: AtacadaoIcon,
-    NOVUCARD: NovuIcon,
-    OUZE: OuzeIcon,
-    RIACHUELO: RiachueloIcon,
-    BRASILCARD: BrasilcardIcon,
-    NEON: NeonIcon,
-    VISA: VisaIcon,
-    MASTERCARD: MastercardIcon,
-    BRADESCO: BradescodIcon,
-    ITAU: ItauIcon,
-    BANCOBRASIL: BancoBrasilIcon,
+    [Emissor.SANTANDER]: SantanderIcon,
+    [Emissor.CAIXA]: CaixaIcon,
+    [Emissor.NUBANK]: NubankIcon,
+    [Emissor.MERCADOPAGO]: MercadoPagoIcon,
+    [Emissor.ATACADAO]: AtacadaoIcon,
+    [Emissor.NOVUCARD]: NovuIcon,
+    [Emissor.OUZE]: OuzeIcon,
+    [Emissor.RIACHUELO]: RiachueloIcon,
+    [Emissor.BRASILCARD]: BrasilcardIcon,
+    [Emissor.NEON]: NeonIcon,
+    [Bandeira.VISA]: VisaIcon,
+    [Bandeira.MASTERCARD]: MastercardIcon,
+    [Emissor.BRADESCO]: BradescodIcon,
+    [Emissor.ITAU]: ItauIcon,
+    [Emissor.BANCOBRASIL]: BancoBrasilIcon,
+    [Emissor.C6BANK]: C6Icon,
+    [Emissor.MIDWAY]: MidwayIcon,
 };

@@ -1,13 +1,8 @@
 'use client';
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
+import { Recurring } from "@/lib/model/types";
 
-export type Recurring = {
-  id: string;
-  descricao: string; 
-  diavenc: string;
-  valorcredito: string;  
-};
 
 interface RecurringContextType {
   recurrings: Recurring[];

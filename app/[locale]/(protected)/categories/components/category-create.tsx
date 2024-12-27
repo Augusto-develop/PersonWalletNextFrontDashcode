@@ -10,8 +10,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form"
-import { CategoryDto, convertDtoToCategory, createCategory, editCategory } from "@/action/category-actions";
-import { Category, useCategoryContext } from "./category-context";
+import { convertDtoToCategory, createCategory, editCategory } from "@/action/category-actions";
+import { useCategoryContext } from "./category-context";
+import { CategoryDto } from "@/action/types.schema.dto";
+import { Category } from "@/lib/model/types";
 
 interface CreateTaskProps {
   open: boolean;

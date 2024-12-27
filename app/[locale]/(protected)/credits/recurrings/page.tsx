@@ -20,12 +20,12 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Card, CardContent } from "@/components/ui/card"
-import { Recurring, useRecurringContext } from "./components/recurring-context";
+import { useRecurringContext } from "./components/recurring-context";
 import { convertFloatToMoeda } from "@/lib/utils";
 import { useEffect } from "react";
 import { getRecurrings } from "@/action/recurring-actions";
 import RecurringAction from "./components/recurring-action";
-import { Avatar } from "@/components/ui/avatar";
+import { Recurring } from "@/lib/model/types";
 
 const ListTable = () => {
     const [sorting, setSorting] = React.useState<SortingState>([])

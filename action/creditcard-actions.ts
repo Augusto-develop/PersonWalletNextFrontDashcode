@@ -1,16 +1,14 @@
 'use client';
-import { redirect } from "next/navigation";
 import fetchWithAuth from "./login-actions";
-import { CreditCard } from "@/app/[locale]/(protected)/credits/creditcards/components/creditcard-context";
-import { createOptionsFinancing, FinancingOption } from "./financing-actions";
-import { createOptionsLending, LendingOption } from "./lending-actions";
+import { CreditCard, CreditCardOption } from "@/lib/model/types";
 import { CreditCardDto } from "./types.schema.dto";
-import { CreditOption } from "@/app/[locale]/(protected)/credits/credit-select-group";
+import { TypeCredit } from "@/lib/model/enums";
+
 
 export const getCreditCards = async (): Promise<CreditCard[]> => {
 
     const queryParams = new URLSearchParams();
-    queryParams.append('type', 'CARTAO')
+    queryParams.append('type', TypeCredit.CARTAO)
 
     const res = await fetchWithAuth(`/credito?${queryParams.toString()}`, {
         method: 'GET',
@@ -95,8 +93,6 @@ export function convertToCreditCard(credit: CreditCardDto): CreditCard {
         progress: 10,
     };
 }
-
-export interface CreditCardOption extends CreditOption {};
 
 export const createOptionsCreditCards = async (): Promise<CreditCardOption[]> => {
 

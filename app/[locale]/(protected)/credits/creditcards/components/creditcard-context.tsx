@@ -1,18 +1,7 @@
 'use client';
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-
-export type CreditCard = {
-  id: string;
-  title: string;
-  avatar: string;
-  diavenc: string;
-  diafech: string;
-  limite: string;
-  progress: number;  
-  emissor: string;
-  bandeira: string;
-};
+import { CreditCard } from "@/lib/model/types";
 
 interface CreditCardContextType {
   creditcards: CreditCard[];

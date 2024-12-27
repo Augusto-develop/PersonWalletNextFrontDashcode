@@ -1,11 +1,7 @@
 'use client';
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-
-export type Category = {
-  id: string;
-  description: string;   
-};
+import { Category } from "@/lib/model/types";
 
 interface CategoryContextType {
   categories: Category[];
@@ -46,7 +42,7 @@ export const CategoryProvider = ({ children }: CategoryProviderProps) => {
   };
 
   return (
-    <CategoryContext.Provider value={{ categories, setCategories, deleteCategory, editCategory  }}>
+    <CategoryContext.Provider value={{ categories, setCategories, deleteCategory, editCategory }}>
       {children}
     </CategoryContext.Provider>
   );

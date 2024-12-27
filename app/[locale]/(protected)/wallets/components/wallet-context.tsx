@@ -1,12 +1,7 @@
 'use client';
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-
-export type Wallet = {
-  id: string;
-  description: string;
-  active: boolean;  
-};
+import { Wallet } from "@/lib/model/types";
 
 interface WalletContextType {
   wallets: Wallet[];

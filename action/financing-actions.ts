@@ -1,14 +1,14 @@
 'use client';
 import { redirect } from "next/navigation";
 import fetchWithAuth from "./login-actions";
-import { Financing } from "@/app/[locale]/(protected)/credits/financings/components/financing-context";
+import { Financing, FinancingOption } from "@/lib/model/types";
+import { TypeCredit } from "@/lib/model/enums";
 import { FinancingDto } from "./types.schema.dto";
-import { CreditOption } from "@/app/[locale]/(protected)/credits/credit-select-group";
 
 export const getFinancings = async (): Promise<Financing[]> => {
 
     const queryParams = new URLSearchParams();
-    queryParams.append('type', 'FINANCIAMENTO')
+    queryParams.append('type', TypeCredit.FINANCIAMENTO)
 
     const res = await fetchWithAuth(`/credito?${queryParams.toString()}`, {
         method: 'GET',
@@ -91,8 +91,6 @@ export function convertToFinancing(credit: FinancingDto): Financing {
         valorcredito: credit.valorcredito?.toString(),
     }
 }
-
-export interface FinancingOption extends CreditOption {};
 
 export const createOptionsFinancing = async (): Promise<FinancingOption[]> => {
 

@@ -9,9 +9,10 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { CreditCard, useCreditCardContext } from './creditcard-context';
+import { useCreditCardContext } from './creditcard-context';
 import { deleteCreditCard as executeDeleteCreditCard } from '@/action/creditcard-actions'
 import CreateCreditCard from './creditcard-create';
+import { CreditCard } from "@/lib/model/types";
 
 // Add id as a prop to the component
 interface CreditCardActionProps {

@@ -1,14 +1,15 @@
 'use client';
 import { redirect } from "next/navigation";
 import fetchWithAuth from "./login-actions";
-import { Lending } from "@/app/[locale]/(protected)/credits/lendings/components/lending-context";
 import {LendingDto} from "./types.schema.dto";
 import { CreditOption } from "@/app/[locale]/(protected)/credits/credit-select-group";
+import { Lending, LendingOption } from "@/lib/model/types";
+import { TypeCredit } from "@/lib/model/enums";
 
 export const getLendings = async (): Promise<Lending[]> => {
 
     const queryParams = new URLSearchParams();
-    queryParams.append('type', 'EMPRESTIMO')
+    queryParams.append('type', TypeCredit.EMPRESTIMO)
 
     const res = await fetchWithAuth(`/credito?${queryParams.toString()}`, {
         method: 'GET',
@@ -92,7 +93,7 @@ export function convertToLending(credit: LendingDto): Lending {
     }
 }
 
-export interface LendingOption extends CreditOption {};
+
 
 export const createOptionsLending = async (): Promise<LendingOption[]> => {
 

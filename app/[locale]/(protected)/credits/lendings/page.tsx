@@ -20,13 +20,14 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Card, CardContent } from "@/components/ui/card"
-import { Lending, useLendingContext, Descricao } from "./components/lending-context";
+import { useLendingContext} from "./components/lending-context";
 import { convertFloatToMoeda } from "@/lib/utils";
 import { useEffect } from "react";
 import { getLendings } from "@/action/lending-actions";
 import LendingAction from "./components/lending-action";
-import { IconType, avatarComponents } from "@/components/pwicons/pwicons";
+import { avatarComponents } from "@/components/pwicons/pwicons";
 import { Avatar } from "@/components/ui/avatar";
+import { Lending, IconType, IconAvatar } from "@/lib/model/types";
 
 const ListTable = () => {
     const [sorting, setSorting] = React.useState<SortingState>([])
@@ -52,7 +53,7 @@ const ListTable = () => {
             accessorKey: "descricao",
             header: "Descrição",
             cell: ({ row }) => {
-                const descricao = row.getValue("descricao") as Descricao;
+                const descricao = row.getValue("descricao") as IconAvatar;
                 const texto = descricao?.text ?? "";
                 const avatar = descricao?.avatar ?? "";
                 const IconComponent = avatarComponents[avatar as IconType];

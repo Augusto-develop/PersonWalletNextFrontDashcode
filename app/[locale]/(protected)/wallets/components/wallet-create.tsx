@@ -11,8 +11,12 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import React from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form"
-import { WalletDto, convertDtoToWallet, createWallet, editWallet } from "@/action/wallet-actions";
-import { Wallet, useWalletContext } from "./wallet-context";
+import { convertDtoToWallet, createWallet, editWallet } from "@/action/wallet-actions";
+import { useWalletContext } from "./wallet-context";
+import { WalletDto } from "@/action/types.schema.dto";
+import { emissorOptions } from "@/lib/options-select";
+import Select from 'react-select'
+import { Wallet, Option } from "@/lib/model/types";
 
 interface CreateTaskProps {
   open: boolean;
@@ -22,20 +26,23 @@ interface CreateTaskProps {
 
 type Inputs = {
   id?: string;
-  description: string;
+  descricao: string;
+  emissor: Option;
   active?: boolean;
 }
 
 const submitCreate = async (data: {
   id?: string | null;
-  description: any;
+  descricao: any;
+  emissor: any;
   active?: any;
 }): Promise<WalletDto | undefined> => {
 
   // Prepara o payload
   const payload: WalletDto = {
     id: data.id ?? "",
-    descricao: data.description,
+    descricao: data.descricao,
+    emissor: data.emissor.value,
     ativo: data.active,
   };
 
@@ -50,7 +57,7 @@ const submitCreate = async (data: {
 
 const CreateWallet = ({ open, setOpen, dataWallet = null }: CreateTaskProps) => {
 
-  const { wallets, setWallets, editWallet } = useWalletContext();  
+  const { wallets, setWallets, editWallet } = useWalletContext();
 
   const {
     register,
@@ -84,18 +91,41 @@ const CreateWallet = ({ open, setOpen, dataWallet = null }: CreateTaskProps) => 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
           <div className="space-y-1">
-            <Label htmlFor="description">Descrição</Label>
+            <Label htmlFor="descricao">Descrição</Label>
             <Input
-              id="description"
+              id="descricao"
               placeholder="Description Wallet"
-              {...register("description", { required: "Descrição is required." })}
-              color={errors.description ? "destructive" : "default"}
-              defaultValue={dataWallet?.description || ""}
+              {...register("descricao", { required: "Descrição is required." })}
+              color={errors.descricao ? "destructive" : "secondary"}
+              defaultValue={dataWallet?.descricao.text || ""}
             />
-            {errors.description &&
-              <p className="text-destructive  text-sm font-medium">{errors.description.message}</p>}
+            {errors.descricao &&
+              <p className="text-destructive  text-sm font-medium">{errors.descricao.message}</p>}
           </div>
-
+          <div className="space-y-1">
+            <Label htmlFor="emissor">Emissor</Label>
+            <Controller
+              name="emissor"
+              control={control}
+              defaultValue={dataWallet !== null ?
+                emissorOptions.find((option) => option.value === dataWallet.descricao.avatar) :
+                undefined}
+              rules={{ required: "Emissor is required." }}
+              render={({ field, fieldState }) => (
+                <>
+                  <Select
+                    {...field}
+                    className="react-select"
+                    classNamePrefix="select"
+                    options={emissorOptions}
+                  />
+                  {fieldState.error && (
+                    <p className="text-red-500 text-sm">{fieldState.error.message}</p>
+                  )}
+                </>
+              )}
+            />
+          </div>
           <div className="flex items-center gap-3">
             <Label htmlFor="active">Ativo</Label>
             <Controller

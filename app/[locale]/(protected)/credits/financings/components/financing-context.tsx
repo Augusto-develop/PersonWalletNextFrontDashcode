@@ -1,18 +1,7 @@
 'use client';
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-
-export type Descricao = {
-  text: string;
-  avatar: string;
-}
-
-export type Financing = {
-  id: string;
-  descricao: Descricao;
-  diavenc: string;
-  valorcredito: string;  
-};
+import { Financing } from "@/lib/model/types";
 
 interface FinancingContextType {
   financings: Financing[];

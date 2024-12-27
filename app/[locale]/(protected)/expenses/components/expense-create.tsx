@@ -8,17 +8,20 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form"
-import { ExpenseDto, convertDtoToExpense, createExpense, editExpense } from "@/action/expense-actions";
-import { Expense, useExpenseContext } from "./expense-context";
-import { CategoryOption, createOptionsCategories } from "@/action/category-actions";
-import Select, { MultiValue } from 'react-select'
+import { convertDtoToExpense, createExpense, editExpense } from "@/action/expense-actions";
+import { useExpenseContext } from "./expense-context";
+import { createOptionsCategories } from "@/action/category-actions";
+import Select from 'react-select'
 import { CleaveInput } from "@/components/ui/cleave";
-import { convertFloatToMoeda, convertToNumeric, getCurrentDate, convertToAmericanDate, convertDatetimeToDate } from "@/lib/utils";
-import Image from "next/image";
-import { format } from "date-fns";
+import { convertFloatToMoeda, convertToNumeric, getCurrentDate, convertToAmericanDate } from "@/lib/utils";
+import { ExpenseDto } from "@/action/types.schema.dto";
+import { createOptionsWallets } from "@/action/wallet-actions";
+import { Expense, CategoryOption, WalletOption, IconType } from "@/lib/model/types";
+import { avatarComponents } from "@/components/pwicons/pwicons";
+import { Avatar } from "@/components/ui/avatar";
+import { Icon } from "@/components/ui/icon";
 
 interface CreateTaskProps {
   open: boolean;
@@ -36,6 +39,7 @@ type Inputs = {
   parcela: string;
   datacompra: string;
   valor: string;
+  carteira?: string;
 }
 
 const separateParcela = (value: string) => {
@@ -54,8 +58,8 @@ const submitCreate = async (data: Inputs
 
 ): Promise<ExpenseDto | undefined> => {
 
-  const parcela = separateParcela(data.parcela);   
-  
+  const parcela = separateParcela(data?.parcela || '01/01');
+
   const payload: ExpenseDto = {
     id: data.id ?? "",
     creditId: data.creditId,
@@ -80,13 +84,15 @@ const submitCreate = async (data: Inputs
   }
 };
 
-
 const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) => {
 
   const { expenses, setExpenses, editExpense, filter } = useExpenseContext();
   const [categoriaOptions, setCategoriaOptions] = useState<CategoryOption[]>([]);
+  const [walletOptions, setWalletOptions] = useState<WalletOption[]>([]);
 
   const isEditParent: boolean = dataExpense?.isParent || false;
+  const isEditRecurring: boolean = filter.isRecurring;
+  const isCashPayment: boolean = filter.isCashPayment;
 
   useEffect(() => {
     const fetchCategoryOptions = async () => {
@@ -95,6 +101,13 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
     };
 
     fetchCategoryOptions();
+
+    const fetchWalletOptions = async () => {
+      const options: WalletOption[] = await createOptionsWallets();
+      setWalletOptions(options);
+    };
+
+    fetchWalletOptions();
   }, []);
 
   const {
@@ -105,6 +118,7 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
     setValue,
     formState: { errors },
   } = useForm<Inputs>()
+
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
 
     data.id = dataExpense?.id ?? undefined;
@@ -129,8 +143,8 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
         <DialogHeader>
           <DialogTitle>Create Expense</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4"> 
-          {isEditParent && (
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {(isEditParent || isEditRecurring) && (
             <div className="space-y-1">
               <Label htmlFor="categoria">Categoria</Label>
               <Input
@@ -144,8 +158,7 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
               />
             </div>
           )}
-
-          {isEditParent === false && (
+          {isEditParent === false && isEditRecurring === false && (
             <div className="space-y-1">
               <Label htmlFor="categoria">Categoria</Label>
               <Controller
@@ -174,7 +187,7 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
           )}
 
           <div className="space-y-1">
-            <Label htmlFor="datacompra">Data da Compra</Label>
+            <Label htmlFor="datacompra">{isEditRecurring ? "Vencimento" : "Data da Compra"}</Label>
             <Controller
               name="datacompra"
               control={control}
@@ -187,7 +200,7 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
                     id="date"
                     options={{ date: true, datePattern: ["d", "m", "Y"] }}
                     placeholder="MM/DD/YYYY"
-                    readOnly={isEditParent}
+                    readOnly={isEditParent || isEditRecurring}
                   />
                   {fieldState.error && (
                     <p className="text-red-500 text-sm">{fieldState.error.message}</p>
@@ -205,7 +218,7 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
               {...register("description", { required: "Descrição is required." })}
               color={errors.description ? "destructive" : "secondary"}
               defaultValue={dataExpense?.description || ""}
-              readOnly={isEditParent}
+              readOnly={isEditParent || isEditRecurring}
             />
             {errors.description &&
               <p className="text-destructive  text-sm font-medium">{errors.description.message}</p>}
@@ -227,7 +240,7 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
                       numericOnly: true, // Permite apenas números
                     }}
                     placeholder="01 / 01"
-                    readOnly={isEditParent}
+                    readOnly={isEditParent || isCashPayment}
                   />
                   {fieldState.error && (
                     <p className="text-red-500 text-sm">{fieldState.error.message}</p>
@@ -274,23 +287,51 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
                 </>
               )}
             />
-          </div>          
-          {/* <div className="flex items-center gap-3">
-            <Label htmlFor="active">Ativo</Label>
-            <Controller
-              name="active"
-              control={control}
-              defaultValue={dataExpense?.active || false} // Valor padrão baseado no `dataExpense`
-              render={({ field }) => (
-                <Switch
-                  id="active"
-                  checked={field.value} // O estado é gerenciado pelo `react-hook-form`
-                  onCheckedChange={field.onChange} // Atualiza o estado no formulário
-                  color="info"
-                />
-              )}
-            />
-          </div> */}
+          </div>
+
+          {isCashPayment && (
+            <div className="space-y-1">
+              <Label htmlFor="carteira">Carteira de Pagamento</Label>
+              <Controller
+                name="carteira"
+                control={control}
+                rules={{ required: "Carteira is required." }}
+                render={({ field, fieldState }) => (
+                  <>
+                    <Select
+                      {...field}
+                      className="react-select"
+                      classNamePrefix="select"
+                      options={walletOptions}
+                      value={walletOptions.find(option => option.value === field.value)}  // Passa apenas o objeto selecionado
+                      onChange={(selected) => {
+                        field.onChange(selected ? selected.value : undefined); // Passa apenas o value (id)
+                      }}
+                      formatOptionLabel={(option) => {  // Customiza a renderização da opção
+                        const IconComponent = avatarComponents[option.avatar as IconType]; // Assumindo que "avatar" é um campo nas opções
+
+                        return (
+                            <div className="flex items-center">
+                                {IconComponent ? (
+                                    <Avatar className="flex-none h-5 w-5 rounded mr-2">
+                                        <IconComponent fontSize="20px" />
+                                    </Avatar>
+                                ) : (
+                                    <Icon icon={option.avatar} className='w-5 h-5 text-default-500 dark:text-secondary-foreground mr-2' />
+                                )}
+                                <span className="text-sm font-medium">{option.label}</span>
+                            </div>
+                        );
+                    }}
+                    />
+                    {fieldState.error && (
+                      <p className="text-red-500 text-sm">{fieldState.error.message}</p>
+                    )}
+                  </>
+                )}
+              />
+            </div>
+          )}
 
           <div className="flex justify-end">
             <Button type="submit">Save</Button>

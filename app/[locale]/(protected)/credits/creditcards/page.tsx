@@ -6,12 +6,13 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import {
-    avatarComponents, IconType
+    avatarComponents
 } from "@/components/pwicons/pwicons";
 import EmptyProject from './components/empty';
 import CreditCardAction from './components/creditcard-action';
-import { CreditCard, useCreditCardContext } from './components/creditcard-context';
+import { useCreditCardContext } from './components/creditcard-context';
 import { convertFloatToMoeda } from '@/lib/utils';
+import { CreditCard, IconType } from "@/lib/model/types";
 
 const CreditCardGrid = () => {
 

@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Button } from "@/components/ui/button";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import { Eye, MoreVertical, SquarePen, Trash2 } from "lucide-react";
-import { Recurring, useRecurringContext } from './recurring-context';
+import { useRecurringContext } from './recurring-context';
 import { deleteRecurring as executeDeleteRecurring } from '@/action/recurring-actions';
 import CreateRecurring from './recurring-create';
 import {
@@ -13,6 +13,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { pwButtonIconTable } from '@/lib/pw-components-styles';
+import { Recurring } from "@/lib/model/types";
 
 
 

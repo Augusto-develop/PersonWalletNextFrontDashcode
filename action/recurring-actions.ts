@@ -1,14 +1,13 @@
 'use client';
-import { redirect } from "next/navigation";
 import fetchWithAuth from "./login-actions";
-import { Recurring } from "@/app/[locale]/(protected)/credits/recurrings/components/recurring-context";
 import { RecurringDto } from "./types.schema.dto";
-import { CreditOption } from "@/app/[locale]/(protected)/credits/credit-select-group";
+import { Recurring, RecurringOption } from "@/lib/model/types";
+import { TypeCredit } from "@/lib/model/enums";
 
 export const getRecurrings = async (): Promise<Recurring[]> => {
 
     const queryParams = new URLSearchParams();
-    queryParams.append('type', 'DESPESAFIXA')
+    queryParams.append('type', TypeCredit.DESPESAFIXA)
 
     const res = await fetchWithAuth(`/credito?${queryParams.toString()}`, {
         method: 'GET',
@@ -89,8 +88,6 @@ export function convertToRecurring(credit: RecurringDto): Recurring {
 
     }
 }
-
-export interface RecurringOption extends CreditOption { };
 
 export const createOptionsRecurring = async (): Promise<RecurringOption[]> => {
 

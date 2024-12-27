@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Button } from "@/components/ui/button";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import { Eye, MoreVertical, SquarePen, Trash2 } from "lucide-react";
-import { Lending, useLendingContext } from './lending-context';
+import { useLendingContext } from './lending-context';
 import { deleteLending as executeDeleteLending } from '@/action/lending-actions';
 import CreateLending from './lending-create';
 import {
@@ -12,6 +12,8 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Lending } from "@/lib/model/types";
+import { pwButtonIconTable } from '@/lib/pw-components-styles';
 
 
 
@@ -68,7 +70,7 @@ const LendingAction: React.FC<LendingActionProps> = ({ lending }) => {
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="w-7 h-7 ring-offset-transparent border-default-200 dark:border-default-300  text-default-400"
+                                className={pwButtonIconTable}
                                 color="secondary"
                                 onClick={() => setOpen(true)}
                             >
@@ -86,7 +88,7 @@ const LendingAction: React.FC<LendingActionProps> = ({ lending }) => {
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="w-7 h-7 ring-offset-transparent border-default-200 dark:border-default-300  text-default-400"
+                                className={pwButtonIconTable}
                                 color="secondary"
                                 onClick={() => handleDeleteClick(lending.id)}
                             >

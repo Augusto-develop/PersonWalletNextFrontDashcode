@@ -1,23 +1,9 @@
 'use client';
 import { addLeadingZeros, convertDatetimeToDate } from "@/lib/utils";
 import fetchWithAuth from "./login-actions";
-import { Expense } from "@/app/[locale]/(protected)/expenses/components/expense-context";
-
-export type ExpenseDto = {
-    id?: string;
-    creditId?: string;
-    categoriaId: string;
-    anofat: string;
-    mesfat: string;
-    descricao: string;
-    numparc: number;
-    qtdeparc: number;
-    lancamento: string;
-    valor: number | string;
-    fixa: boolean;
-    generateparc: boolean;
-    parentId?: string;
-};
+import { ExpenseDto } from "./types.schema.dto";
+import { Expense } from "@/lib/model/types";
+import { TypeCredit } from "@/lib/model/enums";
 
 export const getExpenses = async (
     creditId?: string,
@@ -27,7 +13,11 @@ export const getExpenses = async (
     // Monta a URL com os parâmetros opcionais
     const queryParams = new URLSearchParams();
     if (creditId) {
-        const validValues = ["FINANCIAMENTO", "EMPRESTIMO", "DESPESAFIXA"];
+        const validValues = [
+            TypeCredit.FINANCIAMENTO.toString(), 
+            TypeCredit.EMPRESTIMO.toString(), 
+            TypeCredit.DESPESAFIXA.toString()
+        ];
         if (validValues.includes(creditId)) {
             queryParams.append('type', creditId);
         } else {

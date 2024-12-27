@@ -2,12 +2,14 @@
 import React, { useState } from 'react'
 import { Button } from "@/components/ui/button";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
-import { MoreVertical, SquarePen, Trash2 } from "lucide-react";
-import { Expense, useExpenseContext } from './expense-context';
-import { deleteExpense as executeDeleteExpense, deleteParcelasExpense, createParcelasExpense, ExpenseDto, convertDtoToExpense } from '@/action/expense-actions'
+import { SquarePen, Trash2 } from "lucide-react";
+import { useExpenseContext } from './expense-context';
+import { deleteExpense as executeDeleteExpense, deleteParcelasExpense, createParcelasExpense, convertDtoToExpense } from '@/action/expense-actions'
 import CreateExpense from './expense-create';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@radix-ui/react-tooltip';
 import { pwButtonIconTable, pwButtonTextTable } from '@/lib/pw-components-styles';
+import { Expense } from "@/lib/model/types";
+import { ExpenseDto } from '@/action/types.schema.dto';
 
 interface ExpenseActionProps {
     expense: Expense;
@@ -39,12 +41,7 @@ const ExpenseAction: React.FC<ExpenseActionProps> = ({ expense }) => {
     const handleDeleteCancel = () => {
         setOpenDeleteDialog(false);
     };
-
-
-
-
-
-
+    
     const handleParcelasClick = (id: string, type: "create" | "delete") => {
         setSelectedRowId(id);
         setActionType(type);

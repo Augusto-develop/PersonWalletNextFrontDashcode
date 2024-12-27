@@ -1,18 +1,7 @@
 'use client';
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-
-export type Descricao = {
-  text: string;
-  avatar: string;
-}
-
-export type Lending = {
-  id: string;
-  descricao: Descricao; 
-  diavenc: string;
-  valorcredito: string;  
-};
+import { Lending } from "@/lib/model/types";
 
 interface LendingContextType {
   lendings: Lending[];

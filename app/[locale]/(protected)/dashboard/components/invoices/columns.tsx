@@ -12,12 +12,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import {
-  avatarComponents, IconType
-} from "@/components/pwicons/pwicons"
-
+import { Avatar } from "@/components/ui/avatar"
+import { avatarComponents } from "@/components/pwicons/pwicons"
+import { IconType } from "@/lib/model/types";
 import { cn } from "@/lib/utils"
 import React from "react"
 

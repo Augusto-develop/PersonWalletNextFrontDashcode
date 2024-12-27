@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { addLeadingZeros, convertToNumeric, convertFloatToMoeda } from "@/lib/utils";
-import { Option, dayOptions, emissorOptions } from "@/lib/options-select";
+import { dayOptions, emissorOptions } from "@/lib/options-select";
 import {
   Dialog,
   DialogContent,
@@ -16,8 +16,10 @@ import Select from 'react-select'
 import { CleaveInput } from "@/components/ui/cleave";
 import fetchWithAuth from "@/action/login-actions";
 import { convertToLending, createLending, editLending } from "@/action/lending-actions";
-import { Lending, useLendingContext } from "./lending-context";
+import { useLendingContext } from "./lending-context";
 import { LendingDto } from "@/action/types.schema.dto";
+import { Lending, Option } from "@/lib/model/types";
+import { TypeCredit } from "@/lib/model/enums";
 
 interface CreateTaskProps {
   open: boolean;
@@ -30,7 +32,7 @@ type Inputs = {
   descricao: string;
   credor: Option;
   vencimento: Option;
-  valorcredito: string;  
+  valorcredito: string;
 }
 
 const submitCreate = async (data: Inputs): Promise<LendingDto | undefined> => {
@@ -39,8 +41,8 @@ const submitCreate = async (data: Inputs): Promise<LendingDto | undefined> => {
     id: data.id ?? "",
     descricao: data.descricao,
     diavenc: addLeadingZeros(data.vencimento.value, 2),
-    valorcredito: convertToNumeric(data.valorcredito),    
-    type: "EMPRESTIMO",   
+    valorcredito: convertToNumeric(data.valorcredito),
+    type: TypeCredit.EMPRESTIMO,
     emissor: data.credor.value
   };
 
@@ -192,7 +194,7 @@ const CreateLending = ({ open, setOpen, dataLending = null }: CreateTaskProps) =
                 </>
               )}
             />
-          </div>          
+          </div>
           <div className="flex justify-end">
             <Button type="submit">Save</Button>
           </div>
