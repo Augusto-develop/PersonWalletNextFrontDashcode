@@ -40,6 +40,7 @@ export enum Emissor {
     NEON = "NEON",
     C6BANK = "C6BANK",
     MIDWAY = "MIDWAY",
+    BANCOPAN = "BANCOPAN",
 }
 
 export const EmissorText = {
@@ -58,4 +59,5 @@ export const EmissorText = {
     [Emissor.NEON]: "Neon",
     [Emissor.C6BANK]: "C6 Bank",
     [Emissor.MIDWAY]: "Midway",
+    [Emissor.BANCOPAN]: "Banco Pan",
 };

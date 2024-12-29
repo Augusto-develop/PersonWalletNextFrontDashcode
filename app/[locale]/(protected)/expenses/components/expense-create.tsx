@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form"
-import { convertDtoToExpense, createExpense, editExpense } from "@/action/expense-actions";
+import { convertDtoToExpense, createExpense, editExpense as submitEditExpense } from "@/action/expense-actions";
 import { useExpenseContext } from "./expense-context";
 import { createOptionsCategories } from "@/action/category-actions";
 import Select from 'react-select'
@@ -22,6 +22,7 @@ import { Expense, CategoryOption, WalletOption, IconType } from "@/lib/model/typ
 import { avatarComponents } from "@/components/pwicons/pwicons";
 import { Avatar } from "@/components/ui/avatar";
 import { Icon } from "@/components/ui/icon";
+import { TypeCredit, Option } from "@/lib/model/enums";
 
 interface CreateTaskProps {
   open: boolean;
@@ -31,11 +32,11 @@ interface CreateTaskProps {
 
 type Inputs = {
   id?: string;
-  creditId: string;
+  creditId: string | undefined;
   mesfat: string;
   anofat: string;
   description: string;
-  categoria: string;
+  categoria: Option;
   parcela: string;
   datacompra: string;
   valor: string;
@@ -54,36 +55,6 @@ const separateParcela = (value: string) => {
   return { part1: intPart1, part2: intPart2 };
 };
 
-const submitCreate = async (data: Inputs
-
-): Promise<ExpenseDto | undefined> => {
-
-  const parcela = separateParcela(data?.parcela || '01/01');
-
-  const payload: ExpenseDto = {
-    id: data.id ?? "",
-    creditId: data.creditId,
-    descricao: data.description,
-    categoriaId: data.categoria,
-    anofat: data.anofat,
-    mesfat: data.mesfat,
-    numparc: parcela.part1,
-    qtdeparc: parcela.part2,
-    lancamento: new Date(convertToAmericanDate(data.datacompra)).toISOString(),
-    valor: convertToNumeric(data.valor),
-    fixa: false,
-    generateparc: false,
-  };
-
-  try {
-    return payload.id?.trim() !== "" ?
-      editExpense({ id: payload?.id, valor: payload.valor }) :
-      createExpense(payload);
-  } catch (error) {
-    console.error("Erro de requisição:", error);
-  }
-};
-
 const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) => {
 
   const { expenses, setExpenses, editExpense, filter } = useExpenseContext();
@@ -91,8 +62,43 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
   const [walletOptions, setWalletOptions] = useState<WalletOption[]>([]);
 
   const isEditParent: boolean = dataExpense?.isParent || false;
-  const isEditRecurring: boolean = filter.isRecurring;
-  const isCashPayment: boolean = filter.isCashPayment;
+  const isEditRecurring: boolean = filter.credit?.type === TypeCredit.DESPESAFIXA;
+  const isCashPayment: boolean = filter.credit?.type === TypeCredit.AVISTA;
+  const isLending: boolean = filter.credit?.type === TypeCredit.EMPRESTIMO;
+
+  console.log(dataExpense);
+
+  const submitCreate = async (data: Inputs
+
+  ): Promise<ExpenseDto | undefined> => {
+
+    const parcela = separateParcela(data?.parcela || '01/01');
+
+    const payload: ExpenseDto = {
+      id: data.id ?? "",
+      creditId: data.creditId,
+      descricao: data.description,
+      categoriaId: data.categoria.value,
+      anofat: data.anofat,
+      mesfat: data.mesfat,
+      numparc: parcela.part1,
+      qtdeparc: parcela.part2,
+      lancamento: new Date(convertToAmericanDate(data.datacompra)).toISOString(),
+      valor: convertToNumeric(data.valor),
+      fixa: false,
+      generateparc: false,
+    };
+
+    try {
+      return payload.id?.trim() !== "" ?
+        submitEditExpense(payload) :
+        createExpense(payload);
+    } catch (error) {
+      console.error("Erro de requisição:", error);
+    }
+  };
+
+
 
   useEffect(() => {
     const fetchCategoryOptions = async () => {
@@ -122,7 +128,7 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
 
     data.id = dataExpense?.id ?? undefined;
-    data.creditId = filter.creditcard;
+    data.creditId = filter.credit?.value;
     data.mesfat = filter.mes;
     data.anofat = filter.ano;
 
@@ -164,6 +170,9 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
               <Controller
                 name="categoria"
                 control={control}
+                defaultValue={dataExpense !== null ?
+                  categoriaOptions.find((option) => option.value === dataExpense.categoriaId) :
+                  undefined}
                 rules={{ required: "Categoria is required." }}
                 render={({ field, fieldState }) => (
                   <>
@@ -172,10 +181,6 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
                       className="react-select"
                       classNamePrefix="select"
                       options={categoriaOptions}
-                      value={categoriaOptions.find(option => option.value === field.value)}  // Passa apenas o objeto selecionado
-                      onChange={(selected) => {
-                        field.onChange(selected ? selected.value : undefined); // Passa apenas o value (id)
-                      }}
                     />
                     {fieldState.error && (
                       <p className="text-red-500 text-sm">{fieldState.error.message}</p>
@@ -185,9 +190,8 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
               />
             </div>
           )}
-
           <div className="space-y-1">
-            <Label htmlFor="datacompra">{isEditRecurring ? "Vencimento" : "Data da Compra"}</Label>
+            <Label htmlFor="datacompra">{isEditRecurring || isLending ? "Vencimento" : "Data da Compra"}</Label>
             <Controller
               name="datacompra"
               control={control}
@@ -311,18 +315,18 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
                         const IconComponent = avatarComponents[option.avatar as IconType]; // Assumindo que "avatar" é um campo nas opções
 
                         return (
-                            <div className="flex items-center">
-                                {IconComponent ? (
-                                    <Avatar className="flex-none h-5 w-5 rounded mr-2">
-                                        <IconComponent fontSize="20px" />
-                                    </Avatar>
-                                ) : (
-                                    <Icon icon={option.avatar} className='w-5 h-5 text-default-500 dark:text-secondary-foreground mr-2' />
-                                )}
-                                <span className="text-sm font-medium">{option.label}</span>
-                            </div>
+                          <div className="flex items-center">
+                            {IconComponent ? (
+                              <Avatar className="flex-none h-5 w-5 rounded mr-2">
+                                <IconComponent fontSize="20px" />
+                              </Avatar>
+                            ) : (
+                              <Icon icon={option.avatar} className='w-5 h-5 text-default-500 dark:text-secondary-foreground mr-2' />
+                            )}
+                            <span className="text-sm font-medium">{option.label}</span>
+                          </div>
                         );
-                    }}
+                      }}
                     />
                     {fieldState.error && (
                       <p className="text-red-500 text-sm">{fieldState.error.message}</p>

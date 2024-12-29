@@ -1,8 +1,6 @@
 'use client';
-import { redirect } from "next/navigation";
 import fetchWithAuth from "./login-actions";
-import {LendingDto} from "./types.schema.dto";
-import { CreditOption } from "@/app/[locale]/(protected)/credits/credit-select-group";
+import { LendingDto } from "./types.schema.dto";
 import { Lending, LendingOption } from "@/lib/model/types";
 import { TypeCredit } from "@/lib/model/enums";
 
@@ -87,9 +85,9 @@ export function convertToLending(credit: LendingDto): Lending {
         descricao: {
             text: credit.descricao,
             avatar: credit.emissor,
-        },       
+        },
         diavenc: credit.diavenc,
-        valorcredito: credit.valorcredito?.toString()        
+        valorcredito: credit.valorcredito?.toString()
     }
 }
 
@@ -103,6 +101,7 @@ export const createOptionsLending = async (): Promise<LendingOption[]> => {
         label: item.descricao.text,
         value: item.id,
         avatar: item.descricao.avatar,
+        type: TypeCredit.EMPRESTIMO
     })) as LendingOption[];
 
     return lendingOptions;

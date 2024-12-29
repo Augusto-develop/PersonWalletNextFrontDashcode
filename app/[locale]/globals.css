@@ -608,3 +608,7 @@ html[dir=rtl] .react-select .select__loading-indicator {
 .dark\:color-icon-pw:is(.dark *), .dark\:color-icon-pw:is(.dark *) svg {
   color: rgba(255, 213, 62, 0.5);
 }
+
+.app-payment-sortable-collums{
+  height: calc(var(--vh, 1vh) * 100 - 19.1rem);
+}

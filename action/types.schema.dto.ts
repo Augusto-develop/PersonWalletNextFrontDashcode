@@ -13,6 +13,11 @@ export interface CreditCardDto extends CreditDto {
     bandeira: string;
 };
 
+export interface InvoiceDto extends CreditCardDto {    
+    totalFatura: string;    
+    despesas: ExpenseDto[];    
+};
+
 export interface FinancingDto extends CreditDto {
     diavenc: string;
     valorcredito: number | string;
@@ -28,6 +33,7 @@ export interface LendingDto extends CreditDto {
 export interface RecurringDto extends CreditDto {
     diavenc: string;
     valorcredito: number | string;
+    categoriaId: string;
 };
 
 export interface CashPaymentDto extends CreditDto { };

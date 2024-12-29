@@ -10,14 +10,21 @@ import {
 } from "@/components/pwicons/pwicons";
 import { Avatar } from "@/components/ui/avatar";
 import { CleaveInput } from "@/components/ui/cleave";
-import { getCurrentMonth, getCurrentYear, months } from "@/lib/utils";
+import { addLeadingZeros, getCurrentMonth, getCurrentYear, months } from "@/lib/utils";
 import { useExpenseContext } from "./expense-context";
 import { getExpenses, createExpenseRecurring } from "@/action/expense-actions";
 import { Loader2 } from "lucide-react";
 import { Icon } from "@/components/ui/icon";
-import { GroupedCreditOption, createOptionsGroupCredit, findCreditOptionByValue } from "@/app/[locale]/(protected)/credits/credit-select-group";
-import { Expense, InputsFilterExpense, IconType } from "@/lib/model/types";
+import { createOptionsGroupCredit } from "@/app/[locale]/(protected)/credits/credit-select-group";
+import { Expense, InputsFilterExpense, IconType, GroupedCreditOption } from "@/lib/model/types";
 import { TypeCredit } from "@/lib/model/enums";
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import 'dayjs/locale/pt-br';
+import { ThemeProvider, CssBaseline, createTheme, FormHelperText } from '@mui/material';
+import { themeCustomMuiDatepicker, DayJsObject } from "@/components/mui-datepicker";
 
 const ExpenseWrapper = ({ children }: { children: React.ReactNode }) => {
     const [open, setOpen] = useState<boolean>(false);
@@ -38,22 +45,22 @@ const ExpenseWrapper = ({ children }: { children: React.ReactNode }) => {
         handleSubmit,
         control,
     } = useForm<InputsFilterExpense>()
+
     const onSubmit: SubmitHandler<InputsFilterExpense> = async (data) => {
         setIsSubmitting(true);
-
         data.isSubmit = true;
-
-        console.log(data);
 
         const dataFilter: InputsFilterExpense = data;
 
-        const validValues = [TypeCredit.DESPESAFIXA.toString()];
-        dataFilter.isRecurring = validValues.includes(dataFilter.creditcard);
+        dataFilter.mes = addLeadingZeros((dataFilter.competencia.$M + 1), 2).toString();
+        dataFilter.ano = dataFilter.competencia.$y.toString();
 
-        const optionSelect = findCreditOptionByValue(groupCreditOptions, dataFilter.creditcard);
-        dataFilter.isCashPayment = optionSelect?.type === "CASHPAYMENT";
-
-        const fetchedExpenses = await getExpenses(dataFilter.creditcard, dataFilter.mes, dataFilter.ano);
+        const fetchedExpenses = await getExpenses(
+            dataFilter.credit?.value,
+            dataFilter.mes,
+            dataFilter.ano,
+            dataFilter.credit?.type
+        );
         setExpenses(fetchedExpenses);
         setFilter(dataFilter);
         setIsSubmitting(false);
@@ -70,7 +77,6 @@ const ExpenseWrapper = ({ children }: { children: React.ReactNode }) => {
             const newListExpenses: Expense[] = [...expenses, ...expensesFixas];
             setExpenses(newListExpenses);
         }
-
     };
 
     return (
@@ -85,7 +91,7 @@ const ExpenseWrapper = ({ children }: { children: React.ReactNode }) => {
                         Expenses
                     </h4>
                     <div className="space-y-1 ml-auto">
-                        {filter.isRecurring ? (
+                        {filter.credit?.type === TypeCredit.DESPESAFIXA ? (
                             <Button
                                 className="flex-none"
                                 onClick={() => createDespesasFixas()}
@@ -110,7 +116,7 @@ const ExpenseWrapper = ({ children }: { children: React.ReactNode }) => {
                 <div className="flex w-full items-center gap-4 mb-6">
                     <div className="space-y-1">
                         <Controller
-                            name="creditcard"
+                            name="credit"
                             control={control}
                             rules={{ required: "Credit Card is required." }}
                             render={({ field, fieldState }) => (
@@ -139,10 +145,10 @@ const ExpenseWrapper = ({ children }: { children: React.ReactNode }) => {
                                             );
                                         }}
                                         value={groupCreditOptions
-                                            .flatMap(group => group.options)  // Achata as opções para procurar o valor
-                                            .find(option => option.value === field.value)}  // Passa apenas o objeto selecionado
+                                            .flatMap(group => group.options)
+                                            .find(option => option === field.value)}
                                         onChange={(selected) => {
-                                            field.onChange(selected ? selected.value : undefined); // Passa apenas o value (id)
+                                            field.onChange(selected ? selected : undefined);
                                         }}
                                     />
                                     {fieldState.error && (
@@ -153,6 +159,37 @@ const ExpenseWrapper = ({ children }: { children: React.ReactNode }) => {
                         />
                     </div>
                     <div className="space-y-1">
+                        <ThemeProvider theme={themeCustomMuiDatepicker}>
+                            <CssBaseline />
+                            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
+                                <DemoContainer components={['DatePicker']} sx={{ padding: 0 }}>
+                                    <Controller
+                                        name="competencia"
+                                        control={control}
+                                        rules={{ required: "Credit Card is required." }}
+                                        render={({ field, fieldState }) => (
+                                            <>
+                                                <DatePicker
+                                                    {...field}
+                                                    views={['month', 'year']}
+                                                    sx={{ }}
+                                                    onError={fieldState?.error ? (error) => console.log(error) : undefined}
+                                                />
+                                                {fieldState?.error && (
+                                                    <FormHelperText error>{fieldState?.error?.message}</FormHelperText>
+                                                )}
+                                            </>
+                                        )}
+                                    />
+
+                                </DemoContainer>
+                            </LocalizationProvider>
+                        </ThemeProvider>
+                    </div>
+
+
+
+                    {/* <div className="space-y-1">
                         <Controller
                             name="mes"
                             control={control}
@@ -200,7 +237,10 @@ const ExpenseWrapper = ({ children }: { children: React.ReactNode }) => {
                                 </>
                             )}
                         />
-                    </div>
+                    </div> */}
+
+
+
                     <div className="space-y-1">
                         {isSubmitting ? (
                             <Button

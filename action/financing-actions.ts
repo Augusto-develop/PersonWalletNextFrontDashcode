@@ -100,6 +100,7 @@ export const createOptionsFinancing = async (): Promise<FinancingOption[]> => {
         label: item.descricao.text,
         value: item.id,
         avatar: item.descricao.avatar,
+        type: TypeCredit.FINANCIAMENTO
     })) as FinancingOption[];
 
     return financingOptions;

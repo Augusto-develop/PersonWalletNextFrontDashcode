@@ -1,3 +1,5 @@
+import { TypeCredit } from "./enums";
+
 export * from "./credit/creditcard";
 export * from "./credit/financing";
 export * from "./credit/lending";
@@ -8,7 +10,7 @@ export type CreditOption = {
     label: string;
     value: string;
     avatar: string;
-    type?: string;
+    type: TypeCredit;
 };
 
 export interface GroupedCreditOption {

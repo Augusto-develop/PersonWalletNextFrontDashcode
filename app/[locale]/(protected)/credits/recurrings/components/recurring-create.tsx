@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form"
 import Select from 'react-select'
 import { CleaveInput } from "@/components/ui/cleave";
@@ -18,8 +18,9 @@ import fetchWithAuth from "@/action/login-actions";
 import { convertToRecurring, createRecurring, editRecurring } from "@/action/recurring-actions";
 import { useRecurringContext } from "./recurring-context";
 import { RecurringDto } from "@/action/types.schema.dto";
-import { Recurring, Option } from "@/lib/model/types";
+import { Recurring, Option, CategoryOption } from "@/lib/model/types";
 import { TypeCredit } from "@/lib/model/enums";
+import { createOptionsCategories } from "@/action/category-actions";
 
 interface CreateTaskProps {
   open: boolean;
@@ -29,20 +30,22 @@ interface CreateTaskProps {
 
 type Inputs = {
   id?: string;
+  categoria: string;
   descricao: string;
   credor: Option;
   vencimento: Option;
-  valorcredito: string; 
+  valorcredito: string;
 }
 
-const submitCreate = async (data: Inputs): Promise<RecurringDto | undefined> => {
+const submitCreate = async (data: Inputs): Promise<RecurringDto | undefined> => {  
 
   const payload: RecurringDto = {
     id: data.id ?? "",
     descricao: data.descricao,
     diavenc: addLeadingZeros(data.vencimento.value, 2),
     valorcredito: convertToNumeric(data.valorcredito),
-    type: TypeCredit.DESPESAFIXA
+    type: TypeCredit.DESPESAFIXA,
+    categoriaId: data.categoria,
   };
 
   try {
@@ -57,6 +60,16 @@ const submitCreate = async (data: Inputs): Promise<RecurringDto | undefined> => 
 const CreateRecurring = ({ open, setOpen, dataRecurring = null }: CreateTaskProps) => {
 
   const { recurrings, setRecurrings, editRecurring } = useRecurringContext();  // Access context state and setter  
+  const [categoriaOptions, setCategoriaOptions] = useState<CategoryOption[]>([]);
+
+  useEffect(() => {
+    const fetchCategoryOptions = async () => {
+      const options: CategoryOption[] = await createOptionsCategories();
+      setCategoriaOptions(options);
+    };
+
+    fetchCategoryOptions();
+  }, []);
 
   const {
     register,
@@ -92,7 +105,31 @@ const CreateRecurring = ({ open, setOpen, dataRecurring = null }: CreateTaskProp
           <DialogTitle>Create Recurring</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-
+          <div className="space-y-1">
+            <Label htmlFor="categoria">Categoria</Label>
+            <Controller
+              name="categoria"
+              control={control}
+              rules={{ required: "Categoria is required." }}
+              render={({ field, fieldState }) => (
+                <>
+                  <Select
+                    {...field}
+                    className="react-select"
+                    classNamePrefix="select"
+                    options={categoriaOptions}
+                    value={categoriaOptions.find(option => option.value === field.value)}
+                    onChange={(selected) => {
+                      field.onChange(selected ? selected.value : undefined);
+                    }}
+                  />
+                  {fieldState.error && (
+                    <p className="text-red-500 text-sm">{fieldState.error.message}</p>
+                  )}
+                </>
+              )}
+            />
+          </div>
           <div className="space-y-1">
             <Label htmlFor="descricao">Descrição</Label>
             <Input
@@ -156,8 +193,8 @@ const CreateRecurring = ({ open, setOpen, dataRecurring = null }: CreateTaskProp
                       }}
                       placeholder="Digite o valor"
                       value={field.value} // Controlado pelo React Hook Form
-                      onChange={(e) => {                           
-                        const formattedValue = e.target.value;  
+                      onChange={(e) => {
+                        const formattedValue = e.target.value;
                         field.onChange(formattedValue);
                       }}
                     />

@@ -63,18 +63,7 @@ export const MercadoPagoIcon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
             <path className="path3" />
             <path className="path4" />
             <path className="path5" />
-            <path className="path6" />
-            <path className="path7" />
-            <path className="path8" />
-            <path className="path9" />
-            <path className="path10" />
-            <path className="path11" />
-            <path className="path12" />
-            <path className="path13" />
-            <path className="path14" />
-            <path className="path15" />
-            <path className="path16" />
-            <path className="path17" />
+            <path className="path6" /> 
         </div>
     );
 };
@@ -205,11 +194,7 @@ export const C6Icon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
         <div className="iconpw-c6" style={{ fontSize }}>
             <path className="path1" />
             <path className="path2" />
-            <path className="path3" />
-            <path className="path4" />
-            <path className="path5" />
-            <path className="path6" />
-            <path className="path7" />            
+            <path className="path3" />                     
         </div>
     );
 };
@@ -217,6 +202,16 @@ export const C6Icon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
 export const MidwayIcon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
     return (
         <div className="iconpw-midway" style={{ fontSize }}>
+            <path className="path1" />
+            <path className="path2" />
+            <path className="path3" />                      
+        </div>
+    );
+};
+
+export const PanIcon: React.FC<IconProps> = ({ fontSize = '32px' }) => {
+    return (
+        <div className="iconpw-pan" style={{ fontSize }}>
             <path className="path1" />
             <path className="path2" />
             <path className="path3" />                      
@@ -242,4 +237,5 @@ export const avatarComponents: Record<IconType, React.FC<{ fontSize?: string }>>
     [Emissor.BANCOBRASIL]: BancoBrasilIcon,
     [Emissor.C6BANK]: C6Icon,
     [Emissor.MIDWAY]: MidwayIcon,
+    [Emissor.BANCOPAN]: PanIcon,
 };

@@ -96,7 +96,7 @@ export const createOptionsCashPayment = async (): Promise<CashPaymentOption[]> =
         label: item.descricao,
         value: item.id,
         avatar: "mdi:cash-multiple",
-        type: 'CASHPAYMENT'
+        type: TypeCredit.AVISTA
     })) as CashPaymentOption[];
 
     return cashpaymentOptions;

@@ -12,4 +12,15 @@ export type CreditCard = {
     bandeira: string;
 };
 
+export type Invoice = {
+    id: string;
+    title: string;
+    avatar: string;
+    diavenc: string;
+    diafech: string;       
+    emissor: string;  
+    total: string;
+    columnId: string;
+};
+
 export interface CreditCardOption extends CreditOption {};

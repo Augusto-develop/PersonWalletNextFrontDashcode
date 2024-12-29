@@ -5,6 +5,7 @@ export type Recurring = {
     descricao: string; 
     diavenc: string;
     valorcredito: string;  
+    categoriaId: string;  
   };
 
 export interface RecurringOption extends CreditOption { };

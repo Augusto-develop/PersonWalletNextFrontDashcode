@@ -56,7 +56,7 @@ export function getMenuList(pathname: string, t: any): Group[] {
           id: "credits",
           href: "/credits",
           label: "Credits",
-          active: ['/credits', '/credits/creditcards', '/credits/financings', '/credits/lendings'].some(path => pathname.includes(path)),          icon: "mdi:bank",
+          active: ['/credits', '/credits/creditcards', '/credits/financings', '/credits/lendings'].some(path => pathname.includes(path)), icon: "mdi:bank",
           submenus: [
             {
               href: "/credits/creditcards",
@@ -118,7 +118,15 @@ export function getMenuList(pathname: string, t: any): Group[] {
           active: pathname.includes("/expenses"),
           icon: "mdi:receipt-text",
           submenus: [],
-        }
+        },
+        {
+          id: "payment",
+          href: "/payment",
+          label: "Payment",
+          active: pathname.includes("/payment"),
+          icon: "mdi:recurring-payment",
+          submenus: [],
+        },
       ],
     },
   ];

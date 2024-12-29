@@ -1,7 +1,7 @@
 'use client';
 import fetchWithAuth from "./login-actions";
-import { CreditCard, CreditCardOption } from "@/lib/model/types";
-import { CreditCardDto } from "./types.schema.dto";
+import { CreditCard, CreditCardOption, Invoice } from "@/lib/model/types";
+import { CreditCardDto, InvoiceDto } from "./types.schema.dto";
 import { TypeCredit } from "@/lib/model/enums";
 
 
@@ -23,6 +23,31 @@ export const getCreditCards = async (): Promise<CreditCard[]> => {
         const data: CreditCardDto[] = await res.json();
 
         newData = data.map((item) => (convertToCreditCard(item)));
+    } else {
+        console.error('Erro ao buscar os dados');
+    }
+    return newData;
+};
+
+export const getCreditInvoice = async (payload: {mesfat: string, anofat: string}): Promise<Invoice[]> => {
+
+    const queryParams = new URLSearchParams();
+    queryParams.append('mesfat', payload.mesfat);
+    queryParams.append('anofat', payload.anofat);
+
+    const res = await fetchWithAuth(`/credito/faturas?${queryParams.toString()}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }       
+    });
+
+    let newData: Invoice[] = [];
+
+    if (res.ok) {
+        const data: InvoiceDto[] = await res.json();
+
+        newData = data.map((item) => (convertToInvoice(item)));
     } else {
         console.error('Erro ao buscar os dados');
     }
@@ -94,6 +119,19 @@ export function convertToCreditCard(credit: CreditCardDto): CreditCard {
     };
 }
 
+export function convertToInvoice(invoiceDto: InvoiceDto): Invoice {
+    return {
+        id: invoiceDto.id ?? '',
+        title: invoiceDto.descricao,
+        avatar: invoiceDto.type === TypeCredit.DESPESAFIXA ? "mdi:graph-pie" : invoiceDto.emissor,
+        diavenc: invoiceDto.diavenc,
+        diafech: invoiceDto.diafech,        
+        emissor: invoiceDto.emissor,  
+        total: invoiceDto.totalFatura,  
+        columnId: "quin1desp"
+    };   
+}
+
 export const createOptionsCreditCards = async (): Promise<CreditCardOption[]> => {
 
     const creditcards: CreditCard[] = await getCreditCards();
@@ -102,6 +140,7 @@ export const createOptionsCreditCards = async (): Promise<CreditCardOption[]> =>
         label: item.title,
         value: item.id,
         avatar: item.avatar,
+        type: TypeCredit.CARTAO
     })) as CreditCardOption[];
 
     return creditcardOptions;

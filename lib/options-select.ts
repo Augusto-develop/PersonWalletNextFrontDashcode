@@ -1,6 +1,6 @@
 import { addLeadingZeros } from "@/lib/utils";
 import { Option } from "@/lib/model/types";
-import {Bandeira, Emissor, EmissorText, BandeiraText} from "@/lib/model/enums";
+import { Bandeira, Emissor, EmissorText, BandeiraText } from "@/lib/model/enums";
 
 export const dayOptions: Option[] = Array.from({ length: 31 }, (_, i) => ({
     value: addLeadingZeros(`${i + 1}`, 2),
@@ -15,6 +15,7 @@ export const bandeiraOptions: Option[] = [
 export const emissorOptions: Option[] = [
     { value: Emissor.ATACADAO, label: EmissorText[Emissor.ATACADAO] },
     { value: Emissor.BANCOBRASIL, label: EmissorText[Emissor.BANCOBRASIL] },
+    { value: Emissor.BANCOPAN, label: EmissorText[Emissor.BANCOPAN] },
     { value: Emissor.BRADESCO, label: EmissorText[Emissor.BRADESCO] },
     { value: Emissor.BRASILCARD, label: EmissorText[Emissor.BRASILCARD] },
     { value: Emissor.CAIXA, label: EmissorText[Emissor.CAIXA] },
@@ -25,7 +26,7 @@ export const emissorOptions: Option[] = [
     { value: Emissor.NEON, label: EmissorText[Emissor.NEON] },
     { value: Emissor.NOVUCARD, label: EmissorText[Emissor.NOVUCARD] },
     { value: Emissor.NUBANK, label: EmissorText[Emissor.NUBANK] },
-    { value: Emissor.OUZE, label: EmissorText[Emissor.OUZE] },
+    { value: Emissor.OUZE, label: EmissorText[Emissor.OUZE] },    
     { value: Emissor.RIACHUELO, label: EmissorText[Emissor.RIACHUELO] },
-    { value: Emissor.SANTANDER, label: EmissorText[Emissor.SANTANDER] },    
+    { value: Emissor.SANTANDER, label: EmissorText[Emissor.SANTANDER] },
 ];

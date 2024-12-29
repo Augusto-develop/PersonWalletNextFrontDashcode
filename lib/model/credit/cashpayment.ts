@@ -5,6 +5,4 @@ export type CashPayment = {
     descricao: string;
 };
 
-export interface CashPaymentOption extends CreditOption {
-    type: string
-};
+export interface CashPaymentOption extends CreditOption { }

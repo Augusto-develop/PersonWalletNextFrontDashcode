@@ -25,8 +25,10 @@ import { convertFloatToMoeda } from "@/lib/utils";
 import ExpenseAction from "./components/expense-action";
 import { createOptionsCategories } from "@/action/category-actions";
 import { Expense, CategoryOption } from "@/lib/model/types";
+import { TypeCredit } from "@/lib/model/enums";
 
 const ListTable = () => {
+
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
@@ -35,7 +37,10 @@ const ListTable = () => {
         React.useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = React.useState({})
     const { expenses, filter } = useExpenseContext();
-    const [categoriaOptions, setCategoriaOptions] = useState<CategoryOption[]>([]);    
+    const [categoriaOptions, setCategoriaOptions] = useState<CategoryOption[]>([]);
+
+    const isEditRecurring: boolean = filter.credit?.type === TypeCredit.DESPESAFIXA;
+    const isLending: boolean = filter.credit?.type === TypeCredit.EMPRESTIMO;
 
     useEffect(() => {
         const fetchCategoryOptions = async () => {
@@ -54,22 +59,18 @@ const ListTable = () => {
                 const categoriaId = row.getValue("categoriaId");
                 const categoria = categoriaOptions.find(option => option.value === categoriaId);
                 return (
-                    <div className="flex items-center gap-3">
-                        <div className="font-medium text-sm leading-4 whitespace-nowrap">
-                            {categoria ? categoria.label : "Categoria não encontrada"}
-                        </div>
+                    <div className="font-medium text-sm leading-4 whitespace-nowrap">
+                        {categoria ? categoria.label : "Categoria não encontrada"}
                     </div>
                 );
             }
         },
         {
             accessorKey: "lancamento",
-            header: filter.isRecurring ? "Vencimento" : "Data da Compra",
+            header: isEditRecurring || isLending ? "Vencimento" : "Data da Compra",
             cell: ({ row }) => (
-                <div className="flex items-center gap-3">
-                    <div className="font-medium text-sm leading-4 whitespace-nowrap">
-                        {row.getValue("lancamento")}
-                    </div>
+                <div className="font-medium text-sm leading-4 whitespace-nowrap">
+                    {row.getValue("lancamento")}
                 </div>
             )
         },
@@ -77,10 +78,8 @@ const ListTable = () => {
             accessorKey: "description",
             header: "Descrição",
             cell: ({ row }) => (
-                <div className="flex items-center gap-3">
-                    <div className="font-medium text-sm leading-4 whitespace-nowrap">
-                        {row.getValue("description")}
-                    </div>
+                <div className="font-medium text-sm leading-4 whitespace-nowrap">
+                    {row.getValue("description")}
                 </div>
             )
         },
@@ -88,10 +87,8 @@ const ListTable = () => {
             accessorKey: "viewparcela",
             header: "Parcela",
             cell: ({ row }) => (
-                <div className="flex items-center gap-3">
-                    <div className="font-medium text-sm leading-4 whitespace-nowrap">
-                        {row.getValue("viewparcela")}
-                    </div>
+                <div className="font-medium text-sm leading-4 whitespace-nowrap">
+                    {row.getValue("viewparcela")}
                 </div>
             )
         },
@@ -99,10 +96,8 @@ const ListTable = () => {
             accessorKey: "valor",
             header: "Valor",
             cell: ({ row }) => (
-                <div className="flex items-center gap-3">
-                    <div className="font-medium text-sm leading-4 whitespace-nowrap">
-                        {convertFloatToMoeda(row.getValue("valor"))}
-                    </div>
+                <div className="font-medium text-sm leading-4 whitespace-nowrap">
+                    {convertFloatToMoeda(row.getValue("valor"))}
                 </div>
             )
         },
@@ -133,17 +128,37 @@ const ListTable = () => {
         }
     })
 
+    const getColumnAlignment = (columnId: string) => {
+        switch (columnId) {
+            case "categoriaId":
+            case "description":
+            case "actions":
+                return "text-left";
+            case "lancamento":
+            case "viewparcela":
+                return "text-center";
+            case "valor":
+                return "text-right";
+            default:
+                return "";
+        }
+    };
+
     return (
         <>
             {filter.isSubmit ? (
-                <Card>
-                    <CardContent className="p-0">
-                        <Table>
-                            <TableHeader className="px-3 bg-default-100">
-                                {table.getHeaderGroups().map((headerGroup) => (
-                                    <TableRow key={headerGroup.id}>
-                                        {headerGroup.headers.map((header) => (
-                                            <TableHead key={header.id}>
+            <Card>
+                <CardContent className="p-0">
+                    <Table>
+                        <TableHeader className="px-3 bg-default-100">
+                            {table.getHeaderGroups().map((headerGroup) => (
+                                <TableRow key={headerGroup.id}>
+                                    {headerGroup.headers.map((header) => {
+                                        // Obtém o alinhamento da coluna usando getColumnAlignment
+                                        const headerAlignment = getColumnAlignment(header.column.id);
+
+                                        return (
+                                            <TableHead key={header.id} className={headerAlignment}>
                                                 {header.isPlaceholder
                                                     ? null
                                                     : flexRender(
@@ -151,41 +166,47 @@ const ListTable = () => {
                                                         header.getContext()
                                                     )}
                                             </TableHead>
-                                        ))}
-                                    </TableRow>
-                                ))}
-                            </TableHeader>
-                            <TableBody>
-                                {table.getRowModel().rows?.length ? (
-                                    table.getRowModel().rows.map((row) => (
-                                        <TableRow
-                                            key={row.id}
-                                            data-state={row.getIsSelected() && "selected"}
-                                        >
-                                            {row.getVisibleCells().map((cell) => (
-                                                <TableCell key={cell.id}>
+                                        );
+                                    })}
+                                </TableRow>
+                            ))}
+                        </TableHeader>
+                        <TableBody >
+                            {table.getRowModel().rows?.length ? (
+                                table.getRowModel().rows.map((row) => (
+                                    <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                                        {row.getVisibleCells().map((cell) => {
+                                            // Chama a função getCellAlignment para obter o alinhamento da célula
+                                            const cellAlignment = getColumnAlignment(cell.column.id);
+
+                                            return (
+                                                <TableCell
+                                                    key={cell.id}
+                                                    className={cellAlignment}  // Passa o alinhamento como className
+                                                >
                                                     {flexRender(
                                                         cell.column.columnDef.cell,
                                                         cell.getContext()
                                                     )}
                                                 </TableCell>
-                                            ))}
-                                        </TableRow>
-                                    ))
-                                ) : (
-                                    <TableRow>
-                                        <TableCell
-                                            colSpan={columns.length}
-                                            className="h-24 text-center"
-                                        >
-                                            No results.
-                                        </TableCell>
+                                            );
+                                        })}
                                     </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </CardContent>
-                </Card>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell
+                                        colSpan={columns.length}
+                                        className="h-24 text-center"
+                                    >
+                                        No results.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
             ) : (
                 <div className="text-center text-gray-500 mt-24">
 

@@ -25,7 +25,8 @@ import { convertFloatToMoeda } from "@/lib/utils";
 import { useEffect } from "react";
 import { getRecurrings } from "@/action/recurring-actions";
 import RecurringAction from "./components/recurring-action";
-import { Recurring } from "@/lib/model/types";
+import { CategoryOption, Recurring } from "@/lib/model/types";
+import { createOptionsCategories } from "@/action/category-actions"
 
 const ListTable = () => {
     const [sorting, setSorting] = React.useState<SortingState>([])
@@ -36,6 +37,7 @@ const ListTable = () => {
         React.useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = React.useState({})
     const { recurrings, setRecurrings, deleteRecurring } = useRecurringContext();
+    const [categoriaOptions, setCategoriaOptions] = React.useState<CategoryOption[]>([]);
 
     useEffect(() => {
         const fetchRecurrings = async () => {
@@ -44,9 +46,31 @@ const ListTable = () => {
         };
 
         fetchRecurrings();
+
+        const fetchCategoryOptions = async () => {
+            const options: CategoryOption[] = await createOptionsCategories();
+            setCategoriaOptions(options);
+        };
+
+        fetchCategoryOptions();
     }, []);
 
     const columns: ColumnDef<Recurring>[] = [
+        {
+            accessorKey: "categoriaId",
+            header: "Categoria",
+            cell: ({ row }) => {
+                const categoriaId = row.getValue("categoriaId");
+                const categoria = categoriaOptions.find(option => option.value === categoriaId);
+                return (
+                    <div className="flex items-center gap-3">
+                        <div className="font-medium text-sm leading-4 whitespace-nowrap">
+                            {categoria ? categoria.label : "Categoria não encontrada"}
+                        </div>
+                    </div>
+                );
+            }
+        },
         {
             accessorKey: "descricao",
             header: "Descrição",
@@ -116,14 +140,15 @@ const ListTable = () => {
         }
     })
 
-    const getColumnAlignment = (columnId: string) => {
-        console.log(columnId);
+    const getColumnAlignment = (columnId: string) => {        
         switch (columnId) {
-            case "valorcredito":
-            case "parcela":
-                return "text-right";
-            case "diavenc":
+            case "categoriaId":
+            case "descricao":
+                return "text-left";
+            case "diavenc":           
                 return "text-center";
+            case "valorcredito":            
+                return "text-right";            
             default:
                 return "";
         }

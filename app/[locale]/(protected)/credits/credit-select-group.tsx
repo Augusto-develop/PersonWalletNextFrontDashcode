@@ -6,23 +6,12 @@ import { TypeCredit } from "@/lib/model/enums";
 import {
     CashPaymentOption,
     CreditCardOption,
+    CreditOption,
     FinancingOption,
+    GroupedCreditOption,
     LendingOption,
     RecurringOption
 } from "@/lib/model/types";
-
-
-export type CreditOption = {
-    label: string;
-    value: string;
-    avatar: string;
-    type?: string;
-};
-
-export interface GroupedCreditOption {
-    label: string;
-    options: CreditOption[];
-}
 
 export const createOptionsGroupCredit = async (): Promise<GroupedCreditOption[]> => {
 
@@ -35,7 +24,8 @@ export const createOptionsGroupCredit = async (): Promise<GroupedCreditOption[]>
     const recurringOptions: RecurringOption[] = [{
         label: "Recurrings",
         value: TypeCredit.DESPESAFIXA.toString(),
-        avatar: "mdi:graph-pie"
+        avatar: "mdi:graph-pie",
+        type: TypeCredit.DESPESAFIXA
     }]
 
     const cashPaymentOptions: CashPaymentOption[] = await createOptionsCashPayment();
@@ -64,15 +54,4 @@ export const createOptionsGroupCredit = async (): Promise<GroupedCreditOption[]>
     ];
 
     return groupedOptions;
-}
-
-export function findCreditOptionByValue(groupCreditOptions: GroupedCreditOption[], value: string): CreditOption | null {
-    for (const creditOption of groupCreditOptions) {
-        for (const option of creditOption.options) {
-            if (option.value === value) {
-                return option;
-            }
-        }
-    }
-    return null;
 }

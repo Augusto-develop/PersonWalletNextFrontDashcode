@@ -33,4 +33,5 @@ export type IconType =
     | Emissor.ITAU
     | Emissor.BANCOBRASIL
     | Emissor.C6BANK
-    | Emissor.MIDWAY;
+    | Emissor.MIDWAY
+    | Emissor.BANCOPAN;

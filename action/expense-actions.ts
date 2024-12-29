@@ -8,18 +8,14 @@ import { TypeCredit } from "@/lib/model/enums";
 export const getExpenses = async (
     creditId?: string,
     mesfat?: string,
-    anofat?: string
+    anofat?: string,
+    type?: TypeCredit
 ): Promise<Expense[]> => {
     // Monta a URL com os parâmetros opcionais
     const queryParams = new URLSearchParams();
-    if (creditId) {
-        const validValues = [
-            TypeCredit.FINANCIAMENTO.toString(), 
-            TypeCredit.EMPRESTIMO.toString(), 
-            TypeCredit.DESPESAFIXA.toString()
-        ];
-        if (validValues.includes(creditId)) {
-            queryParams.append('type', creditId);
+    if (creditId) {        
+        if (type && type === TypeCredit.DESPESAFIXA) {
+            queryParams.append('type', type);
         } else {
             queryParams.append('creditId', creditId);
         }
@@ -82,14 +78,14 @@ export const createExpenseRecurring = async (payload: { mesfat: string, anofat: 
 
     if (res.ok) {
         const newExpenseDto: ExpenseDto[] = await res.json();
-        return newExpenseDto.map((item) => convertDtoToExpense(item));        
+        return newExpenseDto.map((item) => convertDtoToExpense(item));
     }
 
     // console.error("Erro ao enviar:", response.statusText)
     return undefined;
 };
 
-export const editExpense = async (payload: { id: string | undefined, valor: string | number }): Promise<ExpenseDto | undefined> => {
+export const editExpense = async (payload: ExpenseDto): Promise<ExpenseDto | undefined> => {
 
     const res = await fetchWithAuth("/despesa/" + payload.id, {
         method: 'PATCH',

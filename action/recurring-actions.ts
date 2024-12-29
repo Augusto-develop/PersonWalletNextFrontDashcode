@@ -30,7 +30,7 @@ export const getRecurrings = async (): Promise<Recurring[]> => {
 
 export const createRecurring = async (payload: RecurringDto): Promise<RecurringDto | undefined> => {
 
-    delete payload.id;
+    delete payload.id;    
 
     const res = await fetchWithAuth("/credito", {
         method: 'POST',
@@ -85,7 +85,7 @@ export function convertToRecurring(credit: RecurringDto): Recurring {
         descricao: credit.descricao,
         diavenc: credit.diavenc,
         valorcredito: credit.valorcredito?.toString(),
-
+        categoriaId: credit.categoriaId,
     }
 }
 
@@ -96,7 +96,8 @@ export const createOptionsRecurring = async (): Promise<RecurringOption[]> => {
     const recurringOptions: RecurringOption[] = recurrings.map((item) => ({
         label: item.descricao,
         value: item.id,
-        avatar: ""
+        avatar: "",    
+        type: TypeCredit.DESPESAFIXA    
     })) as RecurringOption[];
 
     return recurringOptions;

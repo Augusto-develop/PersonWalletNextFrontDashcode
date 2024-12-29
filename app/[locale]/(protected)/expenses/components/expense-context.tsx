@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-import { Expense, InputsFilterExpense } from "@/lib/model/types";
+import { Expense, InputsFilterExpense, CreditOption } from "@/lib/model/types";
 
 interface ExpenseContextType {
   filter: InputsFilterExpense;
@@ -29,12 +29,10 @@ interface ExpenseProviderProps {
 export const ExpenseProvider = ({ children }: ExpenseProviderProps) => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [filter, setFilter] = useState<InputsFilterExpense>({
-    creditcard: '',
+    credit: undefined,
     mes: '',
     ano: '',
-    isSubmit: false,
-    isRecurring: false,
-    isCashPayment: false,
+    isSubmit: false   
   });
 
   // Delete a credit card by its ID
