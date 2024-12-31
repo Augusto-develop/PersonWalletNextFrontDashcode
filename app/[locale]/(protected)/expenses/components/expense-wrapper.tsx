@@ -52,8 +52,14 @@ const ExpenseWrapper = ({ children }: { children: React.ReactNode }) => {
 
         const dataFilter: InputsFilterExpense = data;
 
-        dataFilter.mes = addLeadingZeros((dataFilter.competencia.$M + 1), 2).toString();
-        dataFilter.ano = dataFilter.competencia.$y.toString();
+        if (dataFilter.competencia) {
+            // Se competencia for definido, podemos acessar suas propriedades com segurança
+            dataFilter.mes = addLeadingZeros((dataFilter.competencia.$M + 1), 2).toString();
+            dataFilter.ano = dataFilter.competencia.$y.toString();
+        }else{
+            dataFilter.mes = "00";
+            dataFilter.ano = "0000";
+        }
 
         const fetchedExpenses = await getExpenses(
             dataFilter.credit?.value,

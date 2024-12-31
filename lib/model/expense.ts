@@ -25,6 +25,6 @@ export type InputsFilterExpense = {
   credit: CreditOption | undefined;
   mes: string;
   ano: string;
-  competencia: DayJsObject;
+  competencia: DayJsObject | undefined;
   isSubmit: boolean;  
 }    

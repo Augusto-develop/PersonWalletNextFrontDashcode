@@ -2,6 +2,7 @@
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { Expense, InputsFilterExpense, CreditOption } from "@/lib/model/types";
+import dayjs from 'dayjs';
 
 interface ExpenseContextType {
   filter: InputsFilterExpense;
@@ -32,7 +33,8 @@ export const ExpenseProvider = ({ children }: ExpenseProviderProps) => {
     credit: undefined,
     mes: '',
     ano: '',
-    isSubmit: false   
+    competencia: undefined,
+    isSubmit: false
   });
 
   // Delete a credit card by its ID

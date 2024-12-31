@@ -95,3 +95,9 @@ export const getCurrentMonth = () => {
   const month = now.getMonth() + 1;  // Adiciona 1 para obter o mês correto
   return addLeadingZeros(month, 2); // Retorna apenas o mês
 };
+
+export function getDayIsoDate(isoDate: string): string {
+  const date = new Date(isoDate);
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  return day;
+}

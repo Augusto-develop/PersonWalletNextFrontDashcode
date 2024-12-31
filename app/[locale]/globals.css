@@ -600,6 +600,10 @@ html[dir=rtl] .react-select .select__loading-indicator {
   color: #FFD53E;
 }
 
+.dialog-title {
+  color: #FFD53E;
+}
+
 .input-text-filter {
   height: 38px !important;
   border-color: hsl(var(--default-200) / var(--tw-border-opacity, 1)) !important;
@@ -611,4 +615,8 @@ html[dir=rtl] .react-select .select__loading-indicator {
 
 .app-payment-sortable-collums{
   height: calc(var(--vh, 1vh) * 100 - 19.1rem);
+}
+
+.text-default-pw-700{
+  color: rgba(255, 213, 62, 0.7);
 }

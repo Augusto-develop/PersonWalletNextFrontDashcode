@@ -5,19 +5,23 @@ export const defaultCols = [
     // id: faker.string.uuid(),
     id: "quin1desp",
     title: "Despesas | 1º Quinzena",
+    ababgcolor: "text-info",
   },
   {
     //id: faker.string.uuid(),
     id: "quin2desp",
     title: "Despesas | 2º Quinzena",
+    ababgcolor: "text-primary",
   },
   {
     id: faker.string.uuid(),
     title: "Despesas em Pagamento",
+    ababgcolor: "text-warning",
   },
   {
     id: faker.string.uuid(),
     title: "Despesas Pagas",
+    ababgcolor: "text-success",
   },
 ];
 

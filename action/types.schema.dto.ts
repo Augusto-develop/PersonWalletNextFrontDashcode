@@ -65,3 +65,12 @@ export type WalletDto = {
     emissor: string;
     ativo: boolean;
 };
+
+export type RevenueDto = {
+    id?: string;   
+    carteiraId: string;   
+    descricao: string;
+    datareceb: string;    
+    valor: number | string;
+    fixa: boolean;    
+};

@@ -5,8 +5,10 @@ export * from "./credit";
 export * from "./category";
 export * from "./expense";
 export * from "./wallet";
+export * from "./payment";
+export * from "./revenue";
 
-export interface Option {
+export interface Option { 
     value: string;
     label: string;
 }

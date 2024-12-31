@@ -102,6 +102,14 @@ export function getMenuList(pathname: string, t: any): Group[] {
           active: pathname.includes("/wallets"),
           icon: "mdi:wallet",
           submenus: [],
+        },        
+        {
+          id: "revenues",
+          href: "/revenues",
+          label: "Revenues",
+          active: pathname.includes("/revenues"),
+          icon: "mdi:hand-coin",
+          submenus: [],
         },
         {
           id: "categories",
@@ -126,7 +134,7 @@ export function getMenuList(pathname: string, t: any): Group[] {
           active: pathname.includes("/payment"),
           icon: "mdi:recurring-payment",
           submenus: [],
-        },
+        },        
       ],
     },
   ];

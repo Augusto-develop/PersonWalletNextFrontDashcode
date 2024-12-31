@@ -18,11 +18,11 @@ import { CleaveInput } from "@/components/ui/cleave";
 import { convertFloatToMoeda, convertToNumeric, getCurrentDate, convertToAmericanDate } from "@/lib/utils";
 import { ExpenseDto } from "@/action/types.schema.dto";
 import { createOptionsWallets } from "@/action/wallet-actions";
-import { Expense, CategoryOption, WalletOption, IconType } from "@/lib/model/types";
+import { Expense, CategoryOption, WalletOption, IconType, Option } from "@/lib/model/types";
 import { avatarComponents } from "@/components/pwicons/pwicons";
 import { Avatar } from "@/components/ui/avatar";
 import { Icon } from "@/components/ui/icon";
-import { TypeCredit, Option } from "@/lib/model/enums";
+import { TypeCredit } from "@/lib/model/enums";
 
 interface CreateTaskProps {
   open: boolean;
