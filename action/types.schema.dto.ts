@@ -13,9 +13,10 @@ export interface CreditCardDto extends CreditDto {
     bandeira: string;
 };
 
-export interface InvoiceDto extends CreditCardDto {    
-    totalFatura: string;    
-    despesas: ExpenseDto[];    
+export interface InvoiceDto extends CreditCardDto {
+    totalFatura: string;
+    despesas: ExpenseDto[];
+    movimentos: MovementDto[];
 };
 
 export interface FinancingDto extends CreditDto {
@@ -54,9 +55,15 @@ export type ExpenseDto = {
     qtdeparc: number;
     lancamento: string;
     valor: number | string;
-    fixa: boolean;
     generateparc: boolean;
     parentId?: string;
+};
+
+export type ExpenseInvoiceSumDto = {   
+    current: number | string;   
+    previous: number | string;   
+    next: number | string;   
+    future: number | string;   
 };
 
 export type WalletDto = {
@@ -67,10 +74,20 @@ export type WalletDto = {
 };
 
 export type RevenueDto = {
-    id?: string;   
-    carteiraId: string;   
+    id?: string;
+    carteiraId: string;
     descricao: string;
-    datareceb: string;    
+    datareceb: string;
     valor: number | string;
-    fixa: boolean;    
+};
+
+export type MovementDto = {
+    id?: string;
+    cartdebito: string;
+    cartcredito?: string;
+    ocorrencia: string;
+    valor: number | string;
+    creditId?: string;
+    anofat?: string;
+    mesfat?: string;
 };

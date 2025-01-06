@@ -8,17 +8,15 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React, { useEffect, useState } from "react";
+import React, { } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form"
 import { convertDtoToExpense, createExpense, editExpense as submitEditExpense } from "@/action/expense-actions";
 import { useExpenseContext } from "./expense-context";
-import { createOptionsCategories } from "@/action/category-actions";
 import Select from 'react-select'
 import { CleaveInput } from "@/components/ui/cleave";
 import { convertFloatToMoeda, convertToNumeric, getCurrentDate, convertToAmericanDate } from "@/lib/utils";
 import { ExpenseDto } from "@/action/types.schema.dto";
-import { createOptionsWallets } from "@/action/wallet-actions";
-import { Expense, CategoryOption, WalletOption, IconType, Option } from "@/lib/model/types";
+import { Expense, IconType, Option } from "@/lib/model/types";
 import { avatarComponents } from "@/components/pwicons/pwicons";
 import { Avatar } from "@/components/ui/avatar";
 import { Icon } from "@/components/ui/icon";
@@ -57,16 +55,11 @@ const separateParcela = (value: string) => {
 
 const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) => {
 
-  const { expenses, setExpenses, editExpense, filter } = useExpenseContext();
-  const [categoriaOptions, setCategoriaOptions] = useState<CategoryOption[]>([]);
-  const [walletOptions, setWalletOptions] = useState<WalletOption[]>([]);
-
+  const { expenses, setExpenses, editExpense, filter, categoriaOptions, walletOptions } = useExpenseContext();
   const isEditParent: boolean = dataExpense?.isParent || false;
   const isEditRecurring: boolean = filter.credit?.type === TypeCredit.DESPESAFIXA;
   const isCashPayment: boolean = filter.credit?.type === TypeCredit.AVISTA;
   const isLending: boolean = filter.credit?.type === TypeCredit.EMPRESTIMO;
-
-  console.log(dataExpense);
 
   const submitCreate = async (data: Inputs
 
@@ -78,14 +71,13 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
       id: data.id ?? "",
       creditId: data.creditId,
       descricao: data.description,
-      categoriaId: data.categoria.value,
+      categoriaId: (isEditParent || isEditRecurring) ? (dataExpense?.categoriaId ?? "") : data.categoria.value,
       anofat: data.anofat,
       mesfat: data.mesfat,
       numparc: parcela.part1,
       qtdeparc: parcela.part2,
       lancamento: new Date(convertToAmericanDate(data.datacompra)).toISOString(),
       valor: convertToNumeric(data.valor),
-      fixa: false,
       generateparc: false,
     };
 
@@ -97,24 +89,6 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
       console.error("Erro de requisição:", error);
     }
   };
-
-
-
-  useEffect(() => {
-    const fetchCategoryOptions = async () => {
-      const options: CategoryOption[] = await createOptionsCategories();
-      setCategoriaOptions(options);
-    };
-
-    fetchCategoryOptions();
-
-    const fetchWalletOptions = async () => {
-      const options: WalletOption[] = await createOptionsWallets();
-      setWalletOptions(options);
-    };
-
-    fetchWalletOptions();
-  }, []);
 
   const {
     register,

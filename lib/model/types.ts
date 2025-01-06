@@ -7,6 +7,7 @@ export * from "./expense";
 export * from "./wallet";
 export * from "./payment";
 export * from "./revenue";
+export * from "./movement";
 
 export interface Option { 
     value: string;

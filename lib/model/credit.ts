@@ -11,6 +11,7 @@ export type CreditOption = {
     value: string;
     avatar: string;
     type: TypeCredit;
+    error?: string;
 };
 
 export interface GroupedCreditOption {

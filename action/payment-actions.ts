@@ -1,19 +1,19 @@
 'use client';
 import fetchWithAuth from "./login-actions";
-import { Invoice, ExpensesForPayment, TotalsPayment } from "@/lib/model/types";
-import { InvoiceDto } from "./types.schema.dto";
+import { Invoice, ExpensesForPayment, TotalsPaymentExpenses, TotalsPaymentRevenues, Revenue, StatusInvoice, PaymentStatus, Movement } from "@/lib/model/types";
+import { InvoiceDto, MovementDto } from "./types.schema.dto";
 import { TypeCredit } from "@/lib/model/enums";
-
-
+import { getRevenues } from "./revenue-actions";
+import { convertDtoToMovement } from "./movement-actions";
 
 export const getCreditInvoice = async (
-    payload: { mesfat: string; anofat: string }
+    payload: { mes: string; ano: string }
 ): Promise<ExpensesForPayment> => {
     try {
         // Construir os parâmetros da URL
         const queryParams = new URLSearchParams({
-            mesfat: payload.mesfat,
-            anofat: payload.anofat,
+            mesfat: payload.mes,
+            anofat: payload.ano,
         });
 
         // Fazer a requisição
@@ -27,11 +27,17 @@ export const getCreditInvoice = async (
         // Inicializar estrutura padrão
         const expensesForPayment: ExpensesForPayment = {
             invoices: [],
-            totals: {
+            totalsExpenses: {
                 total1Quinze: 0,
                 total2Quinze: 0,
                 total1QuinzePago: 0,
                 total2QuinzePago: 0
+            },
+            totalsRevenues: {
+                total1Quinze: 0,
+                total1QuinzeDiff: 0,
+                total2Quinze: 0,
+                total2QuinzeDiff: 0
             }
         };
 
@@ -41,7 +47,17 @@ export const getCreditInvoice = async (
 
             // Mapear os dados e calcular os totais
             expensesForPayment.invoices = data.map(convertToInvoice);
-            expensesForPayment.totals = calcTotals(expensesForPayment.invoices);
+            expensesForPayment.totalsExpenses = calcTotalsExpenses(expensesForPayment.invoices);
+
+            const revenues: Revenue[] = await getRevenues({ mes: payload.mes, ano: payload.ano });
+            expensesForPayment.totalsRevenues = calcTotalsRevenues(revenues);
+
+            expensesForPayment.totalsRevenues.total1QuinzeDiff =
+                expensesForPayment.totalsRevenues.total1Quinze - expensesForPayment.totalsExpenses.total1Quinze;
+
+            expensesForPayment.totalsRevenues.total2QuinzeDiff =
+                expensesForPayment.totalsRevenues.total2Quinze - expensesForPayment.totalsExpenses.total2Quinze;
+
         } else {
             console.error("Erro ao buscar os dados:", res.statusText);
         }
@@ -54,15 +70,20 @@ export const getCreditInvoice = async (
 };
 
 
-function calcTotals(invoices: Invoice[]): TotalsPayment {
+export function calcTotalsExpenses(invoices: Invoice[]): TotalsPaymentExpenses {
     return invoices.reduce(
-        (acc: TotalsPayment, invoice) => {
+        (acc: TotalsPaymentExpenses, invoice) => {
+
+            const totalPagoFatura = invoice.pagamentos
+                    ? invoice.pagamentos.reduce((total, pagamento) => total + parseFloat(pagamento.valor), 0)
+                    : 0;
+
             if (parseInt(invoice.diavenc) < 15) {
-                acc.total1Quinze += parseFloat(invoice.total);
-                if (invoice.pago === true) acc.total1QuinzePago += parseFloat(invoice.total);
-            } else {
-                acc.total2Quinze += parseFloat(invoice.total);
-                if (invoice.pago === true) acc.total2QuinzePago += parseFloat(invoice.total);
+                acc.total1Quinze += parseFloat(invoice.total) + totalPagoFatura;
+                acc.total1QuinzePago += totalPagoFatura;
+            } else {                
+                acc.total2Quinze += parseFloat(invoice.total) + totalPagoFatura;
+                acc.total2QuinzePago += totalPagoFatura;
             }
             return acc;
         },
@@ -74,10 +95,67 @@ function calcTotals(invoices: Invoice[]): TotalsPayment {
         });
 }
 
+function calcTotalsRevenues(revenues: Revenue[]): TotalsPaymentRevenues {
+    return revenues.reduce(
+        (acc: TotalsPaymentRevenues, revenue) => {
+            if (parseInt(revenue.diareceb) < 15) {
+                acc.total1Quinze += parseFloat(revenue.valor);
+            } else {
+                acc.total2Quinze += parseFloat(revenue.valor);
+            }
+            return acc;
+        },
+        {
+            total1Quinze: 0,
+            total2Quinze: 0,
+            total1QuinzeDiff: 0,
+            total2QuinzeDiff: 0
+        });
+}
 
+export function createPaymentStatus(diavenc: string, totalFatura: string, movimentos: Movement[]): PaymentStatus {
+    const columnOrigem = parseInt(diavenc) > 14 ? "quin2desp" : "quin1desp";
+    let columnId = columnOrigem;
+    const totalPagamento: number = movimentos.reduce(
+        (acc, movement) => {
+            const valor = typeof movement.valor === 'string' ? parseFloat(movement.valor) : movement.valor;
+            return acc += valor;
+        }, 0);
+
+    let status: StatusInvoice = StatusInvoice.ABERTA;
+    if (totalPagamento > 0) {
+        if (totalPagamento < parseFloat(totalFatura)) {
+            status = StatusInvoice.PAGOPARC
+        } else
+            if (totalPagamento > parseFloat(totalFatura)) {
+                status = StatusInvoice.PAGOMAIOR;
+                columnId = "desppag";
+            } else {
+                status = StatusInvoice.PAGO;
+                columnId = "desppag";
+            }
+
+    } else {
+        status = StatusInvoice.ABERTA;
+    }
+
+    const invoiceStatus: PaymentStatus = {
+        totalPagamento,
+        columnId,
+        columnOrigem,
+        status,
+        saldo: (parseFloat(totalFatura) - totalPagamento).toString()
+    }
+
+    return invoiceStatus;
+}
 
 export function convertToInvoice(invoiceDto: InvoiceDto): Invoice {
-    const collumOrigem = parseInt(invoiceDto.diavenc) > 14 ? "quin2desp" : "quin1desp";
+
+    const paymentStatus = createPaymentStatus(invoiceDto.diavenc, invoiceDto.totalFatura,
+         invoiceDto.movimentos.map(convertDtoToMovement));
+
+    const totalPago = paymentStatus.totalPagamento;
 
     return {
         id: invoiceDto.id ?? '',
@@ -87,8 +165,11 @@ export function convertToInvoice(invoiceDto: InvoiceDto): Invoice {
         diafech: invoiceDto.diafech,
         emissor: invoiceDto.emissor,
         total: invoiceDto.totalFatura,
-        pago: false,
-        columnId: collumOrigem,
-        columnOrigem: collumOrigem,
+        pago: totalPago.toString(),
+        saldo: (parseFloat(invoiceDto.totalFatura) - totalPago).toString(),
+        status: paymentStatus.status,
+        columnId: paymentStatus.columnId,
+        columnOrigem: paymentStatus.columnOrigem,
+        pagamentos: invoiceDto.movimentos.map(convertDtoToMovement)
     };
 }

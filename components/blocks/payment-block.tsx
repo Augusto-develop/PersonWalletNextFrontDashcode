@@ -135,8 +135,8 @@ const OrdersBlock = ({
           {percentageContent}
           <span className="ms-1">{textControl}</span>
         </div>
-        <div className="mt-5">
-          {chartType !== "none" && (
+        {chartType !== "none" && (
+          <div className="mt-5">
             <Chart
               options={options}
               series={chartSeries}
@@ -144,8 +144,8 @@ const OrdersBlock = ({
               height={height}
               width={"100%"}
             />
-          )}
-        </div>
+          </div>
+        )}
       </CardContent>
     </Card >
   );

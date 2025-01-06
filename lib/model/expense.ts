@@ -14,7 +14,6 @@ export type Expense = {
   viewparcela: string;
   lancamento: string;
   valor: string;
-  fixa: boolean;
   isCreateParcelas: boolean;
   isDeleteParcelas: boolean;
   isDelete: boolean;
@@ -26,5 +25,12 @@ export type InputsFilterExpense = {
   mes: string;
   ano: string;
   competencia: DayJsObject | undefined;
-  isSubmit: boolean;  
-}    
+  isSubmit: boolean;
+}
+
+export type ExpenseInvoiceSum = {
+  current: string | number;
+  previous: string | number;
+  next: string | number;
+  future: string | number;
+};

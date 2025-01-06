@@ -1,8 +1,8 @@
 'use client';
 import { addLeadingZeros, convertDatetimeToDate } from "@/lib/utils";
 import fetchWithAuth from "./login-actions";
-import { ExpenseDto } from "./types.schema.dto";
-import { Expense } from "@/lib/model/types";
+import { ExpenseDto, ExpenseInvoiceSumDto } from "./types.schema.dto";
+import { Expense, ExpenseInvoiceSum } from "@/lib/model/types";
 import { TypeCredit } from "@/lib/model/enums";
 
 export const getExpenses = async (
@@ -13,7 +13,7 @@ export const getExpenses = async (
 ): Promise<Expense[]> => {
     // Monta a URL com os parâmetros opcionais
     const queryParams = new URLSearchParams();
-    if (creditId) {        
+    if (creditId) {
         if (type && type === TypeCredit.DESPESAFIXA) {
             queryParams.append('type', type);
         } else {
@@ -38,6 +38,52 @@ export const getExpenses = async (
     if (res.ok) {
         const data: ExpenseDto[] = await res.json();
         newData = data.map((item) => convertDtoToExpense(item));
+    } else {
+        console.error('Erro ao buscar os dados');
+    }
+    return newData;
+};
+
+export const getInvoiceSums = async (
+    creditId?: string,
+    mesfat?: string,
+    anofat?: string,
+): Promise<ExpenseInvoiceSum> => {
+
+    const queryParams = new URLSearchParams();
+    if (creditId) {
+        queryParams.append('creditId', creditId);
+    }
+    if (mesfat) queryParams.append('mesfat', mesfat);
+    if (anofat) queryParams.append('anofat', anofat);
+
+    const url = `/despesa/invoice/sums${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+
+    // Faz a requisição
+    const res = await fetchWithAuth(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    let newData: ExpenseInvoiceSum = {
+        current: 0,
+        previous: 0,
+        next: 0,
+        future: 0,
+    }
+
+    if (res.ok) {
+        const data: ExpenseInvoiceSumDto = await res.json();
+
+        newData = {
+            current: data.current.toString(),
+            previous: data.previous.toString(),
+            next: data.next.toString(),
+            future: data.future.toString(),
+        };
+
     } else {
         console.error('Erro ao buscar os dados');
     }
@@ -173,7 +219,6 @@ export function convertDtoToExpense(expenseDto: ExpenseDto): Expense {
             addLeadingZeros(expenseDto.qtdeparc, 2),
         lancamento: convertDatetimeToDate(expenseDto.lancamento),
         valor: expenseDto.valor.toString(),
-        fixa: expenseDto.fixa,
         isCreateParcelas: isCreateParcelas,
         isDeleteParcelas: isParcelaGerada,
         isDelete: !isParent && !isParcelaGerada,

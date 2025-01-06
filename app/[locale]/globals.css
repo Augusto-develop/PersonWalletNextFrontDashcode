@@ -609,14 +609,28 @@ html[dir=rtl] .react-select .select__loading-indicator {
   border-color: hsl(var(--default-200) / var(--tw-border-opacity, 1)) !important;
 }
 
-.dark\:color-icon-pw:is(.dark *), .dark\:color-icon-pw:is(.dark *) svg {
+.dark\:color-icon-pw:is(.dark *),
+.dark\:color-icon-pw:is(.dark *) svg {
   color: rgba(255, 213, 62, 0.5);
 }
 
-.app-payment-sortable-collums{
-  height: calc(var(--vh, 1vh) * 100 - 19.1rem);
+.app-payment-sortable-collums {
+  height: calc(var(--vh, 1vh) * 100 - 16.1rem);
 }
 
-.text-default-pw-700{
+.text-default-pw-700 {
   color: rgba(255, 213, 62, 0.7);
+}
+
+.react-select-container.select-error .react-select__control {
+  border-color: red !important;
+}
+
+.react-select-container.select-error .react-select__control:hover {
+  border-color: red !important;
+}
+
+.react-select-container.select-error .react-select__control--is-focused {
+  border-color: red !important;
+  box-shadow: 0 0 0 1px red !important;
 }

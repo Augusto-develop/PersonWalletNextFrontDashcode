@@ -54,8 +54,7 @@ const CreateRevenue = ({ open, setOpen, dataRevenue = null }: CreateTaskProps) =
       descricao: data.descricao,
       valor: convertToNumeric(data.valor),
       carteiraId: data.carteira.value,
-      datareceb: dayjs(`${filter.ano}-${filter.mes}-${data.diareceb.value}`).toISOString(),
-      fixa: false
+      datareceb: dayjs(`${filter.ano}-${filter.mes}-${data.diareceb.value}`).toISOString()
     };
 
     try {
