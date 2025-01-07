@@ -227,7 +227,10 @@ function InvoiceCard({ invoice }: { invoice: Invoice }) {
                         </div>
                         <div className="flex-1">
                             <div className="text-xs text-default-400 mb-1">Valor</div>
-                            <div className="text-xs text-default-pw-700 font-medium">{convertFloatToMoeda(invoice.saldo)}</div>
+                            <div className="text-xs text-default-pw-700 font-medium">
+                                {convertFloatToMoeda([StatusInvoice.PAGO, StatusInvoice.PAGOMAIOR].includes(invoice.status)  ? 
+                                    invoice.total : invoice.saldo)}
+                            </div>
                         </div>
                     </div>
                 </CardContent>

@@ -45,7 +45,8 @@ export const PaymentProvider = ({ children }: PaymentProviderProps) => {
       total1QuinzeDiff: 0,
       total2Quinze: 0,
       total2QuinzeDiff: 0
-    }
+    },
+    saldoCarteiras: []
   });
 
   // Initializing filter state
@@ -66,6 +67,7 @@ export const PaymentProvider = ({ children }: PaymentProviderProps) => {
         invoice.id === id ? { ...invoice, ...updatedData } : invoice
       );
       const newTotalsExpenses = calcTotalsExpenses(updatedInvoices);
+      
       return {
         ...prevState,
         invoices: updatedInvoices,

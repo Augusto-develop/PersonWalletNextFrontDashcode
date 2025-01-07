@@ -14,11 +14,13 @@ import InvoiceCard from './components/invoice';
 import { createPortal } from "react-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import OrdersBlock from '@/components/blocks/payment-block';
-import { getCreditInvoice } from "@/action/payment-actions";
-import { Invoice, defaultCols, ExpensesForPayment } from "@/lib/model/types";
+import { Invoice, WalletSaldo, defaultCols } from "@/lib/model/types";
 import { onDragStartHandler, onDragEndHandler, onDragOverHandler } from "./components/dragAndDropHandlers";
 import { convertFloatToMoeda } from '@/lib/utils';
 import { usePaymentContext } from './components/payment-context';
+import WalletSaldoList from './components/wallet-saldo-list';
+import { getSaldoWallets } from '@/action/wallet-actions';
+import { Button } from '@/components/ui/button';
 
 
 function calculateTotalInDespprocess(invoices: Invoice[]): number {
@@ -41,7 +43,9 @@ const PaymentPage = () => {
     const [totalReceitas, setTotalReceitas] = useState(0);
     const [totalApagar, setTotalApagar] = useState(0);
     const [totalDiff, setTotalDiff] = useState(0);
+    const [saldoCurrent, setSaldoCurrent] = useState(0);
     const [saldoAfter, setSaldoAfter] = useState(0);
+    const [saldoWallets, setSaldoWallets] = useState<WalletSaldo[] | []>([]);
 
     // create invoice state 
     const [open, setOpen] = useState<boolean>(false);
@@ -59,16 +63,8 @@ const PaymentPage = () => {
         }
     }, [expensesForPayment]);
 
-    // const totalDespesas = expensesForPayment?.totalsExpenses.total1Quinze + expensesForPayment?.totalsExpenses.total2Quinze;
-    // const totalReceitas = expensesForPayment?.totalsRevenues.total1Quinze + expensesForPayment?.totalsRevenues.total2Quinze;
-    // const totalApagar = calculateTotalInDespprocess(invoices);
-    // const totalDiff = totalReceitas - totalDespesas;
-    // const saldoAtual = 0;
-    // const saldoAfter = saldoAtual - totalApagar;
-
     useEffect(() => {
         if (expensesForPayment) {
-            // Atualiza os valores sempre que expensesForPayment mudar
             setTotalDespesas(
                 expensesForPayment?.totalsExpenses.total1Quinze + expensesForPayment?.totalsExpenses.total2Quinze
             );
@@ -76,19 +72,36 @@ const PaymentPage = () => {
                 expensesForPayment?.totalsRevenues.total1Quinze + expensesForPayment?.totalsRevenues.total2Quinze
             );
         }
-    }, [expensesForPayment]); // Esse useEffect será acionado sempre que expensesForPayment mudar
+    }, [expensesForPayment]);
+
 
     useEffect(() => {
-        // Calcular totalApagar e totalDiff baseado nas despesas e receitas atualizadas
+
         const totalApagarCalculated = calculateTotalInDespprocess(invoices);
         const totalDiffCalculated = totalReceitas - totalDespesas;
         setTotalApagar(totalApagarCalculated);
         setTotalDiff(totalDiffCalculated);
 
-        // Atualiza o saldoAfter
-        const saldoAtual = 0;
-        setSaldoAfter(saldoAtual - totalApagarCalculated);
+        // const saldoCarteiras = await getSaldoWallets();
+        // const saldoCurrentCalculated = saldoCarteiras.reduce((total, wallet) => total + (parseFloat(wallet.saldo) || 0), 0);
+
+        // setSaldoAfter(saldoCurrentCalculated - totalApagarCalculated);
+        // setSaldoCurrent(saldoCurrentCalculated);
+
     }, [totalDespesas, totalReceitas, invoices]);
+
+    useEffect(() => {
+        const calculatedSaldos = async () => {
+            const saldoCarteiras = await getSaldoWallets();
+            const saldoCurrentCalculated = saldoCarteiras.reduce((total, wallet) => total + (parseFloat(wallet.saldo) || 0), 0);
+
+            setSaldoWallets(saldoCarteiras);
+            setSaldoAfter(saldoCurrentCalculated - totalApagar);
+            setSaldoCurrent(saldoCurrentCalculated);
+        }
+
+        calculatedSaldos();
+    }, [totalApagar, invoices]);
 
     return (
 
@@ -173,18 +186,33 @@ const PaymentPage = () => {
                                         </div>
                                         <div className='flex-1'>
                                             <OrdersBlock
-                                                className='bg-default-50'
+                                                className="bg-default-50 relative" // Adicionado `relative` para posicionamento do botão
                                                 title="Saldo Atual"
-                                                total="0,00"
+                                                total={convertFloatToMoeda(saldoCurrent)}
                                                 chartColor="#4669fa"
                                                 chartType="none"
                                                 percentageContent={
-                                                    <span className={saldoAfter < 0 ? "text-destructive" : "text-primary"}>
-                                                        {saldoAfter > 0 ? `+${convertFloatToMoeda(saldoAfter)}` : convertFloatToMoeda(saldoAfter)}
+                                                    <span
+                                                        className={saldoAfter < 0 ? "text-destructive" : "text-primary"}
+                                                    >
+                                                        {saldoAfter > 0
+                                                            ? `+${convertFloatToMoeda(saldoAfter)}`
+                                                            : convertFloatToMoeda(saldoAfter)}
                                                     </span>
                                                 }
                                                 textControl="de saldo"
-                                            />
+                                            >
+                                                {/* <Button
+                                                    size="icon"
+                                                    className="absolute top-2 right-2 flex-none bg-transparent hover:bg-transparent
+                                                     hover:ring-0 hover:ring-transparent w-6 h-6"
+                                                >
+                                                    <SquareChevronRight className="h-6 w-6 text-default-900" />
+                                                </Button> */}
+                                                <div className="absolute top-4 right-4 flex-none h-5 w-5">
+                                                    <WalletSaldoList saldoWallets={saldoWallets}/>
+                                                </div>
+                                            </OrdersBlock>
                                         </div>
                                     </div>
                                     <div className="flex gap-2 justify-between">

@@ -1,5 +1,6 @@
 import { DayJsObject } from "@/components/mui-datepicker";
 import { Movement } from "./movement";
+import { WalletSaldo } from "./wallet";
 
 export type Invoice = {
     id: string;
@@ -61,6 +62,7 @@ export type ExpensesForPayment = {
     invoices: Invoice[],
     totalsExpenses: TotalsPaymentExpenses,
     totalsRevenues: TotalsPaymentRevenues,
+    saldoCarteiras: WalletSaldo[],
 }
 
 export type InputsFilterPayment = {

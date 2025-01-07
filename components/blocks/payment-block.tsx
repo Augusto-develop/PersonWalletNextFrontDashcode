@@ -1,21 +1,24 @@
 "use client";
+
 import dynamic from "next/dynamic";
 const Chart = dynamic(() => import("react-apexcharts"));
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { useTheme } from "next-themes";
 import React from "react";
+
 interface OrdersnBlockProps {
   className?: string;
   series?: number[];
   chartColor?: string;
-  chartType?: 'area' | 'bar' | 'line' | 'pie' | 'donut' | 'radialBar' | 'none'
-  opacity?: number,
-  title?: string,
-  total?: number | string,
-  height?: number,
-  percentageContent?: React.ReactNode
-  textControl?: string
+  chartType?: 'area' | 'bar' | 'line' | 'pie' | 'donut' | 'radialBar' | 'none';
+  opacity?: number;
+  title?: string;
+  total?: number | string;
+  height?: number;
+  percentageContent?: React.ReactNode;
+  textControl?: string;
+  children?: React.ReactNode; // Adicionado suporte a children
 }
 
 const OrdersBlock = ({
@@ -28,13 +31,14 @@ const OrdersBlock = ({
   total,
   height = 42,
   percentageContent = "",
-  textControl = ""
+  textControl = "",
+  children, // Recebendo children
 }: OrdersnBlockProps) => {
   const { theme: mode } = useTheme();
   const chartSeries = [
     {
-      data: series
-    }
+      data: series,
+    },
   ];
 
   const options: any = {
@@ -50,9 +54,8 @@ const OrdersBlock = ({
       },
       sparkline: {
         enabled: true,
-      }
+      },
     },
-
     plotOptions: {
       bar: {
         columnWidth: "60%",
@@ -112,25 +115,15 @@ const OrdersBlock = ({
         low: 0,
         offsetX: 0,
         show: false,
-      }
-    }
+      },
+    },
   };
+
   return (
     <Card className={cn("p-4", className)}>
-      <CardContent className="p-0 ">
-        {
-          title && (
-            <div className="text-sm text-default-600 mb-1.5">
-              {title}
-            </div>
-          )
-        }
-        {total && (
-          <div className="text-lg text-default-900 font-medium mb-1.5">
-            {total}
-          </div>
-        )
-        }
+      <CardContent className="p-0">
+        {title && <div className="text-sm text-default-600 mb-1.5">{title}</div>}
+        {total && <div className="text-lg text-default-900 font-medium mb-1.5">{total}</div>}
         <div className="font-normal text-xs text-default-600">
           {percentageContent}
           <span className="ms-1">{textControl}</span>
@@ -146,8 +139,9 @@ const OrdersBlock = ({
             />
           </div>
         )}
+        {children && <>{children}</>}
       </CardContent>
-    </Card >
+    </Card>
   );
 };
 

@@ -5,6 +5,7 @@ import { InvoiceDto, MovementDto } from "./types.schema.dto";
 import { TypeCredit } from "@/lib/model/enums";
 import { getRevenues } from "./revenue-actions";
 import { convertDtoToMovement } from "./movement-actions";
+import { getSaldoWallets } from "./wallet-actions";
 
 export const getCreditInvoice = async (
     payload: { mes: string; ano: string }
@@ -38,7 +39,8 @@ export const getCreditInvoice = async (
                 total1QuinzeDiff: 0,
                 total2Quinze: 0,
                 total2QuinzeDiff: 0
-            }
+            },
+            saldoCarteiras: []
         };
 
         // Processar resposta bem-sucedida
@@ -57,6 +59,8 @@ export const getCreditInvoice = async (
 
             expensesForPayment.totalsRevenues.total2QuinzeDiff =
                 expensesForPayment.totalsRevenues.total2Quinze - expensesForPayment.totalsExpenses.total2Quinze;
+
+            expensesForPayment.saldoCarteiras = await getSaldoWallets();
 
         } else {
             console.error("Erro ao buscar os dados:", res.statusText);

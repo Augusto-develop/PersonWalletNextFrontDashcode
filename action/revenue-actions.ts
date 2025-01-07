@@ -36,7 +36,6 @@ export const getRevenues = async (payload: {
     return newData;
 };
 
-
 export const createRevenue = async (payload: RevenueDto): Promise<RevenueDto | undefined> => {
 
     delete payload.id;

@@ -59,11 +59,11 @@ export type ExpenseDto = {
     parentId?: string;
 };
 
-export type ExpenseInvoiceSumDto = {   
-    current: number | string;   
-    previous: number | string;   
-    next: number | string;   
-    future: number | string;   
+export type ExpenseInvoiceSumDto = {
+    current: number | string;
+    previous: number | string;
+    next: number | string;
+    future: number | string;
 };
 
 export type WalletDto = {
@@ -71,6 +71,13 @@ export type WalletDto = {
     descricao: string;
     emissor: string;
     ativo: boolean;
+};
+
+export type WalletSaldoDto = {
+    id?: string;
+    descricao: string;
+    emissor: string;
+    saldo: number | string;
 };
 
 export type RevenueDto = {

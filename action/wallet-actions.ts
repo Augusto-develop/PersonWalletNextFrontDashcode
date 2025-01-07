@@ -1,7 +1,7 @@
 'use client';
 import fetchWithAuth from "./login-actions";
-import { WalletDto } from "@/action/types.schema.dto";
-import {Wallet, WalletOption } from "@/lib/model/types";
+import { WalletDto, WalletSaldoDto } from "@/action/types.schema.dto";
+import {Wallet, WalletOption, WalletSaldo } from "@/lib/model/types";
 
 export const getWallets = async (): Promise<Wallet[]> => {
 
@@ -18,6 +18,27 @@ export const getWallets = async (): Promise<Wallet[]> => {
         const data: WalletDto[] = await res.json();
 
         newData = data.map((item) => (convertDtoToWallet(item)));
+    } else {
+        console.error('Erro ao buscar os dados');
+    }
+    return newData;
+};
+
+export const getSaldoWallets = async (): Promise<WalletSaldo[]> => {
+
+    const res = await fetchWithAuth("/carteira/saldo", {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    let newData: WalletSaldo[] = [];
+
+    if (res.ok) {
+        const data: WalletSaldoDto[] = await res.json();
+
+        newData = data.map((item) => (convertDtoToWalletSaldo(item)));
     } else {
         console.error('Erro ao buscar os dados');
     }
@@ -83,6 +104,17 @@ export function convertDtoToWallet(walletDto: WalletDto): Wallet {
             avatar: walletDto.emissor,
         },        
         active: walletDto.ativo
+    };
+}
+
+export function convertDtoToWalletSaldo(walletDto: WalletSaldoDto): WalletSaldo {
+    return {
+        id: walletDto.id ?? '',
+        descricao: {
+            text: walletDto.descricao,
+            avatar: walletDto.emissor,
+        },        
+        saldo: walletDto.saldo.toString()
     };
 }
 
