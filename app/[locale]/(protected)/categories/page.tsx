@@ -49,7 +49,7 @@ const ListTable = () => {
         };
 
         fetchCategories();
-    }, []);
+    }, [setCategories]);
 
     const columns: ColumnDef<Category>[] = [
         {

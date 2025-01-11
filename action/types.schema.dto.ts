@@ -11,6 +11,7 @@ export interface CreditCardDto extends CreditDto {
     emissor: string;
     diafech: string;
     bandeira: string;
+    limite?: string;
 };
 
 export interface InvoiceDto extends CreditCardDto {
@@ -57,6 +58,7 @@ export type ExpenseDto = {
     valor: number | string;
     generateparc: boolean;
     parentId?: string;
+    carteiraPg?: string;
 };
 
 export type ExpenseInvoiceSumDto = {
@@ -86,7 +88,13 @@ export type RevenueDto = {
     descricao: string;
     datareceb: string;
     valor: number | string;
+    categoriaId: string;
 };
+
+export type RevenueGroupCategoryDto = {  
+    categoriaDescricao: string;   
+    total: string;  
+  };
 
 export type MovementDto = {
     id?: string;

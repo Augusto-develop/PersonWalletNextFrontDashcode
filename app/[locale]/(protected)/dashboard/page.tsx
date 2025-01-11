@@ -8,10 +8,9 @@ import InvoicesTable from "./components/invoices";
 import DashboardDropdown from "@/components/dashboard-dropdown";
 import HistoryChart from "./components/history-chart";
 import AccountChart from "./components/account-chart";
-import { useTranslations } from "next-intl";
+import React from "react";
 
-const BankingPage = () => {
-  const t = useTranslations("BankingDashboard");
+const BankingPage = () => { 
   return (
     <div className="space-y-5">
       <Card>
@@ -27,23 +26,23 @@ const BankingPage = () => {
               <div className="flex-1">
                 <h4 className="text-xl font-medium mb-2">
                   <span className="block font-light text-default-800">
-                    {t("widget_title")},
+                    widget_title,
                   </span>
                   <span className="block text-default-900">Mr. Jone Doe</span>
                 </h4>
-                <p className="text-sm text-default-600">{t("widget_desc")}</p>
+                <p className="text-sm text-default-600">widget_desc</p>
               </div>
             </div>
             {/*  status blocks */}
             <StatusBlock
-              title={t("current_balance")}
+              title="current_balance"
               total="$34,564"
               chartType="bar"
               className="bg-default-50 shadow-none border-none"
               opacity={1}
             />
             <StatusBlock
-              title={t("credit")}
+              title="credit"
               total="$3,564"
               chartColor="#80fac1"
               className="bg-default-50 shadow-none border-none"
@@ -52,7 +51,7 @@ const BankingPage = () => {
               opacity={1}
             />
             <StatusBlock
-              title={t("debit")}
+              title="debit"
               total="$3,564"
               chartColor="#ffbf99"
               className="bg-default-50 shadow-none border-none"
@@ -67,7 +66,7 @@ const BankingPage = () => {
         <div className="lg:col-span-4 col-span-12 space-y-5">
           <Card>
             <CardHeader>
-              <CardTitle>{t("my_card")}</CardTitle>
+              <CardTitle>my_card</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="max-w-[90%] mx-auto mt-2">
@@ -77,7 +76,7 @@ const BankingPage = () => {
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle>{t("quick_transfer")}</CardTitle>
+              <CardTitle>quick_transfer</CardTitle>
             </CardHeader>
             <CardContent>
               <AmountTransfer />

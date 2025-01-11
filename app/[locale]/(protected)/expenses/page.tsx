@@ -56,7 +56,7 @@ const ListTable = () => {
 
             fetchSumns();
         }
-    }, [expenses]);
+    }, [expenses, setInvoiceSums, filter.credit?.value, filter.mes, filter.ano]);
 
     const getColumnAlignment = (columnId: string) => {
         switch (columnId) {

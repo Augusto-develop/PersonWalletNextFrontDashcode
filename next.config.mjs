@@ -29,7 +29,7 @@ const nextConfig = {
       },
     ],
   },
-  reactStrictMode: true,  
+  reactStrictMode: true,
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.watchOptions = {

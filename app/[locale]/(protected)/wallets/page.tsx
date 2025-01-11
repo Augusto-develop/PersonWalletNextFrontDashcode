@@ -47,9 +47,9 @@ const ListTable = () => {
         };
 
         fetchWallets();
-    }, []);
+    }, [setWallets]);
 
-    const columns: ColumnDef<Wallet>[] = [        
+    const columns: ColumnDef<Wallet>[] = [
         {
             accessorKey: "descricao",
             header: "Descrição",

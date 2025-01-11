@@ -6,6 +6,7 @@ import { TypeCredit } from "@/lib/model/enums";
 import { getRevenues } from "./revenue-actions";
 import { convertDtoToMovement } from "./movement-actions";
 import { getSaldoWallets } from "./wallet-actions";
+import { CompareFloat, compareFloat } from "@/lib/utils";
 
 export const getCreditInvoice = async (
     payload: { mes: string; ano: string }
@@ -79,14 +80,14 @@ export function calcTotalsExpenses(invoices: Invoice[]): TotalsPaymentExpenses {
         (acc: TotalsPaymentExpenses, invoice) => {
 
             const totalPagoFatura = invoice.pagamentos
-                    ? invoice.pagamentos.reduce((total, pagamento) => total + parseFloat(pagamento.valor), 0)
-                    : 0;
+                ? invoice.pagamentos.reduce((total, pagamento) => total + parseFloat(pagamento.valor), 0)
+                : 0;
 
             if (parseInt(invoice.diavenc) < 15) {
-                acc.total1Quinze += parseFloat(invoice.total) + totalPagoFatura;
+                acc.total1Quinze += parseFloat(invoice.total);
                 acc.total1QuinzePago += totalPagoFatura;
-            } else {                
-                acc.total2Quinze += parseFloat(invoice.total) + totalPagoFatura;
+            } else {
+                acc.total2Quinze += parseFloat(invoice.total);
                 acc.total2QuinzePago += totalPagoFatura;
             }
             return acc;
@@ -118,7 +119,15 @@ function calcTotalsRevenues(revenues: Revenue[]): TotalsPaymentRevenues {
 }
 
 export function createPaymentStatus(diavenc: string, totalFatura: string, movimentos: Movement[]): PaymentStatus {
-    const columnOrigem = parseInt(diavenc) > 14 ? "quin2desp" : "quin1desp";
+    
+    
+    let  columnOrigem = "";
+    if(diavenc === null){
+        columnOrigem = "desppag";
+    }else{
+        columnOrigem = parseInt(diavenc) > 14 ? "quin2desp" : "quin1desp";
+    }    
+    
     let columnId = columnOrigem;
     const totalPagamento: number = movimentos.reduce(
         (acc, movement) => {
@@ -127,21 +136,26 @@ export function createPaymentStatus(diavenc: string, totalFatura: string, movime
         }, 0);
 
     let status: StatusInvoice = StatusInvoice.ABERTA;
+
     if (totalPagamento > 0) {
-        if (totalPagamento < parseFloat(totalFatura)) {
-            status = StatusInvoice.PAGOPARC
-        } else
-            if (totalPagamento > parseFloat(totalFatura)) {
+
+        switch (compareFloat(totalPagamento, parseFloat(totalFatura))) {
+            case CompareFloat.MENOR:
+                status = StatusInvoice.PAGOPARC
+                break;
+            case CompareFloat.MAIOR:
                 status = StatusInvoice.PAGOMAIOR;
                 columnId = "desppag";
-            } else {
+                break;
+            case CompareFloat.IGUAL:
                 status = StatusInvoice.PAGO;
                 columnId = "desppag";
-            }
-
-    } else {
-        status = StatusInvoice.ABERTA;
-    }
+                break;
+            default:
+                console.error("Falha comparar float.");
+                throw new Error("Falha comparar float.");
+        }
+    } 
 
     const invoiceStatus: PaymentStatus = {
         totalPagamento,
@@ -157,14 +171,27 @@ export function createPaymentStatus(diavenc: string, totalFatura: string, movime
 export function convertToInvoice(invoiceDto: InvoiceDto): Invoice {
 
     const paymentStatus = createPaymentStatus(invoiceDto.diavenc, invoiceDto.totalFatura,
-         invoiceDto.movimentos.map(convertDtoToMovement));
+        invoiceDto.movimentos.map(convertDtoToMovement));
 
     const totalPago = paymentStatus.totalPagamento;
+
+    let avatar = "";
+    switch (invoiceDto.type) {
+        case TypeCredit.DESPESAFIXA:
+            avatar = "mdi:graph-pie";
+            break;
+        case TypeCredit.AVISTA:
+            avatar = "mdi:cash-multiple";
+            break;
+        default:
+            avatar = invoiceDto.emissor
+            break;
+    }
 
     return {
         id: invoiceDto.id ?? '',
         title: invoiceDto.descricao,
-        avatar: invoiceDto.type === TypeCredit.DESPESAFIXA ? "mdi:graph-pie" : invoiceDto.emissor,
+        avatar: avatar,
         diavenc: invoiceDto.diavenc,
         diafech: invoiceDto.diafech,
         emissor: invoiceDto.emissor,

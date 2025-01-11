@@ -3,14 +3,15 @@ import fetchWithAuth from "./login-actions";
 import { CreditCard, CreditCardOption, Invoice } from "@/lib/model/types";
 import { CreditCardDto, InvoiceDto } from "./types.schema.dto";
 import { TypeCredit } from "@/lib/model/enums";
+import { calculatePercentage, calculateValueMaxPixCredito } from "@/lib/utils";
 
 
 export const getCreditCards = async (): Promise<CreditCard[]> => {
 
-    const queryParams = new URLSearchParams();
-    queryParams.append('type', TypeCredit.CARTAO)
+    // const queryParams = new URLSearchParams();
+    // queryParams.append('type', TypeCredit.CARTAO)
 
-    const res = await fetchWithAuth(`/credito?${queryParams.toString()}`, {
+    const res = await fetchWithAuth(`/credito/cartoes`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -81,16 +82,23 @@ export const deleteCreditCard = async (id: string): Promise<Response> => {
 };
 
 export function convertToCreditCard(credit: CreditCardDto): CreditCard {
+   
+    const valorCredito = parseFloat(credit.valorcredito?.toString() || "0");
+    const limite = parseFloat(credit.limite?.toString() || "0");
+    const limiteUsado = valorCredito - limite;
+
     return {
-        id: credit.id ?? '',
-        title: credit.descricao,
-        avatar: credit.emissor,
+        id: credit.id || '',
+        title: credit.descricao || '',
+        avatar: credit.emissor || '',
         diavenc: credit.diavenc,
         diafech: credit.diafech,
-        limite: credit.valorcredito?.toString(),
-        emissor: credit.emissor,
-        bandeira: credit.bandeira,
-        progress: 10,
+        limite: valorCredito.toString(),
+        disponivel: limite.toString(),
+        emissor: credit.emissor || '',
+        bandeira: credit.bandeira || '',
+        progress: calculatePercentage(limiteUsado, valorCredito),
+        maxPixCredito: calculateValueMaxPixCredito(limite).toString()
     };
 }
 
@@ -107,3 +115,5 @@ export const createOptionsCreditCards = async (): Promise<CreditCardOption[]> =>
 
     return creditcardOptions;
 }
+
+

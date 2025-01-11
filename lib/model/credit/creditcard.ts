@@ -10,6 +10,8 @@ export type CreditCard = {
     progress: number;
     emissor: string;
     bandeira: string;
+    disponivel: string;
+    maxPixCredito: string;
 };
 
 export interface CreditCardOption extends CreditOption {};

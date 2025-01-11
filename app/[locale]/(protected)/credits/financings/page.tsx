@@ -51,7 +51,7 @@ const ListTable = () => {
         };
 
         fetchFinancings();
-    }, []);
+    }, [setFinancings]);
 
     const columns: ColumnDef<Financing>[] = [
         {

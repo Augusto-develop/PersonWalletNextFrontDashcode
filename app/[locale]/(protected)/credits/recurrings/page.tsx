@@ -39,6 +39,7 @@ const ListTable = () => {
     const { recurrings, setRecurrings, deleteRecurring } = useRecurringContext();
     const [categoriaOptions, setCategoriaOptions] = React.useState<CategoryOption[]>([]);
 
+    // useEffect para carregar recorrências
     useEffect(() => {
         const fetchRecurrings = async () => {
             const data: Recurring[] = await getRecurrings();
@@ -46,14 +47,18 @@ const ListTable = () => {
         };
 
         fetchRecurrings();
+    }, [setRecurrings]); // Dependência somente de setRecurrings
 
+    // useEffect para carregar opções de categorias
+    useEffect(() => {
         const fetchCategoryOptions = async () => {
             const options: CategoryOption[] = await createOptionsCategories();
             setCategoriaOptions(options);
         };
 
         fetchCategoryOptions();
-    }, []);
+    }, [setCategoriaOptions]); // Dependência somente de setCategoriaOptions
+
 
     const columns: ColumnDef<Recurring>[] = [
         {
@@ -140,15 +145,15 @@ const ListTable = () => {
         }
     })
 
-    const getColumnAlignment = (columnId: string) => {        
+    const getColumnAlignment = (columnId: string) => {
         switch (columnId) {
             case "categoriaId":
             case "descricao":
                 return "text-left";
-            case "diavenc":           
+            case "diavenc":
                 return "text-center";
-            case "valorcredito":            
-                return "text-right";            
+            case "valorcredito":
+                return "text-right";
             default:
                 return "";
         }

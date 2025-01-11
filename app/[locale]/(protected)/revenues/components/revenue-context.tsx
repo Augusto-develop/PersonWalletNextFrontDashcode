@@ -1,13 +1,17 @@
 'use client';
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-import { Revenue, InputsFilterRevenue } from "@/lib/model/types";
+import { Revenue, InputsFilterRevenue, WalletOption, CategoryOption } from "@/lib/model/types";
 
 interface RevenueContextType {
   filter: InputsFilterRevenue;
   setFilter: React.Dispatch<React.SetStateAction<InputsFilterRevenue>>;
   revenues: Revenue[];
   setRevenues: React.Dispatch<React.SetStateAction<Revenue[]>>;
+  categoriaOptions: CategoryOption[];
+  setCategoriaOptions: React.Dispatch<React.SetStateAction<CategoryOption[]>>;
+  walletOptions: WalletOption[];
+  setWalletOptions: React.Dispatch<React.SetStateAction<WalletOption[]>>;
   deleteRevenue: (id: string) => void;
   editRevenue: (id: string, updatedData: Partial<Revenue>) => void;
 }
@@ -28,7 +32,9 @@ interface RevenueProviderProps {
 
 export const RevenueProvider = ({ children }: RevenueProviderProps) => {
   const [revenues, setRevenues] = useState<Revenue[]>([]);
-  const [filter, setFilter] = useState<InputsFilterRevenue>({    
+  const [categoriaOptions, setCategoriaOptions] = useState<CategoryOption[]>([]);
+  const [walletOptions, setWalletOptions] = useState<WalletOption[]>([]);
+  const [filter, setFilter] = useState<InputsFilterRevenue>({
     mes: '',
     ano: '',
     competencia: undefined,
@@ -49,7 +55,18 @@ export const RevenueProvider = ({ children }: RevenueProviderProps) => {
   };
 
   return (
-    <RevenueContext.Provider value={{ revenues, setRevenues, deleteRevenue, editRevenue, filter, setFilter }}>
+    <RevenueContext.Provider value={{
+      revenues,
+      setRevenues,
+      deleteRevenue,
+      editRevenue,
+      filter,
+      setFilter,
+      categoriaOptions,
+      setCategoriaOptions,
+      walletOptions,
+      setWalletOptions
+    }}>
       {children}
     </RevenueContext.Provider>
   );

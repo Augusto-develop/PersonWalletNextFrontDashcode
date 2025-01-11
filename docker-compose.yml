@@ -6,11 +6,15 @@ services:
             dockerfile: Dockerfile
         environment:
             - PORT=3000
-            - CHOKIDAR_USEPOLLING=true            
+            - CHOKIDAR_USEPOLLING=true   
+            - AWS_ACCESS_KEY_ID=deploy-pw       # Substitua com suas credenciais
+            - AWS_SECRET_ACCESS_KEY=bp57JR1[  # Substitua com suas credenciais
+            - AWS_DEFAULT_REGION=us-east-2                # Região padrão         
         ports:
             - "80:80"
             - '3100:3000'
         volumes:
               - C:/Develop/themeforest/Dashcode/Dashcode-starter-v1.0.0:/var/www:cached
+              - ~/.aws:/root/.aws:ro
         extra_hosts:
             - 'host.docker.internal:host-gateway'

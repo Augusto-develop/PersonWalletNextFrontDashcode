@@ -29,10 +29,10 @@ import { createOptionsWallets } from "@/action/wallet-actions";
 const ExpenseWrapper = ({ children }: { children: React.ReactNode }) => {
     const [open, setOpen] = useState<boolean>(false);
     const [openReaderInvoice, setOpenReaderInvoice] = useState<boolean>(false); // Novo estado para "Reader Invoice"
-    const [groupCreditOptions, setGroupCreditOptions] = useState<GroupedCreditOption[]>([]);   
+    const [groupCreditOptions, setGroupCreditOptions] = useState<GroupedCreditOption[]>([]);
 
     const { expenses, setExpenses, filter, setFilter, setInvoiceSums, setCategoriaOptions, setWalletOptions } =
-    useExpenseContext();
+        useExpenseContext();
 
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -40,28 +40,35 @@ const ExpenseWrapper = ({ children }: { children: React.ReactNode }) => {
     const selectRef = useRef<any>(null);
     const dateInputRef = useRef<HTMLInputElement | null>(null);
 
-    // Busca as opções de créditos ao montar o componente
+    // useEffect para carregar opções de grupos de crédito
     useEffect(() => {
         const fetchCreditGroupOptions = async () => {
             const options: GroupedCreditOption[] = await createOptionsGroupCredit();
             setGroupCreditOptions(options);
         };
-        fetchCreditGroupOptions();
 
+        fetchCreditGroupOptions();
+    }, [setGroupCreditOptions]); // Executa apenas uma vez, após a montagem do componente
+
+    // useEffect para carregar opções de categorias
+    useEffect(() => {
         const fetchCategoryOptions = async () => {
             const options: CategoryOption[] = await createOptionsCategories();
             setCategoriaOptions(options);
         };
 
         fetchCategoryOptions();
+    }, [setCategoriaOptions]); // Executa apenas uma vez, após a montagem do componente
 
+    // useEffect para carregar opções de carteiras
+    useEffect(() => {
         const fetchWalletOptions = async () => {
             const options: WalletOption[] = await createOptionsWallets();
             setWalletOptions(options);
         };
 
         fetchWalletOptions();
-    }, []);
+    }, [setWalletOptions]); // Executa apenas uma vez, após a montagem do componente
 
     // Foca nos campos com erro
     useEffect(() => {

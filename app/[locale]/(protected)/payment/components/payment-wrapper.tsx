@@ -30,7 +30,7 @@ const PaymentWrapper = ({ children }: { children: React.ReactNode }) => {
         };
 
         fetchWalletOptions();
-    }, []);
+    }, [setWalletOptions]);
 
     const {
         handleSubmit,

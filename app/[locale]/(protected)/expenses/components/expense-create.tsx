@@ -38,7 +38,7 @@ type Inputs = {
   parcela: string;
   datacompra: string;
   valor: string;
-  carteira?: string;
+  carteira?: Option;
 }
 
 const separateParcela = (value: string) => {
@@ -79,7 +79,11 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
       lancamento: new Date(convertToAmericanDate(data.datacompra)).toISOString(),
       valor: convertToNumeric(data.valor),
       generateparc: false,
+      carteiraPg: data.carteira?.value
     };
+
+    console.log(data);
+    console.log(payload);
 
     try {
       return payload.id?.trim() !== "" ?
@@ -281,9 +285,9 @@ const CreateExpense = ({ open, setOpen, dataExpense = null }: CreateTaskProps) =
                       className="react-select"
                       classNamePrefix="select"
                       options={walletOptions}
-                      value={walletOptions.find(option => option.value === field.value)}  // Passa apenas o objeto selecionado
+                      value={walletOptions.find(option => option === field.value)}  // Passa apenas o objeto selecionado
                       onChange={(selected) => {
-                        field.onChange(selected ? selected.value : undefined); // Passa apenas o value (id)
+                        field.onChange(selected ? selected : undefined); // Passa apenas o value (id)
                       }}
                       formatOptionLabel={(option) => {  // Customiza a renderização da opção
                         const IconComponent = avatarComponents[option.avatar as IconType]; // Assumindo que "avatar" é um campo nas opções

@@ -1,8 +1,8 @@
 'use client';
 import { addLeadingZeros, convertDatetimeToDate, getDayIsoDate } from "@/lib/utils";
 import fetchWithAuth from "./login-actions";
-import { RevenueDto } from "./types.schema.dto";
-import { Revenue } from "@/lib/model/types";
+import { RevenueDto, RevenueGroupCategoryDto } from "./types.schema.dto";
+import { Revenue, RevenueGroupCategory } from "@/lib/model/types";
 import { TypeCredit } from "@/lib/model/enums";
 
 export const getRevenues = async (payload: {
@@ -30,6 +30,37 @@ export const getRevenues = async (payload: {
     if (res.ok) {
         const data: RevenueDto[] = await res.json();
         newData = data.map((item) => convertDtoToRevenue(item));
+    } else {
+        console.error('Erro ao buscar os dados');
+    }
+    return newData;
+};
+
+export const getRevenuesByCategory = async (payload: {
+    mes: string,
+    ano: string,
+}): Promise<RevenueGroupCategory[]> => {
+
+    const queryParams = new URLSearchParams({
+        mesfat: payload.mes,
+        anofat: payload.ano,
+    });
+
+    const url = `/receita/categoria${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+
+    // Faz a requisição
+    const res = await fetchWithAuth(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    let newData: RevenueGroupCategory[] = [];
+
+    if (res.ok) {
+        const data: RevenueGroupCategoryDto[] = await res.json();
+        newData = data.map((item) => convertDtoToRevenueGroupCategory(item));        
     } else {
         console.error('Erro ao buscar os dados');
     }
@@ -94,5 +125,13 @@ export function convertDtoToRevenue(revenueDto: RevenueDto): Revenue {
         carteiraId: revenueDto.carteiraId,
         diareceb: getDayIsoDate(revenueDto.datareceb),
         valor: revenueDto.valor.toString(),
+        categoriaId: revenueDto.categoriaId,
+    };
+}
+
+export function convertDtoToRevenueGroupCategory(revenueGroupCategoryDto: RevenueGroupCategoryDto): RevenueGroupCategory {
+    return {        
+        categoriaDescricao: revenueGroupCategoryDto.categoriaDescricao,       
+        total: revenueGroupCategoryDto.total.toString(),        
     };
 }

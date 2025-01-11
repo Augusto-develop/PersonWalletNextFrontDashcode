@@ -38,7 +38,7 @@ const ListTable = () => {
     const [columnVisibility, setColumnVisibility] =
         React.useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = React.useState({})
-    const { revenues, filter } = useRevenueContext();
+    const { revenues, filter, categoriaOptions } = useRevenueContext();
     const [walletOptions, setWalletOptions] = useState<WalletOption[]>([]);
 
     useEffect(() => {
@@ -76,6 +76,19 @@ const ListTable = () => {
                                 {carteira?.label}
                             </div>
                         </div>
+                    </div>
+                );
+            }
+        },
+        {
+            accessorKey: "categoriaId",
+            header: "Categoria",
+            cell: ({ row }) => {
+                const categoriaId = row.getValue("categoriaId");
+                const categoria = categoriaOptions.find(option => option.value === categoriaId);
+                return (
+                    <div className="font-medium text-sm leading-4 whitespace-nowrap">
+                        {categoria ? categoria.label : "Categoria não encontrada"}
                     </div>
                 );
             }
@@ -137,6 +150,7 @@ const ListTable = () => {
     const getColumnAlignment = (columnId: string) => {
         switch (columnId) {
             case "carteiraId":
+            case "categoriaId":
             case "descricao":
             case "actions":
                 return "text-left";

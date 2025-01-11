@@ -6,6 +6,7 @@ export type Revenue = {
   carteiraId: string; 
   diareceb: string;
   valor: string;
+  categoriaId: string;
 };
 
 export type InputsFilterRevenue = { 
@@ -13,4 +14,10 @@ export type InputsFilterRevenue = {
   ano: string;
   competencia: DayJsObject | undefined;
   isSubmit: boolean;  
-}    
+} 
+
+export type RevenueGroupCategory = {  
+  categoriaDescricao: string;   
+  total: string;  
+};
+

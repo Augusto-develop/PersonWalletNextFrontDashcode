@@ -46,7 +46,7 @@ const ListTable = () => {
         };
 
         fetchLendings();
-    }, []);
+    }, [setLendings]);
 
     const columns: ColumnDef<Lending>[] = [
         {

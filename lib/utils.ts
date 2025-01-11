@@ -101,3 +101,36 @@ export function getDayIsoDate(isoDate: string): string {
   const day = String(date.getUTCDate()).padStart(2, '0');
   return day;
 }
+
+export enum CompareFloat {
+  IGUAL = "IGUAL",
+  MAIOR = "MAIOR",
+  MENOR = "MENOR"
+}
+
+export function compareFloat(a: number, b: number, epsilon: number = 0.000001): CompareFloat {
+  const diferenca = a - b;
+
+  if (Math.abs(diferenca) < epsilon) {
+    return CompareFloat.IGUAL;
+  } else if (diferenca > 0) {
+    return CompareFloat.MAIOR;
+  } else {
+    return CompareFloat.MENOR;
+  }
+}
+
+export function calculatePercentage(valor: number, total: number): number {
+  if (total === 0) {
+    throw new Error("O total não pode ser zero.");
+  }
+
+  const percentual = (valor / total) * 100;
+  return parseFloat(percentual.toFixed(0));
+}
+
+export function calculateValueMaxPixCredito(limite: number, taxa: number = 3.99): number {
+  const fator = 1 + (taxa / 100);
+  const valorMaximo = limite / fator;
+  return parseFloat(valorMaximo.toFixed(2)); // Retorna com duas casas decimais
+}

@@ -25,14 +25,15 @@ const CreditCardGrid = () => {
         };
 
         fetchCreditCards();
-    }, []);
+    }, [setCreditCards]);
 
 
     if (creditcards.length === 0) return <EmptyProject />
 
     return (
         <div className='grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5'>
-            {creditcards?.map(({ avatar, title, diavenc, diafech, progress, limite, id, emissor, bandeira }, index) => {
+            {creditcards?.map(({ avatar, title, diavenc, diafech, progress, limite, disponivel, id, emissor,
+                bandeira, maxPixCredito }, index) => {
                 const IconComponent = avatarComponents[avatar as IconType];
                 const IconComponentBandeira = avatarComponents[bandeira as IconType];
                 return (
@@ -48,25 +49,32 @@ const CreditCardGrid = () => {
                                 )}
                                 <h3 className="text-default-900 text-lg font-medium max-w-[210px] truncate text-center capitalize ">{title}</h3>
                             </div>
-                            <CreditCardAction creditCard={{ avatar, title, diavenc, diafech, progress, limite, id, emissor, bandeira }} />
+                            <CreditCardAction creditCard={{
+                                avatar, title, diavenc, diafech,
+                                progress, limite, disponivel, id, emissor, bandeira, maxPixCredito
+                            }} />
                         </CardHeader>
                         <CardContent>
                             <div className="flex gap-4 mt-0">
                                 <div>
+                                    <div className="text-xs text-default-400 mb-1">Fechamento</div>
+                                    <div className="text-xs text-default-600  font-medium">{diafech}</div>
+                                </div>
+                                <div>
                                     <div className="text-xs text-default-400 mb-1">Vencimento</div>
                                     <div className="text-xs text-default-600  font-medium">{diavenc}</div>
-                                </div>                                
+                                </div>
                                 <div>
                                     <div className="text-xs text-default-400 mb-1">Limite</div>
-                                    <div className="text-xs text-default-600  font-medium">{convertFloatToMoeda(limite, true)}</div>
+                                    <div className="text-xs text-default-600  font-medium">{convertFloatToMoeda(limite)}</div>
                                 </div>
                                 <div>
                                     <div className="text-xs text-default-400 mb-1">Disponível</div>
-                                    <div className="text-xs text-default-600  font-medium">R$ 500,00</div>
+                                    <div className="text-xs text-default-pw-700  font-medium">{convertFloatToMoeda(disponivel)}</div>
                                 </div>
                                 <div>
-                                    <div className="text-xs text-default-400 mb-1">Fechamento</div>
-                                    <div className="text-xs text-default-600  font-medium">{diafech}</div>
+                                    <div className="text-xs text-default-400 mb-1">RecargaPay</div>
+                                    <div className="text-xs text-default-pw-700  font-medium">{convertFloatToMoeda(maxPixCredito)}</div>
                                 </div>
                             </div>
                             <div className="grid grid-cols-4 gap-5">

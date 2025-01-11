@@ -2,13 +2,13 @@
 import { Button } from "@/components/ui/button";
 import { Filter, Plus } from "lucide-react";
 import CreateRevenue from "./revenue-create";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form"
 import { addLeadingZeros } from "@/lib/utils";
 import { useRevenueContext } from "./revenue-context";
 import { getRevenues } from "@/action/revenue-actions";
 import { Loader2 } from "lucide-react";
-import { InputsFilterRevenue } from "@/lib/model/types";
+import { CategoryOption, InputsFilterRevenue, WalletOption } from "@/lib/model/types";
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -16,10 +16,12 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import 'dayjs/locale/pt-br';
 import { ThemeProvider, CssBaseline, FormHelperText } from '@mui/material';
 import { themeCustomMuiDatepicker } from "@/components/mui-datepicker";
+import { createOptionsCategories } from "@/action/category-actions";
+import { createOptionsWallets } from "@/action/wallet-actions";
 
 const RevenueWrapper = ({ children }: { children: React.ReactNode }) => {
     const [open, setOpen] = useState<boolean>(false);    
-    const { setRevenues, filter, setFilter } = useRevenueContext();
+    const { setRevenues, filter, setFilter, setCategoriaOptions, setWalletOptions } = useRevenueContext();
     const [isSubmitting, setIsSubmitting] = useState(false);    
 
     const {
@@ -49,6 +51,25 @@ const RevenueWrapper = ({ children }: { children: React.ReactNode }) => {
         setFilter(dataFilter);
         setIsSubmitting(false);
     }
+
+    useEffect(() => {       
+
+        const fetchCategoryOptions = async () => {
+            const options: CategoryOption[] = await createOptionsCategories();
+            setCategoriaOptions(options);
+        };
+
+        fetchCategoryOptions();        
+    }, [setCategoriaOptions]);
+
+    useEffect(() => {   
+        const fetchWalletOptions = async () => {
+            const options: WalletOption[] = await createOptionsWallets();
+            setWalletOptions(options);
+        };
+
+        fetchWalletOptions();
+    }, [setWalletOptions]);
 
     return (
         <div>

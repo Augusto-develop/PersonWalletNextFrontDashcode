@@ -38,12 +38,12 @@ type Inputs = {
   descricao: string;
   diareceb: Option;
   valor: string;
+  categoria: Option;
 }
 
 const CreateRevenue = ({ open, setOpen, dataRevenue = null }: CreateTaskProps) => {
 
-  const { revenues, setRevenues, editRevenue, filter } = useRevenueContext();
-  const [walletOptions, setWalletOptions] = useState<WalletOption[]>([]);
+  const { revenues, setRevenues, editRevenue, filter, categoriaOptions, walletOptions } = useRevenueContext();
 
   const submitCreate = async (data: Inputs
 
@@ -54,7 +54,8 @@ const CreateRevenue = ({ open, setOpen, dataRevenue = null }: CreateTaskProps) =
       descricao: data.descricao,
       valor: convertToNumeric(data.valor),
       carteiraId: data.carteira.value,
-      datareceb: dayjs(`${filter.ano}-${filter.mes}-${data.diareceb.value}`).toISOString()
+      datareceb: dayjs(`${filter.ano}-${filter.mes}-${data.diareceb.value}`).toISOString(),
+      categoriaId: data.categoria.value,
     };
 
     try {
@@ -65,15 +66,6 @@ const CreateRevenue = ({ open, setOpen, dataRevenue = null }: CreateTaskProps) =
       console.error("Erro de requisição:", error);
     }
   };
-
-  useEffect(() => {
-    const fetchWalletOptions = async () => {
-      const options: WalletOption[] = await createOptionsWallets();
-      setWalletOptions(options);
-    };
-
-    fetchWalletOptions();
-  }, []);
 
   const {
     register,
@@ -143,6 +135,30 @@ const CreateRevenue = ({ open, setOpen, dataRevenue = null }: CreateTaskProps) =
                         </div>
                       );
                     }}
+                  />
+                  {fieldState.error && (
+                    <p className="text-red-500 text-sm">{fieldState.error.message}</p>
+                  )}
+                </>
+              )}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="categoria">Categoria</Label>
+            <Controller
+              name="categoria"
+              control={control}
+              defaultValue={dataRevenue !== null ?
+                categoriaOptions.find((option) => option.value === dataRevenue.categoriaId) :
+                undefined}
+              rules={{ required: "Categoria is required." }}
+              render={({ field, fieldState }) => (
+                <>
+                  <Select
+                    {...field}
+                    className="react-select"
+                    classNamePrefix="select"
+                    options={categoriaOptions}
                   />
                   {fieldState.error && (
                     <p className="text-red-500 text-sm">{fieldState.error.message}</p>

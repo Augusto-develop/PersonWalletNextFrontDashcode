@@ -14,13 +14,15 @@ import InvoiceCard from './components/invoice';
 import { createPortal } from "react-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import OrdersBlock from '@/components/blocks/payment-block';
-import { Invoice, WalletSaldo, defaultCols } from "@/lib/model/types";
+import { Invoice, RevenueGroupCategory, WalletSaldo, defaultCols } from "@/lib/model/types";
 import { onDragStartHandler, onDragEndHandler, onDragOverHandler } from "./components/dragAndDropHandlers";
 import { convertFloatToMoeda } from '@/lib/utils';
 import { usePaymentContext } from './components/payment-context';
 import WalletSaldoList from './components/wallet-saldo-list';
+import RevenueDetail from './components/revenues-detail';
 import { getSaldoWallets } from '@/action/wallet-actions';
 import { Button } from '@/components/ui/button';
+import { getRevenuesByCategory } from '@/action/revenue-actions';
 
 
 function calculateTotalInDespprocess(invoices: Invoice[]): number {
@@ -46,6 +48,7 @@ const PaymentPage = () => {
     const [saldoCurrent, setSaldoCurrent] = useState(0);
     const [saldoAfter, setSaldoAfter] = useState(0);
     const [saldoWallets, setSaldoWallets] = useState<WalletSaldo[] | []>([]);
+    const [revenueGroupCategory, setRevenueGroupCategory] = useState<RevenueGroupCategory[] | []>([]);
 
     // create invoice state 
     const [open, setOpen] = useState<boolean>(false);
@@ -98,10 +101,15 @@ const PaymentPage = () => {
             setSaldoWallets(saldoCarteiras);
             setSaldoAfter(saldoCurrentCalculated - totalApagar);
             setSaldoCurrent(saldoCurrentCalculated);
+
+            if (filter.isSubmit) {
+                const groupRevenues = await getRevenuesByCategory({ mes: filter.mes, ano: filter.ano });
+                setRevenueGroupCategory(groupRevenues);
+            }
         }
 
         calculatedSaldos();
-    }, [totalApagar, invoices]);
+    }, [totalApagar, invoices, filter.ano, filter.mes, filter.isSubmit]);
 
     return (
 
@@ -128,7 +136,7 @@ const PaymentPage = () => {
                                         </div>
                                         <div className='flex-1'>
                                             <OrdersBlock
-                                                className='bg-default-50'
+                                                className='bg-default-50 relative'
                                                 title="Receitas | 1º Quinzena"
                                                 total={convertFloatToMoeda(expensesForPayment?.totalsRevenues.total1Quinze)}
                                                 chartType="none"
@@ -140,7 +148,11 @@ const PaymentPage = () => {
                                                     </span>
                                                 }
                                                 textControl="de saldo"
-                                            />
+                                            >
+                                                <div className="absolute top-4 right-4 flex-none h-5 w-5">
+                                                    <RevenueDetail revenuesGroup={revenueGroupCategory} />
+                                                </div>
+                                            </OrdersBlock>
                                         </div>
                                     </div>
                                     <div className="flex gap-2 justify-between">
@@ -202,15 +214,8 @@ const PaymentPage = () => {
                                                 }
                                                 textControl="de saldo"
                                             >
-                                                {/* <Button
-                                                    size="icon"
-                                                    className="absolute top-2 right-2 flex-none bg-transparent hover:bg-transparent
-                                                     hover:ring-0 hover:ring-transparent w-6 h-6"
-                                                >
-                                                    <SquareChevronRight className="h-6 w-6 text-default-900" />
-                                                </Button> */}
                                                 <div className="absolute top-4 right-4 flex-none h-5 w-5">
-                                                    <WalletSaldoList saldoWallets={saldoWallets}/>
+                                                    <WalletSaldoList saldoWallets={saldoWallets} />
                                                 </div>
                                             </OrdersBlock>
                                         </div>

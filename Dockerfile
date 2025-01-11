@@ -1,6 +1,20 @@
 # Use a imagem base oficial do Node.js
 FROM node:20-alpine
 
+
+# Instale pacotes necessários para o AWS CLI
+# RUN apk update && apk add --no-cache \
+#     curl \
+#     unzip \
+#     bash \
+#     && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+#     && unzip awscliv2.zip -d /tmp \
+#     && /tmp/aws/install \
+#     && rm -rf /tmp/aws /tmp/awscliv2.zip
+
+# Adiciona /usr/local/bin ao PATH (caso não esteja configurado)
+ENV PATH=$PATH:/usr/local/bin
+
 # Defina o diretório de trabalho no contêiner
 WORKDIR /workspaces
 

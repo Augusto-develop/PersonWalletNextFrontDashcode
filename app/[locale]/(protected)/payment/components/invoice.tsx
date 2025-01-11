@@ -63,7 +63,7 @@ function InvoiceCard({ invoice }: { invoice: Invoice }) {
             invoice,
         },
     });
-    const { deletePaymentInInvoice} = usePaymentContext();
+    const { deletePaymentInInvoice } = usePaymentContext();
 
 
     let bgInvoice = "";
@@ -90,10 +90,10 @@ function InvoiceCard({ invoice }: { invoice: Invoice }) {
         transform: CSS.Transform.toString(transform),
     };
 
-    const IconComponent = avatarComponents[invoice.avatar as IconType];    
+    const IconComponent = avatarComponents[invoice.avatar as IconType];
 
     const handleDeleteClick = (invoiceId: string, pagamentoId: string) => {
-        setSelectedRowId({invoiceId, pagamentoId});
+        setSelectedRowId({ invoiceId, pagamentoId });
         setOpenDeleteDialog(true);
     };
 
@@ -223,12 +223,14 @@ function InvoiceCard({ invoice }: { invoice: Invoice }) {
                         </div>
                         <div className="flex-1">
                             <div className="text-xs text-default-400 mb-1 text-center">Vencimento</div>
-                            <div className="text-xs text-default-600 font-medium text-center">{invoice.diavenc}</div>
+                            <div className="text-xs text-default-600 font-medium text-center">
+                                {invoice.diavenc === null ? "-" : invoice.diavenc}
+                            </div>
                         </div>
                         <div className="flex-1">
                             <div className="text-xs text-default-400 mb-1">Valor</div>
                             <div className="text-xs text-default-pw-700 font-medium">
-                                {convertFloatToMoeda([StatusInvoice.PAGO, StatusInvoice.PAGOMAIOR].includes(invoice.status)  ? 
+                                {convertFloatToMoeda([StatusInvoice.PAGO, StatusInvoice.PAGOMAIOR].includes(invoice.status) ?
                                     invoice.total : invoice.saldo)}
                             </div>
                         </div>

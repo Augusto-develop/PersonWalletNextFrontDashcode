@@ -43,7 +43,7 @@ const ListTable = () => {
         };
 
         fetchCashPayments();
-    }, []);
+    }, [setCashPayments]);
 
     const columns: ColumnDef<CashPayment>[] = [
         {

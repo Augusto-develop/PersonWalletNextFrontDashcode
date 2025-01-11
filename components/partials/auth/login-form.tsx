@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from '@/i18n/routing';
+import Link from 'next/link';
 import { Icon } from "@/components/ui/icon";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -13,16 +13,17 @@ import { cn } from "@/lib/utils"
 import { Loader2 } from 'lucide-react';
 import { toast } from "sonner"
 import { useRouter } from '@/components/navigation';
+import { handleLogin } from '@/action/login-actions';
 
 const schema = z.object({
   email: z.string().email({ message: "Your email is invalid." }),
   password: z.string().min(4),
 });
+
 const LoginForm = () => {
   const [isPending, startTransition] = React.useTransition();
   const router = useRouter();
   const [passwordType, setPasswordType] = React.useState("password");
-
 
   const togglePasswordType = () => {
     if (passwordType === "text") {
@@ -40,8 +41,8 @@ const LoginForm = () => {
     resolver: zodResolver(schema),
     mode: "all",
     defaultValues: {
-      email: "dashcode@codeshaper.net",
-      password: "password",
+      email: "augustogomes0822@gmail.com",
+      password: "123456",
     },
   });
   const [isVisible, setIsVisible] = React.useState(false);
@@ -49,7 +50,24 @@ const LoginForm = () => {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   const onSubmit = (data: z.infer<typeof schema>) => {
-    console.log(data)
+    startTransition(() => {
+      // Realiza o login de forma assíncrona, mas fora da startTransition
+      handleLogin(data.email, data.password)
+        .then((token) => {
+          if (token) {
+            // Se o token for retornado, redireciona para o dashboard
+            router.push('/dashboard');
+            toast.success("Successfully logged in");
+          }
+        })
+        .catch((err: unknown) => {
+          if (err instanceof Error) {
+            toast.error(err.message); // Exibe a mensagem de erro
+          } else {
+            toast.error("An unexpected error occurred.");
+          }
+        });
+    });
   };
 
   return (
