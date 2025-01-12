@@ -1,6 +1,7 @@
 "use client";
 import React, { CSSProperties } from 'react'
-import { Link, usePathname } from "@/components/navigation";
+import { useCustomRouter } from "@/components/navigation";
+import Link from 'next/link';
 import { useState } from "react";
 import { ChevronDown, Dot, LucideIcon } from "lucide-react";
 import { GripVertical } from 'lucide-react';
@@ -72,7 +73,7 @@ export function CollapseMenuButton({
     id,
 
 }: CollapseMenuButtonProps) {
-    const pathname = usePathname();
+    const { pathname } = useCustomRouter(); 
     const isSubmenuActive = submenus.some((submenu) => submenu.active || pathname.startsWith(submenu.href));
     const [isCollapsed, setIsCollapsed] = useState<boolean>(isSubmenuActive);
     const [mobileMenuConfig, setMobileMenuConfig] = useMobileMenuConfig()

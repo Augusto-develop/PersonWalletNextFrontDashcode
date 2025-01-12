@@ -1,35 +1,23 @@
-service: nextjs-app
+service: nextjs-personwallet
 
-app: nextjs-personwallet
+app: nextjs-personwallet # Manter o app para o componente
 org: augustodev
 
 provider:
   name: aws
   region: us-east-2
-  runtime: nodejs20.x # Certifique-se de usar a versão correta do Node.js compatível com o AWS Lambda.
+  runtime: nodejs20.x
 
 plugins:
   - "@sls-next/serverless-component"
-  - "serverless-offline"
 
 custom:
-  nextConfigDir: ./ # Diretório de configuração do Next.js
+  # Opcional: Configurações para o componente, se necessário
+  # nextConfigDir: ./
+  # nextBuildDir: .next
 
-functions:
-  next:
-    handler: handler.next
-    package:
-      individually: true
-      exclude:
-        - .git/**
-        - node_modules/**
-        - .serverless/**
-        - .next/cache/** # Certifique-se de excluir apenas o cache, mantendo os arquivos necessários.
-        - src/tests/**
-    # events:
-    #   - http:
-    #       path: /{proxy+}
-    #       method: any
-    #   - http:
-    #       path: /
-    #       method: any
+inputs:
+  build:
+    cmd: npm run build # Ou yarn build
+
+# Remova as seções functions, resources e s3Sync, pois o componente cuida disso.

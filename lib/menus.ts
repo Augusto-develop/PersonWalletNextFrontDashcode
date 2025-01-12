@@ -30,18 +30,18 @@ export type Group = {
   id: string;
 };
 
-export function getMenuList(pathname: string, t: any): Group[] {
+export function getMenuList(pathname: string): Group[] {
 
   return [
     {
-      // groupLabel: t("dashboard"),
+      // groupLabel: "dashboard",
       groupLabel: "",
       id: "dashboard",
       menus: [
         {
           id: "dashboard",
           href: "/dashboard",
-          label: t("dashboard"),
+          label: "dashboard",
           active: pathname.includes("/dashboard"),
           icon: "mdi:home",
           submenus: [],
@@ -139,16 +139,16 @@ export function getMenuList(pathname: string, t: any): Group[] {
     },
   ];
 }
-export function getHorizontalMenuList(pathname: string, t: any): Group[] {
+export function getHorizontalMenuList(pathname: string): Group[] {
   return [
     {
-      groupLabel: t("dashboard"),
+      groupLabel: "dashboard",
       id: "dashboard",
       menus: [
         {
           id: "dashboard",
           href: "/",
-          label: t("dashboard"),
+          label: "dashboard",
           active: pathname.includes("/"),
           icon: "heroicons-outline:home",
           submenus: [],

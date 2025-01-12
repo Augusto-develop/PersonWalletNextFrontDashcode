@@ -1,8 +1,8 @@
 {
   "service": {
-    "service": "nextjs-app",
+    "service": "nextjs-personwallet",
     "serviceObject": {
-      "name": "nextjs-app"
+      "name": "nextjs-personwallet"
     },
     "provider": {
       "name": "aws",
@@ -13,393 +13,27 @@
       "compiledCloudFormationTemplate": {
         "AWSTemplateFormatVersion": "2010-09-09",
         "Description": "The AWS CloudFormation template for this Serverless application",
-        "Resources": {
-          "NextLogGroup": {
-            "Type": "AWS::Logs::LogGroup",
-            "Properties": {
-              "LogGroupName": "/aws/lambda/nextjs-app-dev-next"
-            }
-          },
-          "IamRoleLambdaExecution": {
-            "Type": "AWS::IAM::Role",
-            "Properties": {
-              "AssumeRolePolicyDocument": {
-                "Version": "2012-10-17",
-                "Statement": [
-                  {
-                    "Effect": "Allow",
-                    "Principal": {
-                      "Service": [
-                        "lambda.amazonaws.com"
-                      ]
-                    },
-                    "Action": [
-                      "sts:AssumeRole"
-                    ]
-                  }
-                ]
-              },
-              "Policies": [
-                {
-                  "PolicyName": {
-                    "Fn::Join": [
-                      "-",
-                      [
-                        "nextjs-app",
-                        "dev",
-                        "lambda"
-                      ]
-                    ]
-                  },
-                  "PolicyDocument": {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                      {
-                        "Effect": "Allow",
-                        "Action": [
-                          "logs:CreateLogStream",
-                          "logs:CreateLogGroup",
-                          "logs:TagResource"
-                        ],
-                        "Resource": [
-                          {
-                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/nextjs-app-dev*:*"
-                          }
-                        ]
-                      },
-                      {
-                        "Effect": "Allow",
-                        "Action": [
-                          "logs:PutLogEvents"
-                        ],
-                        "Resource": [
-                          {
-                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/nextjs-app-dev*:*:*"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                }
-              ],
-              "Path": "/",
-              "RoleName": {
-                "Fn::Join": [
-                  "-",
-                  [
-                    "nextjs-app",
-                    "dev",
-                    {
-                      "Ref": "AWS::Region"
-                    },
-                    "lambdaRole"
-                  ]
-                ]
-              }
-            }
-          },
-          "NextLambdaFunction": {
-            "Type": "AWS::Lambda::Function",
-            "Properties": {
-              "Code": {
-                "S3Bucket": "serverless-framework-deployments-us-east-2-7b937855-ca30",
-                "S3Key": "serverless/nextjs-app/dev/1736558416623-2025-01-11T01:20:16.623Z/next.zip"
-              },
-              "Handler": "handler.render",
-              "Runtime": "nodejs20.x",
-              "FunctionName": "nextjs-app-dev-next",
-              "MemorySize": 1024,
-              "Timeout": 6,
-              "Role": {
-                "Fn::GetAtt": [
-                  "IamRoleLambdaExecution",
-                  "Arn"
-                ]
-              }
-            },
-            "DependsOn": [
-              "NextLogGroup"
-            ]
-          },
-          "NextLambdaVersionemad8eEFgnm9fl7ai66pQ9PHBUrH4kOWbqzx0WQbjlo": {
-            "Type": "AWS::Lambda::Version",
-            "DeletionPolicy": "Retain",
-            "Properties": {
-              "FunctionName": {
-                "Ref": "NextLambdaFunction"
-              },
-              "CodeSha256": "8XcO3Xsv/N8IyGQnIkYuE6G/G+OXPQPAkDH0rMhWicU="
-            }
-          },
-          "ApiGatewayRestApi": {
-            "Type": "AWS::ApiGateway::RestApi",
-            "Properties": {
-              "Name": "dev-nextjs-app",
-              "EndpointConfiguration": {
-                "Types": [
-                  "EDGE"
-                ]
-              },
-              "Policy": ""
-            }
-          },
-          "ApiGatewayResourceProxyVar": {
-            "Type": "AWS::ApiGateway::Resource",
-            "Properties": {
-              "ParentId": {
-                "Fn::GetAtt": [
-                  "ApiGatewayRestApi",
-                  "RootResourceId"
-                ]
-              },
-              "PathPart": "{proxy+}",
-              "RestApiId": {
-                "Ref": "ApiGatewayRestApi"
-              }
-            }
-          },
-          "ApiGatewayMethodProxyVarAny": {
-            "Type": "AWS::ApiGateway::Method",
-            "Properties": {
-              "HttpMethod": "ANY",
-              "RequestParameters": {},
-              "ResourceId": {
-                "Ref": "ApiGatewayResourceProxyVar"
-              },
-              "RestApiId": {
-                "Ref": "ApiGatewayRestApi"
-              },
-              "ApiKeyRequired": false,
-              "AuthorizationType": "NONE",
-              "Integration": {
-                "IntegrationHttpMethod": "POST",
-                "Type": "AWS_PROXY",
-                "Uri": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition"
-                      },
-                      ":apigateway:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":lambda:path/2015-03-31/functions/",
-                      {
-                        "Fn::GetAtt": [
-                          "NextLambdaFunction",
-                          "Arn"
-                        ]
-                      },
-                      "/invocations"
-                    ]
-                  ]
-                }
-              },
-              "MethodResponses": []
-            },
-            "DependsOn": [
-              "NextLambdaPermissionApiGateway"
-            ]
-          },
-          "ApiGatewayMethodAny": {
-            "Type": "AWS::ApiGateway::Method",
-            "Properties": {
-              "HttpMethod": "ANY",
-              "RequestParameters": {},
-              "ResourceId": {
-                "Fn::GetAtt": [
-                  "ApiGatewayRestApi",
-                  "RootResourceId"
-                ]
-              },
-              "RestApiId": {
-                "Ref": "ApiGatewayRestApi"
-              },
-              "ApiKeyRequired": false,
-              "AuthorizationType": "NONE",
-              "Integration": {
-                "IntegrationHttpMethod": "POST",
-                "Type": "AWS_PROXY",
-                "Uri": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition"
-                      },
-                      ":apigateway:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":lambda:path/2015-03-31/functions/",
-                      {
-                        "Fn::GetAtt": [
-                          "NextLambdaFunction",
-                          "Arn"
-                        ]
-                      },
-                      "/invocations"
-                    ]
-                  ]
-                }
-              },
-              "MethodResponses": []
-            },
-            "DependsOn": [
-              "NextLambdaPermissionApiGateway"
-            ]
-          },
-          "ApiGatewayDeployment1736558257937": {
-            "Type": "AWS::ApiGateway::Deployment",
-            "Properties": {
-              "RestApiId": {
-                "Ref": "ApiGatewayRestApi"
-              },
-              "StageName": "dev"
-            },
-            "DependsOn": [
-              "ApiGatewayMethodProxyVarAny",
-              "ApiGatewayMethodAny"
-            ]
-          },
-          "NextLambdaPermissionApiGateway": {
-            "Type": "AWS::Lambda::Permission",
-            "Properties": {
-              "FunctionName": {
-                "Fn::GetAtt": [
-                  "NextLambdaFunction",
-                  "Arn"
-                ]
-              },
-              "Action": "lambda:InvokeFunction",
-              "Principal": "apigateway.amazonaws.com",
-              "SourceArn": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition"
-                    },
-                    ":execute-api:",
-                    {
-                      "Ref": "AWS::Region"
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId"
-                    },
-                    ":",
-                    {
-                      "Ref": "ApiGatewayRestApi"
-                    },
-                    "/*/*"
-                  ]
-                ]
-              }
-            }
-          }
-        },
+        "Resources": {},
         "Outputs": {
           "ServerlessDeploymentBucketName": {
             "Value": "serverless-framework-deployments-us-east-2-7b937855-ca30",
             "Export": {
-              "Name": "sls-nextjs-app-dev-ServerlessDeploymentBucketName"
-            }
-          },
-          "NextLambdaFunctionQualifiedArn": {
-            "Description": "Current Lambda function version",
-            "Value": {
-              "Ref": "NextLambdaVersionemad8eEFgnm9fl7ai66pQ9PHBUrH4kOWbqzx0WQbjlo"
-            },
-            "Export": {
-              "Name": "sls-nextjs-app-dev-NextLambdaFunctionQualifiedArn"
-            }
-          },
-          "ServiceEndpoint": {
-            "Description": "URL of the service endpoint",
-            "Value": {
-              "Fn::Join": [
-                "",
-                [
-                  "https://",
-                  {
-                    "Ref": "ApiGatewayRestApi"
-                  },
-                  ".execute-api.",
-                  {
-                    "Ref": "AWS::Region"
-                  },
-                  ".",
-                  {
-                    "Ref": "AWS::URLSuffix"
-                  },
-                  "/dev"
-                ]
-              ]
-            },
-            "Export": {
-              "Name": "sls-nextjs-app-dev-ServiceEndpoint"
+              "Name": "sls-nextjs-personwallet-dev-ServerlessDeploymentBucketName"
             }
           }
         }
-      },
-      "vpc": {}
-    },
-    "custom": {
-      "nextConfigDir": "./"
-    },
-    "plugins": [
-      "@sls-next/serverless-component",
-      "serverless-offline"
-    ],
-    "pluginsData": {},
-    "functions": {
-      "next": {
-        "handler": "handler.render",
-        "package": {
-          "individually": true,
-          "exclude": [
-            ".git/**",
-            "node_modules/**",
-            ".serverless/**",
-            ".next/**",
-            "src/tests/**"
-          ],
-          "artifact": ".serverless/next.zip"
-        },
-        "events": [
-          {
-            "http": {
-              "path": "{proxy+}",
-              "method": "any",
-              "integration": "AWS_PROXY"
-            }
-          },
-          {
-            "http": {
-              "path": "",
-              "method": "any",
-              "integration": "AWS_PROXY"
-            }
-          }
-        ],
-        "name": "nextjs-app-dev-next",
-        "memory": 1024,
-        "timeout": 6,
-        "runtime": "nodejs20.x",
-        "vpc": {},
-        "versionLogicalId": "NextLambdaVersionemad8eEFgnm9fl7ai66pQ9PHBUrH4kOWbqzx0WQbjlo"
       }
     },
+    "custom": null,
+    "plugins": [
+      "@sls-next/serverless-component"
+    ],
+    "pluginsData": {},
+    "functions": {},
     "configValidationMode": "warn",
     "serviceFilename": "serverless.yml",
     "initialServerlessConfig": {
-      "service": "nextjs-app",
+      "service": "nextjs-personwallet",
       "app": "nextjs-personwallet",
       "org": "augustodev",
       "provider": {
@@ -408,12 +42,12 @@
       "plugins": {
         "$ref": "$[\"service\"][\"plugins\"]"
       },
-      "custom": {
-        "$ref": "$[\"service\"][\"custom\"]"
+      "inputs": {
+        "build": {
+          "cmd": "npm run build"
+        }
       },
-      "functions": {
-        "$ref": "$[\"service\"][\"functions\"]"
-      }
+      "custom": null
     },
     "app": "nextjs-personwallet",
     "appId": null,
@@ -422,7 +56,7 @@
     "layers": {}
   },
   "package": {
-    "artifactDirectoryName": "serverless/nextjs-app/dev/1736558416623-2025-01-11T01:20:16.623Z",
+    "artifactDirectoryName": "serverless/nextjs-personwallet/dev/1736712906056-2025-01-12T20:15:06.056Z",
     "artifact": ""
   }
 }

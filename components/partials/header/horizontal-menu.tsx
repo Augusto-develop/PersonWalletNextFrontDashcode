@@ -1,22 +1,17 @@
 'use client'
 import React from "react";
-import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
-import { Link, usePathname } from "@/components/navigation";
+// import { Link, usePathname } from "@/components/navigation";
+import { useCustomRouter } from "@/components/navigation";
+import Link from 'next/link';
 import { useConfig } from '@/hooks/use-config'
-import { useTranslations } from 'next-intl';
 import { getHorizontalMenuList } from "@/lib/menus";
 import { Icon } from "@/components/ui/icon";
 import {
   Menubar,
-  MenubarCheckboxItem,
   MenubarContent,
   MenubarItem,
   MenubarMenu,
-  MenubarRadioGroup,
-  MenubarRadioItem,
-  MenubarSeparator,
-  MenubarShortcut,
   MenubarSub,
   MenubarSubContent,
   MenubarSubTrigger,
@@ -28,10 +23,10 @@ export default function HorizontalMenu() {
 
   const [config] = useConfig()
 
-  const t = useTranslations("Menu");
-  const pathname = usePathname();
+  // const t = useTranslations("Menu");
+  const { pathname } = useCustomRouter(); 
 
-  const menuList = getHorizontalMenuList(pathname, t)
+  const menuList = getHorizontalMenuList(pathname)
 
   const [openDropdown, setOpenDropdown] = React.useState<boolean>(false);
 

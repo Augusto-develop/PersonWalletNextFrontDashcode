@@ -2,7 +2,7 @@
 import React from "react";
 import DashCodeLogo from "./dascode-logo";
 import { PwLogoAvatarIcon, PwLogoNameIcon } from "./pwicons/pwicons";
-import { Link } from '@/i18n/routing';
+import Link from 'next/link';
 import { useConfig } from "@/hooks/use-config";
 import { useMenuHoverConfig } from "@/hooks/use-menu-hover";
 import { useMediaQuery } from "@/hooks/use-media-query";

@@ -1,12 +1,20 @@
-const next = require('next');
 const serverless = require('serverless-http');
+const next = require('next');
 
-const dev = process.env.NODE_ENV !== 'production';
-const app = next({ dev });
-const handle = app.getRequestHandler();
+let nextApp;
+let handler;
 
-app.prepare().then(() => {
-  module.exports.next = serverless((event, context) => {
-    return handle(event, context);
-  });
-});
+async function setup() {
+  if (!nextApp) {
+    nextApp = next({ dev: false }); // 'dev: false' para produção
+    await nextApp.prepare();
+    handler = nextApp.getRequestHandler();
+  }
+}
+
+module.exports.nextApp = async (event, context) => {
+  await setup();
+  return serverless(async (req, res) => {
+    await handler(req, res);
+  })(event, context);
+};

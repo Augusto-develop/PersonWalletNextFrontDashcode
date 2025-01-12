@@ -11,26 +11,49 @@
 //   };
 // });
 
+// import { notFound } from 'next/navigation';
+// import { getRequestConfig } from 'next-intl/server';
+// import { routing } from './routing';
+
+// export default getRequestConfig(async ({ requestLocale }) => {
+//   // Aguarda a resolução da Promise e verifica se requestLocale é válido
+//   const locale = await requestLocale; // Resolve a Promise
+
+//   if (!locale || !routing.locales.includes(locale)) {
+//     notFound();
+//   }
+
+//   // Carrega as mensagens do locale correspondente
+//   try {
+//     const messages = await import(`../messages/${locale}.json`);
+//     return {
+//       messages: messages.default
+//     };
+//   } catch (error) {
+//     // Se houver erro ao carregar as mensagens, retorna 404
+//     notFound();
+//   }
+// });
+
 import { notFound } from 'next/navigation';
-import { getRequestConfig } from 'next-intl/server';
-import { routing } from './routing';
 
-export default getRequestConfig(async ({ requestLocale }) => {
-  // Aguarda a resolução da Promise e verifica se requestLocale é válido
-  const locale = await requestLocale; // Resolve a Promise
+export default async function getRequestConfig({ params }: { params: { locale: string } }) {
+  const { locale } = params;
 
-  if (!locale || !routing.locales.includes(locale)) {
+  // Verifica se o `locale` é válido
+  const validLocales = ['en', 'pt', 'es']; // Substitua com os locais válidos que você deseja
+  if (!locale || !validLocales.includes(locale)) {
     notFound();
   }
 
-  // Carrega as mensagens do locale correspondente
+  // Carrega as mensagens ou dados correspondentes ao locale
   try {
     const messages = await import(`../messages/${locale}.json`);
     return {
-      messages: messages.default
+      messages: messages.default,
     };
   } catch (error) {
     // Se houver erro ao carregar as mensagens, retorna 404
     notFound();
   }
-});
+}

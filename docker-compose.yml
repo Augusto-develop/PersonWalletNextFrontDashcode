@@ -13,6 +13,7 @@ services:
         ports:
             - "80:80"
             - '3100:3000'
+            - '3200:3002'
         volumes:
               - C:/Develop/themeforest/Dashcode/Dashcode-starter-v1.0.0:/var/www:cached
               - ~/.aws:/root/.aws:ro

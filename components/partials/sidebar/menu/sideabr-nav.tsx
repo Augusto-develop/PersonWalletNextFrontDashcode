@@ -1,23 +1,21 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, {  } from 'react'
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Submenu, Group } from '@/lib/menus';
-import { useParams, usePathname } from 'next/navigation';
-import { Link } from "@/components/navigation"
+import { Group } from '@/lib/menus';
+import { useCustomRouter } from "@/components/navigation";
+import Link from 'next/link';
 import { useConfig } from '@/hooks/use-config';
 import { Button } from '@/components/ui/button';
 import MenuLabel from '../common/menu-label';
-import MenuItem from '../common/menu-item';
 import { Icon } from '@/components/ui/icon';
 import { CollapseMenuButton2 } from '../common/collapse-menu-button2';
 import TeamSwitcher from '../common/team-switcher';
 import SearchBar from '../common/search-bar';
-import { getLangDir } from 'rtl-detect';
 const SidebarNav = ({ menuList }: { menuList: Group[] }) => {
   const [config, setConfig] = useConfig()
-  const pathname = usePathname();
-  const params = useParams<{ locale: string; }>();
-  const direction = getLangDir(params?.locale ?? '');
+  const { pathname } = useCustomRouter(); 
+  // const params = useParams<{ locale: string; }>();
+  const direction = "ltr"; //getLangDir(params?.locale ?? '');
   const activeKey = pathname?.split('/')?.[2];
   const data = menuList.find(item => item.id === activeKey);
 

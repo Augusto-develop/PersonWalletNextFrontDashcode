@@ -2,7 +2,11 @@
 FROM node:20-alpine
 
 
-# Instale pacotes necessários para o AWS CLI
+
+# Adiciona /usr/local/bin ao PATH (caso não esteja configurado)
+ENV PATH=$PATH:/usr/local/bin
+
+#Instale pacotes necessários para o AWS CLI
 # RUN apk update && apk add --no-cache \
 #     curl \
 #     unzip \
@@ -12,8 +16,6 @@ FROM node:20-alpine
 #     && /tmp/aws/install \
 #     && rm -rf /tmp/aws /tmp/awscliv2.zip
 
-# Adiciona /usr/local/bin ao PATH (caso não esteja configurado)
-ENV PATH=$PATH:/usr/local/bin
 
 # Defina o diretório de trabalho no contêiner
 WORKDIR /workspaces
