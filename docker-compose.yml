@@ -12,8 +12,7 @@ services:
             - AWS_DEFAULT_REGION=us-east-2                # Região padrão         
         ports:
             - "80:80"
-            - '3100:3000'
-            - '3200:3002'
+            - '3100:3000'           
         volumes:
               - C:/Develop/themeforest/Dashcode/Dashcode-starter-v1.0.0:/var/www:cached
               - ~/.aws:/root/.aws:ro
