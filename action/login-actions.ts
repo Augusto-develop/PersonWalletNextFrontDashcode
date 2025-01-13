@@ -1,7 +1,7 @@
 'use client';
 
 // const url_dominio = 'http://localhost:3000';
-const url_dominio = ' https://ljm5s9xndb.execute-api.us-east-1.amazonaws.com/dev";
+const url_dominio = 'https://ljm5s9xndb.execute-api.us-east-1.amazonaws.com/dev';
 
 // const handleLogin = async () => {
 //     const res = await fetch(url_dominio + '/auth/login', {
