@@ -15,6 +15,7 @@ ENV PATH=$PATH:/usr/local/bin
 #     && unzip awscliv2.zip -d /tmp \
 #     && /tmp/aws/install \
 #     && rm -rf /tmp/aws /tmp/awscliv2.zip
+#sudo apk add aws-cli
 
 
 # Defina o diretório de trabalho no contêiner
