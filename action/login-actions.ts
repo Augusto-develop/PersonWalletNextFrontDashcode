@@ -26,8 +26,7 @@ const url_dominio = process.env.NEXT_PUBLIC_DOMINIO_API_URL;
 // };
 
 export const handleLogin = async (email: string, password: string): Promise<string | null> => {
-    // const url_dominio = 'https://seu-dominio.com'; // Substitua pelo domínio correto
-
+  
     const res = await fetch(`${url_dominio}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
