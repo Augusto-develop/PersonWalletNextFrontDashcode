@@ -31,6 +31,7 @@ export const handleLogin = async (email: string, password: string): Promise<stri
     const res = await fetch(`${url_dominio}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        mode: 'cors',
         body: JSON.stringify({
             email: email,
             password: password,
