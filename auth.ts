@@ -1,3 +1,5 @@
+export const runtime = 'nodejs';
+
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { ZodError } from "zod";
@@ -6,8 +8,6 @@ import { saltAndHashPassword } from "@/lib/password";
 import { handleLogin } from "./action/login-actions";
 import { AuthResponse } from "./lib/model/auth-response";
 import { DefaultSession } from "next-auth"
-
-export const runtime = 'nodejs';
 
 declare module "next-auth" {
     interface User {
