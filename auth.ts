@@ -7,6 +7,8 @@ import { handleLogin } from "./action/login-actions";
 import { AuthResponse } from "./lib/model/auth-response";
 import { DefaultSession } from "next-auth"
 
+export const runtime = 'nodejs';
+
 declare module "next-auth" {
     interface User {
         id?: string | undefined
