@@ -44,8 +44,7 @@
 // export default withNextIntl(nextConfig);
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  runtime: 'nodejs',
+const nextConfig = {  
   images: {
     remotePatterns: [
       {
