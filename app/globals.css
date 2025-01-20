@@ -634,3 +634,9 @@ html[dir=rtl] .react-select .select__loading-indicator {
   border-color: red !important;
   box-shadow: 0 0 0 1px red !important;
 }
+
+
+.custom-date-picker .MuiFormControl-root {
+  background-color: hsl(var(--background));
+  border-color: hsl(var(--default-300) / var(--tw-border-opacity, 1));
+}

@@ -79,6 +79,9 @@ const nextConfig = {
     }
     return config;
   },
+  env: {
+    TZ: "America/Sao_Paulo", // Define o fuso horário para a aplicação
+  },
 };
 
 export default nextConfig;

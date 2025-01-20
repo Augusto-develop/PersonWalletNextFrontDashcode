@@ -1,6 +1,9 @@
-'use client';
+import { AuthResponse } from "@/lib/model/auth-response";
+import { AuthResponseDto } from "./types.schema.dto";
+import { getSession } from "next-auth/react";
 
-const url_dominio = process.env.NEXT_PUBLIC_DOMINIO_API_URL;
+const url_dominio = process.env.NEXT_PUBLIC_PERSONWALLET_API_URL;
+const url_dominio_network_docker = process.env.NEXT_PUBLIC_PERSONWALLET_API_URL_DOCKER_NETWORK;
 
 // const handleLogin = async () => {
 //     const res = await fetch(url_dominio + '/auth/login', {
@@ -25,66 +28,81 @@ const url_dominio = process.env.NEXT_PUBLIC_DOMINIO_API_URL;
 //     // Redirecionar ou realizar outras ações
 // };
 
-export const handleLogin = async (email: string, password: string): Promise<string | null> => {
-  
-    const res = await fetch(`${url_dominio}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        mode: 'cors',
-        body: JSON.stringify({
-            email: email,
-            password: password,
-        }),
-    });
+export const handleLogin = async (email: string, password: string): Promise<AuthResponse> => {
 
-    if (!res.ok) {
-        const { error } = await res.json();
-        throw new Error(error || 'Erro desconhecido durante o login');
-    }
+  const res = await fetch(`${url_dominio_network_docker}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    mode: 'cors',
+    body: JSON.stringify({
+      email: email,
+      password: password,
+    }),
+  });
 
-    const { token } = await res.json();
+  if (!res.ok) {
+    const { error } = await res.json();
+    throw new Error(error || 'Erro desconhecido durante o login');
+  }
 
-    // Armazena o token no localStorage (ou em cookies para maior segurança)
-    localStorage.setItem('auth_token', token);
-
-    return token;
-
-    // console.log('Login realizado com sucesso!');
-    // Aqui você pode redirecionar ou realizar outras ações
+  const response: AuthResponseDto = await res.json();
+  return convertDtoToAuthResponse(response);
 };
 
+export default async function fetchWithAuth(
+  url_recurso: string,
+  options: RequestInit = {}
+): Promise<Response> {
 
+  const session = await getSession();
 
-export default async function fetchWithAuth(url_recurso: string, options: RequestInit = {}) {
-    const token = localStorage.getItem('auth_token');
-
-    // Adicionar o token às requisições
-    if (token) {
-        options.headers = {
-            ...options.headers,
-            Authorization: `Bearer ${token}`,
-        };
+  // Redirecionar se não houver sessão
+  if (!session) {
+    if (typeof window !== "undefined") {
+      window.location.replace("/");
     }
+    throw new Error("Sessão não encontrada. Redirecionando para a página inicial.");
+  }
 
-    let response = await fetch(url_dominio + url_recurso, options);
+  const pwApiToken = session.user?.pwApiToken;
 
-    // Verifica se o token expirou
+  // Adicionar o token às requisições
+  if (pwApiToken) {
+    options.headers = {
+      ...options.headers,
+      Authorization: `Bearer ${pwApiToken}`,
+    };
+  }
+
+  try {
+    const response = await fetch(`${url_dominio}${url_recurso}`, options);
+
+    // Verifica se o token expirou e redireciona para a página de login
     if (response.status === 401) {
-        console.log('Access token expired. Trying to refresh...');
-
-        // Tenta obter um novo access token
-        //const refreshResponse = await fetch('/api/auth/refresh', { method: 'POST' });
-        await handleLogin('augustogomes0822@gmail.com', '123456');
-
-        const newToken = localStorage.getItem('auth_token');
-        if (newToken) {
-            options.headers = {
-                ...options.headers,
-                Authorization: `Bearer ${newToken}`,
-            };
-            response = await fetch(url_dominio + url_recurso, options);
-        }
+      if (typeof window !== "undefined") {
+        window.location.replace("/");
+      }
+      throw new Error("Token de acesso expirado. Redirecionando para a página inicial.");
     }
 
-    return response;
+    return response; // Retorna a resposta válida
+  } catch (error) {
+
+    if (error instanceof Error) {
+      console.error("Erro ao fazer a requisição:", error.message);
+    } else {
+      console.error("Erro desconhecido:", error);
+    }
+    throw error;
+  }
+}
+
+
+export function convertDtoToAuthResponse(authResponseDto: AuthResponseDto): AuthResponse {
+  return {
+    id: authResponseDto.id,
+    name: authResponseDto.name,
+    token: authResponseDto.token,
+    expiresIn: authResponseDto.expiresIn,
+  };
 }

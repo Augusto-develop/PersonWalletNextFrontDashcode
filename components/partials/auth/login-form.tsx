@@ -14,6 +14,11 @@ import { Loader2 } from 'lucide-react';
 import { toast } from "sonner"
 import { useRouter } from 'next/navigation';
 import { handleLogin } from '@/action/login-actions';
+import { NextResponse } from 'next/server';
+import setCookieToken from '@/lib/cookies';
+// import { useAuth } from '@/providers/auth.provider';
+import { signIn, useSession } from "next-auth/react";
+
 
 const schema = z.object({
   email: z.string().email({ message: "Your email is invalid." }),
@@ -24,6 +29,7 @@ const LoginForm = () => {
   const [isPending, startTransition] = React.useTransition();
   const router = useRouter();
   const [passwordType, setPasswordType] = React.useState("password");
+  // const { login } = useAuth();
 
   const togglePasswordType = () => {
     if (passwordType === "text") {
@@ -49,25 +55,50 @@ const LoginForm = () => {
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
-  const onSubmit = (data: z.infer<typeof schema>) => {
-    startTransition(() => {
-      // Realiza o login de forma assíncrona, mas fora da startTransition
-      handleLogin(data.email, data.password)
-        .then((token) => {
-          if (token) {
-            // Se o token for retornado, redireciona para o dashboard
-            router.push('/dashboard');
-            toast.success("Successfully logged in");
-          }
-        })
-        .catch((err: unknown) => {
-          if (err instanceof Error) {
-            toast.error(err.message); // Exibe a mensagem de erro
-          } else {
-            toast.error("An unexpected error occurred.");
-          }
-        });
+  const onSubmit = async (data: z.infer<typeof schema>) => {
+
+
+
+    const result = await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      redirect: false,
     });
+
+    if (result?.error) {
+      // setError("Credenciais inválidas. Tente novamente.");
+      toast.error("Credenciais inválidas. Tente novamente.");
+    } else {
+      // Redireciona para a página inicial ou dashboard em caso de sucesso      
+      toast.success("Successfully logged in");
+      router.push('/dashboard');
+    }
+
+    // startTransition(() => {
+
+    //   login(data.email, data.password);
+
+    //   // Realiza o login de forma assíncrona, mas fora da startTransition
+    //   // handleLogin(data.email, data.password)
+    //   //   .then((token) => {
+    //   //     if (token) {
+    //   //       // Se o token for retornado, redireciona para o dashboard
+
+    //   //       // const response = NextResponse.json({ message: 'Login bem-sucedido' });
+    //   //       // setCookieToken(response, token);
+
+    //   //       router.push('/dashboard');
+    //   //       toast.success("Successfully logged in");
+    //   //     }
+    //   //   })
+    //   //   .catch((err: unknown) => {
+    //   //     if (err instanceof Error) {
+    //   //       toast.error(err.message); // Exibe a mensagem de erro
+    //   //     } else {
+    //   //       toast.error("An unexpected error occurred.");
+    //   //     }
+    //   //   });
+    // });
   };
 
   return (

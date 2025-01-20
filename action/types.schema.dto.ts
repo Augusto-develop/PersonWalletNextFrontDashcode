@@ -1,3 +1,9 @@
+export interface AuthResponseDto {
+    token: string;
+    expiresIn: number;
+    id: string;
+    name: string;
+}
 
 export interface CreditDto {
     id?: string;

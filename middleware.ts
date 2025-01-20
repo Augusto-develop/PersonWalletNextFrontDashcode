@@ -1,39 +1,56 @@
-// import createMiddleware from 'next-intl/middleware';
-// import {NextRequest, NextResponse} from 'next/server';
-// import {locales} from '@/config';
-
-// export default async function middleware(request: NextRequest) {
-
-//   // Step 1: Use the incoming request (example)
-//   const defaultLocale = request.headers.get('dashcode-locale') || 'en';
- 
-//   // Step 2: Create and call the next-intl middleware (example)
-//   const handleI18nRouting = createMiddleware({
-//     locales,
-//     defaultLocale
-    
-//   });
-//   const response = handleI18nRouting(request);
- 
-//   // Step 3: Alter the response (example)
-//   response.headers.set('dashcode-locale', defaultLocale);
- 
-//   return response;
-// }
- 
-// export const config = {
-//   // Match only internationalized pathnames
-//   matcher: ['/', '/(ar|en)/:path*']
-// };
-
-
-
 import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { isRouteMatch } from './lib/route';
+import { ConfigRoutes } from './config/routes';
+import { auth } from '@/auth';
 
-export default async function middleware() {
-  return NextResponse.next(); // Deixe a solicitação passar diretamente
+export default async function middleware(request: NextRequest) {
+ 
+  const session = await auth(); 
+  const pathname = request.nextUrl.pathname;
+  const { isPublicRoute, isProtectedRoute } = isRouteMatch(ConfigRoutes, pathname); 
+
+  // Se o usuário não tem token e tenta acessar uma página protegida, redireciona para o login
+  if (isProtectedRoute && !session) {
+    const loginUrl = new URL('/', request.url);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // Se o usuário já tem token e tenta acessar a página de login, redireciona para o dashboard
+  if (session && isPublicRoute) {
+    const dashboardUrl = new URL('/dashboard', request.url);
+    return NextResponse.redirect(dashboardUrl);
+  }
+
+  // Se o usuário está tentando acessar uma rota pública sem token, permite o acesso
+  if (isPublicRoute && !session) {
+    return NextResponse.next(); // Permite o acesso à página de login ou outra página pública
+  }
+  // Se o token está presente ou a rota é protegida e o usuário tem token, permite o acesso
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/', '/:path*'], // Middleware aplicado a todas as rotas
+  matcher: [   
+    '/.',
+    '/categories',
+    '/credits/cashpayments',
+    '/credits/creditcards',
+    '/credits/financings',
+    '/credits/lendings',
+    '/credits',
+    '/credits/recurrings',
+    '/dashboard',
+    '/expenses',
+    '/payment',
+    '/revenues',
+    '/wallets'
+  ],
+  exclude: [
+    '/_next/static/*',
+    '/api/*',
+    '/images/*',
+    '/css/*',
+    '/js/*',
+  ],
 };

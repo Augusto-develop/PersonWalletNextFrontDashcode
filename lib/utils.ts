@@ -1,5 +1,7 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
+import dayjs from "@/lib/dayjs";
+import { Dayjs } from "dayjs";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -134,3 +136,8 @@ export function calculateValueMaxPixCredito(limite: number, taxa: number = 3.99)
   const valorMaximo = limite / fator;
   return parseFloat(valorMaximo.toFixed(2)); // Retorna com duas casas decimais
 }
+
+export function getISOWithLocalTimezone (date: string | Dayjs): string {
+  // Converte para o fuso horário São Paulo e formata manualmente como ISO
+  return dayjs(date).tz('America/Sao_Paulo').format('YYYY-MM-DDTHH:mm:ssZ');
+};

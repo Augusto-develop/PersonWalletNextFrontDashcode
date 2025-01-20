@@ -1,3 +1,4 @@
+// @route-protected
 'use client';
 
 import { StatusBlock } from "@/components/blocks/status-block";
@@ -10,6 +11,7 @@ import InvoicesTable from "./components/invoices";
 import DashboardDropdown from "@/components/dashboard-dropdown";
 import HistoryChart from "./components/history-chart";
 import AccountChart from "./components/account-chart";
+import TransferWallet from "./components/transfer-wallet";
 import React from "react";
 
 const BankingPage = () => {
@@ -28,11 +30,11 @@ const BankingPage = () => {
               <div className="flex-1">
                 <h4 className="text-xl font-medium mb-2">
                   <span className="block font-light text-default-800">
-                    widget_title,
+                    Hello,
                   </span>
-                  <span className="block text-default-900">Mr. Jone Doe</span>
+                  <span className="block text-default-900">Augusto Gomes</span>
                 </h4>
-                <p className="text-sm text-default-600">widget_desc</p>
+                <p className="text-sm text-default-600">Dashboard Control</p>
               </div>
             </div>
             {/*  status blocks */}
@@ -68,6 +70,14 @@ const BankingPage = () => {
         <div className="lg:col-span-4 col-span-12 space-y-5">
           <Card>
             <CardHeader>
+              <CardTitle>Transfer Wallet</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <TransferWallet />
+            </CardContent>
+          </Card>
+          {/* <Card>
+            <CardHeader>
               <CardTitle>my_card</CardTitle>
             </CardHeader>
             <CardContent>
@@ -75,15 +85,7 @@ const BankingPage = () => {
                 <CardSlider />
               </div>
             </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>quick_transfer</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <AmountTransfer />
-            </CardContent>
-          </Card>
+          </Card>           */}
         </div>
         <div className="lg:col-span-8 col-span-12 space-y-5">
           <Card>

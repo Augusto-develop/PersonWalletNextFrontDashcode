@@ -9,7 +9,7 @@ import { Toaster as SonnerToaster } from "@/components/ui/sonner"
 const inter = Inter({ subsets: ["latin"] });
 // language 
 import DirectionProvider from "@/providers/direction-provider";
-import AuthProvider from "@/providers/auth.provider";
+import { AuthProvider } from "@/providers/auth.provider";
 import React from "react";
 
 export const metadata: Metadata = {

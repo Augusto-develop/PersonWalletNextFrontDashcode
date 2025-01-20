@@ -18,3 +18,8 @@ services:
               - ~/.aws:/root/.aws:ro
         extra_hosts:
             - 'host.docker.internal:host-gateway'
+        networks:
+            - personwallet-network
+networks:
+  personwallet-network:
+    external: true

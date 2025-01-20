@@ -1,0 +1,19 @@
+{
+  "publicRoutes": [
+    "/."
+  ],
+  "protectedRoutes": [
+    "/categories",
+    "/credits/cashpayments",
+    "/credits/creditcards",
+    "/credits/financings",
+    "/credits/lendings",
+    "/credits",
+    "/credits/recurrings",
+    "/dashboard",
+    "/expenses",
+    "/payment",
+    "/revenues",
+    "/wallets"
+  ]
+}

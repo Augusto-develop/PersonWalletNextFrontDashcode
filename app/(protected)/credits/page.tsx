@@ -1,3 +1,4 @@
+// @route-protected
 
 // import { redirect } from '@/components/navigation'
 

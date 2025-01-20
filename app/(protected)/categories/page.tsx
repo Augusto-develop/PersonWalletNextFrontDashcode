@@ -1,3 +1,5 @@
+// @route-protected
+
 "use client"
 import * as React from "react"
 import {

@@ -1,3 +1,4 @@
+// @route-protected
 'use client'
 import React, { useState, useMemo, useEffect } from 'react'
 import { type Column } from './components/data';

@@ -44,6 +44,27 @@ import { TypeCredit } from "@/lib/model/enums";
 //     return newData;
 // };
 
+export const createMovement = async (payload: MovementDto): Promise<MovementDto | undefined> => {
+
+    delete payload.id;
+
+    const res = await fetchWithAuth("/movimento", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload),
+    });
+
+    if (res.ok) {
+        const movementDto: MovementDto = await res.json();
+        return movementDto;
+    }
+
+    // console.error("Erro ao enviar:", response.statusText)
+    return undefined;
+};
+
 
 export const createPayment = async (payload: MovementDto): Promise<MovementDto[] | []> => {
 

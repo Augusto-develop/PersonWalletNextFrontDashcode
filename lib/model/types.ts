@@ -1,6 +1,7 @@
 
 import { Emissor, Bandeira } from "@/lib/model/enums";
 
+export * from "./auth-response";
 export * from "./credit";
 export * from "./category";
 export * from "./expense";
