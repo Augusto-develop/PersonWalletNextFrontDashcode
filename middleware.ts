@@ -4,14 +4,10 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { isRouteMatch } from './lib/route';
 import { ConfigRoutes } from './config/routes';
-import { auth } from '@/auth';
 
-export default function middleware(request: NextRequest) {
+export default function middleware(request: NextRequest) {  
 
-  // const session = await auth(); 
-
-  const session = request.cookies.get('session_token');
-  console.log(session);
+  const session = request.cookies.get('authjs.session-token'); 
 
   const pathname = request.nextUrl.pathname;
   const { isPublicRoute, isProtectedRoute } = isRouteMatch(ConfigRoutes, pathname);
