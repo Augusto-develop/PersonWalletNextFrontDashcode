@@ -118,29 +118,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     // const ProtectedChildren = withProtectedRoute(() => <>{children}</>);
 
+
+    // {isDialogOpen && (
+    //     <Dialog open={isDialogOpen} onClose={handleCloseDialog}>
+    //         <Dialog.Overlay />
+    //         <Dialog.Title>Token Expirado</Dialog.Title>
+    //         <Dialog.Description>
+    //             Seu token de autenticação expirou. Por favor, insira sua senha para continuar.
+    //         </Dialog.Description>
+    //         <div>
+    //             <input
+    //                 type="password"
+    //                 placeholder="Digite sua senha"
+    //                 onChange={(e) => setPassword(e.target.value)}
+    //             />
+    //             {/* <button onClick={() => handleLogin(password)}>Entrar</button> */}
+    //             <button onClick={handleCloseDialog}>Cancelar</button>
+    //         </div>
+    //     </Dialog>
+    // )}
+
     return (
         // <AuthContext.Provider value={{ user, login, logout }}>
         <SessionProvider>
             {children}
             {/* Dialog de Solicitação de Senha */}
-            {isDialogOpen && (
-                <Dialog open={isDialogOpen} onClose={handleCloseDialog}>
-                    <Dialog.Overlay />
-                    <Dialog.Title>Token Expirado</Dialog.Title>
-                    <Dialog.Description>
-                        Seu token de autenticação expirou. Por favor, insira sua senha para continuar.
-                    </Dialog.Description>
-                    <div>
-                        <input
-                            type="password"
-                            placeholder="Digite sua senha"
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                        {/* <button onClick={() => handleLogin(password)}>Entrar</button> */}
-                        <button onClick={handleCloseDialog}>Cancelar</button>
-                    </div>
-                </Dialog>
-            )}
         </SessionProvider>
         // </AuthContext.Provider >
     );
