@@ -1,5 +1,3 @@
-export const runtime = 'nodejs';
-
 import { AuthResponse } from "@/lib/model/auth-response";
 import { AuthResponseDto } from "./types.schema.dto";
 import { getSession } from "next-auth/react";
