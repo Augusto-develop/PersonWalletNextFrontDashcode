@@ -70,7 +70,8 @@ const nextConfig = {
     ],
   },
   reactStrictMode: true,
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, nextRuntime  }) => {
+    if (nextRuntime !== "nodejs") return config;
     if (!isServer) {
       config.watchOptions = {
         poll: 1000, // Verifica mudanças a cada 1 segundo
