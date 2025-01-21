@@ -6,11 +6,15 @@ import { isRouteMatch } from './lib/route';
 import { ConfigRoutes } from './config/routes';
 import { auth } from '@/auth';
 
-export default async function middleware(request: NextRequest) {
- 
-  const session = await auth(); 
+export default function middleware(request: NextRequest) {
+
+  // const session = await auth(); 
+
+  const session = request.cookies.get('session_token');
+  console.log(session);
+
   const pathname = request.nextUrl.pathname;
-  const { isPublicRoute, isProtectedRoute } = isRouteMatch(ConfigRoutes, pathname); 
+  const { isPublicRoute, isProtectedRoute } = isRouteMatch(ConfigRoutes, pathname);
 
   // Se o usuário não tem token e tenta acessar uma página protegida, redireciona para o login
   if (isProtectedRoute && !session) {
@@ -33,7 +37,7 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [   
+  matcher: [
     '/.',
     '/categories',
     '/credits/cashpayments',
