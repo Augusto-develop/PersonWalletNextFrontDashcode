@@ -97,7 +97,7 @@ export const { handlers, auth } = NextAuth({
     secret: process.env.NEXTAUTH_SECRET, // Variável de ambiente para segurança
     session: {
         strategy: "jwt", // Usar JWT para sessões
-        maxAge: 1 * 1 * 1 * 60, // Expiração do JWT em segundos
+        maxAge: 1 * 1 * 60 * 60, // Expiração do JWT em segundos
     },
     cookies: {
         sessionToken: {
@@ -107,7 +107,7 @@ export const { handlers, auth } = NextAuth({
                 secure: process.env.NODE_ENV === "production",  // Só envia o cookie via HTTPS em produção
                 sameSite: "strict",  // Impede que o cookie seja enviado em requisições de outros sites
                 // maxAge: 30 * 24 * 60 * 60,
-                maxAge: 1 * 1 * 1 * 60,
+                maxAge: 1 * 1 * 60 * 60,
                 path: "/",
             },
         },
